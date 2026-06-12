@@ -2533,9 +2533,13 @@ function login() {
 
     document.getElementById('login-modal').style.display = 'none';
 
-    applyPermissions();
+    aapplyPermissions();
 
-    showToast('Giriş başarılı');
+renderDashboard();
+renderRecordsTable();
+renderAccounting();
+
+showToast('Giriş başarılı');
 }
 
 function logout() {
