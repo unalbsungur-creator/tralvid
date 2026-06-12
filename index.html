@@ -457,7 +457,7 @@
         <div class="form-group span-2">
           <label class="form-label" for="c-hotel">OTEL VERI (İlgili Otel Bağlantısı)</label>
           <select id="c-hotel" onchange="onHotelChange(this)">
-            <option value="" data-region="" data-airport="" data-category="">— Bir Otel Seçiniz (Opsiyonel) —</option>
+            <option value="" data-region="" data-airport="" data-category="">— Bir sorumlu taraf Seçiniz (Opsiyonel) —</option>
             <option value="A GOOD LIFE UTOPIA FAMILY RESORT" data-region="ALANYA" data-airport="AYT" data-category="Otel">A GOOD LIFE UTOPIA FAMILY RESORT (ALANYA - AYT)</option>
             <option value="A HOTEL SIDE" data-region="SIDE" data-airport="AYT" data-category="Otel">A HOTEL SIDE (SIDE - AYT)</option>
             <option value="A SUITE SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">A SUITE SIDE HOTEL (SIDE - AYT)</option>
@@ -894,7 +894,7 @@ function renderRecordsTable() {
     var r = filtered[i];
     html += '<tr>' +
       '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
-      '<td><span class="badge badge-purple">' + r.quarter + '</span></td>' +
+      '<td><span class="badge badge-purple">' + r.quarter + '</span></td>
       '<td>' + r.date + '</td>' +
       '<td>' + truncate(r.user, 14) + '</td>' +
       '<td style="font-family:monospace; font-weight:bold;">' + r.booking + '</td>' +
