@@ -220,10 +220,11 @@
     display: flex;
 }
 
-  .charts-grid-pure {
+  .charts-grid-pure{
     display:flex;
     gap:20px;
     width:100%;
+    align-items:flex-start;
 }
 
 .charts-grid-pure > div {
@@ -245,10 +246,13 @@
   .kw-lbl { font-size: 9px; color: var(--text-secondary); margin-top: 2px; }
   .kw-val { font-size: 10px; font-weight: 600; color: var(--text-primary); }
   .chart-card{
+    flex:1;
+    min-width:300px;
     background:#fff;
     border:1px solid var(--border);
     border-radius:10px;
     padding:16px;
+    box-sizing:border-box;
 }
 .donut-wrap{
     display:flex;
