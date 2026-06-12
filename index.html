@@ -2846,8 +2846,18 @@ function renderDashboard() {
     '<div class="stat-card"><div class="s-lbl">Cevap Süresi Aşalan Dosyalar</div><div class="s-val" style="color:#A32D2D;">' + complaints.filter(function(o){return o.timeout === 'Evet';}).length + '</div></div>';
 
   renderDonutChart('chart-servis', countBy(complaints, 'servis'), ['#185FA5','#1D9E75','#D85A30','#BA7517','#534AB7']);
-  renderDonutChart('chart-sonuc', countBy(complaints, 'result'), ['#A32D2D','#3B6D11']);
-  renderTrendChart('chart-kw', countBy(complaints, 'kw'));
+renderDonutChart('chart-sonuc', countBy(complaints, 'result'), ['#A32D2D','#3B6D11']);
+renderTrendChart('chart-kw', countBy(complaints, 'kw'));
+
+var grid = document.querySelector('.charts-grid-pure');
+
+if (grid) {
+    grid.style.display = 'flex';
+    grid.style.gap = '20px';
+
+    grid.querySelectorAll('.chart-card').forEach(function(card){
+        card.style.flex = '1';
+    });
 }
 
 function renderDonutChart(containerId, data, colors) {
