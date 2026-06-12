@@ -2459,6 +2459,23 @@ var initialInvoices = [
 var complaints = JSON.parse(localStorage.getItem('tralvid_pages_complaints')) || [];
 var invoices = JSON.parse(localStorage.getItem('tralvid_pages_invoices')) || [];
 
+/* ===== KULLANICI YÖNETİMİ ===== */
+
+const USERS = {
+    admin: {
+        password: "1234",
+        role: "admin"
+    },
+    personel: {
+        password: "1234",
+        role: "user"
+    }
+};
+
+var currentUser = JSON.parse(
+    localStorage.getItem('currentUser') || 'null'
+);
+
 function syncStorage() {
   localStorage.setItem('tralvid_pages_complaints', JSON.stringify(complaints));
   localStorage.setItem('tralvid_pages_invoices', JSON.stringify(invoices));
