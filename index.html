@@ -2351,8 +2351,8 @@
 <script>
 // ==================== HAFIZA ENTEGRASYONU ====================
 var initialComplaints = [
-  {id:1, kw:'KW17', quarter:'Q2', user:'ÜNAL BÜYÜKSUNGUR', date:'2025-04-25', timeout:'False', sn:'False', booking:'1283842', subbooking:'1283945', adult:1, child:0, infant:0, bdate:'2025-04-25', adate:'2025-04-16', veranstalter:'HOLIDAY CHECK TOURISTIC', partner:'IC', Verursacher:'HDS ÜSTLENDİ', region:'ANTALYA', airport:'AYT', servis:'Transfer', hotel:'', transfertype:'VIP', ptr:'Transfer ( yok )', pde:'Transfer ( kein Transfer gebucht )', pen:'Transfer (no transfer booked)', konu2:'', konu3:'', result:'Haksız', price:0, currency:'EUR', notes:''},
-  {id:2, kw:'KW19', quarter:'Q2', user:'ÜNAL BÜYÜKSUNGUR', date:'2025-05-08', timeout:'False', sn:'False', booking:'1727784', subbooking:'1286238', adult:3, child:0, infant:0, bdate:'2025-05-06', adate:'2025-04-21', veranstalter:'HOLIDAY CHECK TOURISTIC', partner:'IC', Verursacher:'HOTEL', region:'ANTALYA', airport:'AYT', servis:'Transfer', hotel:'AYDINBEY SIU COLLECT', transfertype:'VIP', ptr:'Transfer ( yok )', pde:'Transfer (zum falschen Hotel gebracht)', pen:'Transfer (taken to the wrong hotel)', konu2:'Temizlik', konu3:'AI Konsept', result:'Haklı', price:125, currency:'EUR', notes:'Özel transfer şikayeti 125€ iade'}
+  {id:1, kw:'KW17', quarter:'Q2', user:'ÜNAL BÜYÜKSUNGUR', date:'2025-04-25', timeout:'False', sn:'False', booking:'1283842', subbooking:'1283945', adult:1, child:0, infant:0, bdate:'2025-04-25', adate:'2025-04-16', veranstalter:'HOLIDAY CHECK TOURISTIC', partner:'IC', Verursacher:'HDS ÜSTLENDİ', region:'ANTALYA', airport:'AYT', servis:'Transfer', hotel:'', transfertype:'VIP', ptr:'Transfer ( yok )', pde:'Transfer ( kein Transfer gebucht )', pen:'Transfer (no transfer booked)',  result:'Haksız', price:0, currency:'EUR', notes:''},
+  {id:2, kw:'KW19', quarter:'Q2', user:'ÜNAL BÜYÜKSUNGUR', date:'2025-05-08', timeout:'False', sn:'False', booking:'1727784', subbooking:'1286238', adult:3, child:0, infant:0, bdate:'2025-05-06', adate:'2025-04-21', veranstalter:'HOLIDAY CHECK TOURISTIC', partner:'IC', Verursacher:'HOTEL', region:'ANTALYA', airport:'AYT', servis:'Transfer', hotel:'AYDINBEY SIU COLLECT', transfertype:'VIP', ptr:'Transfer ( yok )', pde:'Transfer (zum falschen Hotel gebracht)', pen:'Transfer (taken to the wrong hotel)',  result:'Haklı', price:125, currency:'EUR', notes:'Özel transfer şikayeti 125€ iade'}
 ];
 
 var initialInvoices = [
@@ -2483,8 +2483,6 @@ function saveComplaint() {
     ptr: document.getElementById('c-ptr').value,
     pde: document.getElementById('c-pde').value,
     pen: document.getElementById('c-pen').value,
-    konu2: document.getElementById('c-konu2').value,
-    konu3: document.getElementById('c-konu3').value,
     result: document.getElementById('c-result').value,
     price: parseFloat(document.getElementById('c-price').value) || 0,
     currency: document.getElementById('c-currency').value,
@@ -2680,8 +2678,6 @@ function openComplaintDetail(id) {
     '<div class="detail-item full"><span class="detail-lbl">Şikayet Konusu TR</span><span class="detail-val" style="color:var(--blue); font-weight:600;">' + r.ptr + '</span></div>' +
     '<div class="detail-item full"><span class="detail-lbl">Şikayet Konusu DE</span><span class="detail-val">' + r.pde + '</span></div>' +
     '<div class="detail-item full"><span class="detail-lbl">Şikayet Konusu EN</span><span class="detail-val">' + r.pen + '</span></div>' +
-    '<div class="detail-item"><span class="detail-lbl">İkinci Şikayet Konusu</span><span class="detail-val">' + (r.konu2 || '—') + '</span></div>' +
-    '<div class="detail-item"><span class="detail-lbl">Üçüncü Şikayet Konusu</span><span class="detail-val">' + (r.konu3 || '—') + '</span></div>' +
     '<div class="detail-item full"><span class="detail-lbl">Notiz (Not)</span><div class="note-box">' + (r.notes || 'Açıklama girilmedi.') + '</div></div>' +
   '</div>';
   document.getElementById('detail-modal-overlay').classList.add('open');
