@@ -284,18 +284,40 @@
     <button class="nav-btn" id="nav-records" onclick="showPage('records')">&#9776; Müşteri Geri Bildirimleri (Complaints)</button>
     <button class="nav-btn" id="nav-accounting" onclick="showPage('accounting')">&#9781; Muhasebe &amp; Fatura Takibi</button>
   </nav>
-  <div class="topbar-actions">
-    <button class="fab" onclick="openComplaintModal()">&#43; Yeni Kayıt (Şikayet)</button>
-    <button class="fab fab-success" onclick="openInvoiceModal()">&#43; Yeni Fatura</button>
+  <<div class="topbar-actions">
+
+    <button class="fab" onclick="openComplaintModal()">
+        + Yeni Kayıt (Şikayet)
+    </button>
+
+    <button class="fab fab-success" onclick="openInvoiceModal()">
+        + Yeni Fatura
+    </button>
 
     <button class="fab"
-          style="background:#c62828"
-          onclick="resetDatabase()">
-    🗑️ Veritabanını Temizle
-  </button>
+            style="background:#1565c0"
+            onclick="backupDatabase()">
+        💾 Yedek Al
+    </button>
 
-</div>
-  </div>
+    <button class="fab"
+            style="background:#6a1b9a"
+            onclick="document.getElementById('restoreFile').click()">
+        📂 Geri Yükle
+    </button>
+
+    <button class="fab"
+            style="background:#c62828"
+            onclick="resetDatabase()">
+        🗑️ Veritabanını Temizle
+    </button>
+
+    <input type="file"
+           id="restoreFile"
+           accept=".json"
+           style="display:none"
+           onchange="restoreDatabase(event)">
+
 </div>
 
 <div class="content">
@@ -2496,6 +2518,73 @@ function resetDatabase() {
     renderDashboard();
 
     showToast('Veritabanı temizlendi.');
+}
+function backupDatabase() {
+
+    var backup = {
+        complaints: complaints,
+        invoices: invoices,
+        backupDate: new Date().toISOString()
+    };
+
+    var dataStr = JSON.stringify(backup, null, 2);
+
+    var blob = new Blob([dataStr], {
+        type: 'application/json'
+    });
+
+    var url = URL.createObjectURL(blob);
+
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'CRM_Yedek_' +
+        new Date().toISOString().slice(0,10) +
+        '.json';
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+    showToast('Yedek başarıyla indirildi.');
+}
+
+function restoreDatabase(event) {
+
+    var file = event.target.files[0];
+
+    if (!file) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+
+        try {
+
+            var data = JSON.parse(e.target.result);
+
+            complaints = data.complaints || [];
+            invoices = data.invoices || [];
+
+            syncStorage();
+
+            renderRecordsTable();
+            renderDashboard();
+
+            if (typeof renderAccounting === 'function') {
+                renderAccounting();
+            }
+
+            showToast('Yedek başarıyla geri yüklendi.');
+
+        } catch(err) {
+
+            alert('Geçersiz yedek dosyası.');
+
+        }
+
+    };
+
+    reader.readAsText(file);
 }
 
 function autoCalculateTimeFields() {
