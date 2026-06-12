@@ -2455,84 +2455,97 @@ function clearComplaintForm() {
 // ==================== VERİ KAYDETME KATMANI ====================
 function saveComplaint() {
 
-  console.log("1 - saveComplaint başladı");
+console.log("saveComplaint başladı");
 
-  var dateVal = document.getElementById('c-date').value;
-  var nextId = complaints.length > 0
-    ? Math.max.apply(Math, complaints.map(function(o) { return o.id; })) + 1
-    : 1;
+try {
 
-  var rec = {
-    id: nextId,
-    kw: getKW(dateVal),
-    quarter: getQuarter(dateVal),
-    user: document.getElementById('c-user').value,
-    date: dateVal,
-    timeout: document.getElementById('c-timeout').value,
-    sn: document.getElementById('c-sn').value,
-    booking: document.getElementById('c-booking').value.trim() || 'BOŞ',
-    subbooking: document.getElementById('c-subbooking').value.trim(),
-    adult: parseInt(document.getElementById('c-adult').value) || 0,
-    child: parseInt(document.getElementById('c-child').value) || 0,
-    infant: parseInt(document.getElementById('c-infant').value) || 0,
-    bdate: document.getElementById('c-bdate').value,
-    adate: document.getElementById('c-adate').value,
-    veranstalter: document.getElementById('c-veranstalter').value,
-    partner: document.getElementById('c-partner').value,
-    Verursacher: document.getElementById('c-verursacher').value,
-    region: document.getElementById('c-region').value,
-    airport: document.getElementById('c-airport').value,
-    servis: document.getElementById('c-servis').value,
-    hotel: document.getElementById('c-hotel').value,
-    transfertype: document.getElementById('c-transfertype').value,
-    ptr: document.getElementById('c-ptr').value,
-    pde: document.getElementById('c-pde').value,
-    pen: document.getElementById('c-pen').value,
-    result: document.getElementById('c-result').value,
-    price: parseFloat(document.getElementById('c-price').value) || 0,
-    currency: document.getElementById('c-currency').value,
-    notes: document.getElementById('c-notes').value.trim()
-  };
+```
+var rec = {
+  id: complaints.length > 0
+    ? Math.max.apply(Math, complaints.map(function(o){ return o.id; })) + 1
+    : 1,
 
-  console.log("2 - rec oluşturuldu", rec);
+  kw: getKW(document.getElementById('c-date').value),
+  quarter: getQuarter(document.getElementById('c-date').value),
 
-  complaints.unshift(rec);
+  user: document.getElementById('c-user').value,
+  date: document.getElementById('c-date').value,
+  timeout: document.getElementById('c-timeout').value,
+  sn: document.getElementById('c-sn').value,
 
-  console.log("3 - complaints eklendi");
+  booking: document.getElementById('c-booking').value.trim() || 'BOŞ',
+  subbooking: document.getElementById('c-subbooking').value.trim(),
 
-  syncStorage();
+  adult: parseInt(document.getElementById('c-adult').value) || 0,
+  child: parseInt(document.getElementById('c-child').value) || 0,
+  infant: parseInt(document.getElementById('c-infant').value) || 0,
 
-  console.log("4 - syncStorage tamam");
+  bdate: document.getElementById('c-bdate').value,
+  adate: document.getElementById('c-adate').value,
 
-  clearComplaintForm();
+  veranstalter: document.getElementById('c-veranstalter').value,
+  partner: document.getElementById('c-partner').value,
+  Verursacher: document.getElementById('c-verursacher').value,
 
-  console.log("5 - form temizlendi");
+  region: document.getElementById('c-region').value,
+  airport: document.getElementById('c-airport').value,
+  servis: document.getElementById('c-servis').value,
 
-  closeComplaintModal();
+  hotel: document.getElementById('c-hotel').value,
 
-  console.log("6 - modal kapandı");
+  transfertype: document.getElementById('c-transfertype')
+    ? document.getElementById('c-transfertype').value
+    : '',
 
-  showToast('Şikayet kartı veritabanına işlendi.');
+  ptr: document.getElementById('c-ptr')
+    ? document.getElementById('c-ptr').value
+    : '',
 
-  console.log("7 - toast gösterildi");
+  pde: document.getElementById('c-pde')
+    ? document.getElementById('c-pde').value
+    : '',
 
-  renderRecordsTable();
+  pen: document.getElementById('c-pen')
+    ? document.getElementById('c-pen').value
+    : '',
 
-  console.log("8 - tablo render edildi");
+  result: document.getElementById('c-result').value,
 
-  renderDashboard();
+  price: parseFloat(document.getElementById('c-price').value) || 0,
 
-  console.log("9 - dashboard render edildi");
+  currency: document.getElementById('c-currency').value,
+
+  notes: document.getElementById('c-notes').value.trim()
+};
+
+console.log("Kayıt oluşturuldu:", rec);
+
+complaints.unshift(rec);
+
+syncStorage();
+clearComplaintForm();
+closeComplaintModal();
+
+showToast('Şikayet kartı veritabanına işlendi.');
+
+renderRecordsTable();
+renderDashboard();
+```
+
+} catch (err) {
+
+```
+console.error("saveComplaint HATASI:", err);
+
+alert(
+  "Kayıt sırasında hata oluştu:\n\n" +
+  err.message
+);
+```
+
+}
 }
 
-  complaints.unshift(rec);
-  syncStorage();
-  clearComplaintForm();
-  closeComplaintModal();
-  showToast('Şikayet kartı veritabanına işlendi.');
-  renderRecordsTable();
-  renderDashboard();
-}
 
 function saveInvoice() {
   var nextId = invoices.length > 0 ? Math.max.apply(Math, invoices.map(function(o) { return o.id; })) + 1 : 1;
