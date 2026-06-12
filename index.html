@@ -166,7 +166,7 @@
   .modal-header h2 { font-size: 14px; font-weight: 600; color: var(--text-primary); }
   .modal-close { background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 22px; line-height: 1; }
   .modal-body { padding: 20px 22px; }
-  .modal-footer { padding: 12px 22px; border-top: 0.5px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: var(--bg-secondary); }
+  .modal-footer { padding: 14px 22px; border-top: 0.5px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: var(--bg-secondary); }
   
   .section-title { font-size: 11px; font-weight: 600; color: var(--blue); letter-spacing: 0.6px; text-transform: uppercase; margin: 16px 0 10px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
   .section-title:first-child { margin-top: 0; }
@@ -212,6 +212,7 @@
 </head>
 <body>
 
+<!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">TRALVID <span>CRM</span></div>
   <nav class="nav">
@@ -227,6 +228,7 @@
 
 <div class="content">
 
+  <!-- ANASAYFA (DASHBOARD) -->
   <div id="page-dashboard" class="page active">
     <div class="stats-row" id="dash-stats"></div>
     <div class="charts-grid-pure">
@@ -245,6 +247,7 @@
     </div>
   </div>
 
+  <!-- MÜŞTERI GERİ BİLDİRİMLERİ (RECORDS) -->
   <div id="page-records" class="page">
     <div class="table-wrap">
       <div class="table-toolbar">
@@ -268,9 +271,12 @@
     </div>
   </div>
 
+  <!-- MUHASEBE VE FATURA TAKİBİ -->
   <div id="page-accounting" class="page">
+    <!-- Üst Özet Kartları -->
     <div class="stats-row" id="acc-stats"></div>
     
+    <!-- Filtreler Paneli -->
     <div class="table-toolbar" style="border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin-bottom:0; border-bottom:none;">
       <select class="toolbar-select" id="acc-filter-partner" onchange="renderAccounting()">
         <option value="">Tüm Partnerler</option>
@@ -292,6 +298,7 @@
       </select>
     </div>
 
+    <!-- Fatura Takip Tablosu -->
     <div class="acc-section table-wrap" style="border-top:none; border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
       <div class="table-scroll">
         <table>
@@ -305,6 +312,7 @@
       </div>
     </div>
 
+    <!-- Partner Bazlı Tazminat & Tahsilat Özeti -->
     <div class="acc-section table-wrap">
       <div class="table-toolbar" style="font-weight:600;">Partner Bazlı Finansal Tahsilat &amp; Regress Performans Göstergeleri</div>
       <div class="table-scroll">
@@ -322,6 +330,7 @@
 
 </div>
 
+<!-- ===== MODAL: YENİ MÜŞTERİ GERI BİLDİRİMİ (26 MADDENİN TÜMÜ DOĞRULANDI) ===== -->
 <div class="modal-overlay" id="complaint-modal-overlay">
   <div class="modal">
     <div class="modal-header">
@@ -330,6 +339,7 @@
     </div>
     <div class="modal-body">
       
+      <!-- BÖLÜM 1 -->
       <div class="section-title">Bölüm 1: Sistem &amp; Zaman Yönetimi Başlıkları</div>
       <div class="form-grid">
         <div class="form-group">
@@ -360,14 +370,15 @@
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-sn">SN erhalten (Savunma yazısı)</label>
+          <label class="form-label" for="c-sn">SN erhalten (SN Alındı)</label>
           <select id="c-sn">
-            <option value="var">var</option>
-            <option value="yok">yok</option>
+            <option value="Hayır">Hayır</option>
+            <option value="Evet">Evet</option>
           </select>
         </div>
       </div>
 
+      <!-- BÖLÜM 2 -->
       <div class="section-title">Bölüm 2: Rezervasyon &amp; Demografi Verileri</div>
       <div class="form-grid">
         <div class="form-group">
@@ -409,14 +420,14 @@
         </div>
       </div>
 
+      <!-- BÖLÜM 3 (GENEL-OTEL LİSTELERİ) -->
       <div class="section-title">Bölüm 3: Kontrat Ortakları &amp; Lokasyon Entegrasyonu</div>
       <div class="form-grid">
         <div class="form-group">
           <label class="form-label" for="c-partner">Partner (İş Ortağı)</label>
           <select id="c-partner">
-            <option value="IC">IC</option>
-            <option value="PP">PP</option>
-            <option value="SWT">SWT</option>
+            <option value="IC">Inter Company</option>
+            <option value=PP>Prefer Part</option>
             <option value="DİĞER">DİĞER</option>
           </select>
         </div>
@@ -433,70 +444,76 @@
         <div class="form-group">
           <label class="form-label" for="c-region">Region (Bölge)</label>
           <select id="c-region">
-            <option value="ANTALYA">ANTALYA</option><option value="SIDE">SIDE</option>
-            <option value="KEMER">KEMER</option><option value="BELEK">BELEK</option>
-            <option value="ALANYA">ALANYA</option><option value="EGE">EGE</option>
-            <option value="ISTANBUL IST">ISTANBUL IST</option><option value="ISTANBUL SAW">ISTANBUL SAW</option>
+            <option value="ANTALYA">AYT</option><option value="ANTALYA">ANTALYA</option>
+            <option value="SIDE">SIDE</option><option value="KEMER">KEMER</option>
+            <option value="BELEK">BELEK</option><option value="ALANYA">ALANYA</option>
+            <option value="EGE">EGE</option><option value="EGE">DALAMAN</option>
+            <option value="EGE">BODRUM</option><option value="EGE">KUŞADASI</option>
+            <option value="IST">IST</option><option value="ISTANBUL IST">ISTANBUL IST</option>
+            <option value="ISTANBUL SAW">ISTANBUL SAW</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label" for="c-airport">Flughafen (Havalimanı)</label>
           <select id="c-airport">
-            <option value="AYT">AYT</option><option value="ADB">ADB</option>
-            <option value="IST">IST</option><option value="SAW">SAW</option>
+            <option value="AYT">ANTALYA(AYT)</option><option value="ADB">ADNAN MENDERES(ADB)</option>
+            <option value="IST">ISTANBUL(IST)</option><option value="SAW">SABİHA GÖKÇEN(SAW)</option>
+            <option value="DLM">DALAMAN(DLM)</option><option value="GZP">GAZİPAŞA(GZP)</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label" for="c-servis">Servis (Hizmet)</label>
           <select id="c-servis">
-            <option value="Transfer">Transfer</option><option value="OTS">OTS</option>
-            <option value="Otel Konaklama">Otel Konaklama</option><option value="Rehberlik Servisi">Rehberlik Servisi</option>
-            <option value="HDS Modülü">HDS Modülü</option>
+            <option value="Transfer">Transfer</option><option value="Uçak">Uçak</option>
+            <option value="Konaklama">Otel Konaklama</option><option value="Rehberlik Servisi">Rehberlik Servisi</option>
+            <option value="Tur">Tur</option>
           </select>
         </div>
         <div class="form-group span-2">
-          <label class="form-label" for="c-hotel">OTEL VERI (İlgili Otel Bağlantısı)</label>
+          <label class="form-label" for="c-hotel">Sorumlu Taraf</label>
           <select id="c-hotel" onchange="onHotelChange(this)">
-            <option value="" data-region="" data-airport="" data-category="">— Bir sorumlu taraf Seçiniz (Opsiyonel) —</option>
-            <option value="A GOOD LIFE UTOPIA FAMILY RESORT" data-region="ALANYA" data-airport="AYT" data-category="Otel">A GOOD LIFE UTOPIA FAMILY RESORT (ALANYA - AYT)</option>
-            <option value="A HOTEL SIDE" data-region="SIDE" data-airport="AYT" data-category="Otel">A HOTEL SIDE (SIDE - AYT)</option>
-            <option value="A SUITE SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">A SUITE SIDE HOTEL (SIDE - AYT)</option>
-            <option value="A11 HOTEL OBAKOY" data-region="ALANYA" data-airport="AYT" data-category="Otel">A11 HOTEL OBAKOY (ALANYA - AYT)</option>
-            <option value="ACAR HOTEL" data-region="ALANYA" data-airport="AYT" data-category="Otel">ACAR HOTEL (ALANYA - AYT)</option>
-            <option value="ADA PORT HOTELS ADULT ONLY +16" data-region="ALANYA" data-airport="AYT" data-category="Otel">ADA PORT HOTELS ADULT ONLY +16 (ALANYA - AYT)</option>
-            <option value="ADALYA ART SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA ART SIDE HOTEL (SIDE - AYT)</option>
-            <option value="ADALYA ELITE LARA" data-region="ANTALYA" data-airport="AYT" data-category="Otel">ADALYA ELITE LARA (ANTALYA - AYT)</option>
-            <option value="ADALYA OCEAN HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA OCEAN HOTEL (SIDE - AYT)</option>
-            <option value="ADALYA RESORT HOTEL ADULT ONLY +16" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA RESORT HOTEL ADULT ONLY +16 (SIDE - AYT)</option>
-            <option value="ADAM&EVE ONLY ADULT +16" data-region="BELEK" data-airport="AYT" data-category="Otel">ADAM&EVE ONLY ADULT +16 (BELEK - AYT)</option>
-            <option value="AYDINBEY SIU COLLECT" data-region="KEMER" data-airport="AYT" data-category="Otel">AYDINBEY SIU COLLECT (KEMER - AYT)</option>
-            <option value="SUNRISE QUEEN RESORT" data-region="SIDE" data-airport="AYT" data-category="Otel">SUNRISE QUEEN RESORT (SIDE - AYT)</option>
-            <option value="MEGA SARAY RESORT SIDE" data-region="SIDE" data-airport="AYT" data-category="Otel">MEGA SARAY RESORT SIDE (SIDE - AYT)</option>
-            <option value="ISLA PANORAMA HOTEL" data-region="MARMARIS" data-airport="DLM" data-category="Otel">ISLA PANORAMA HOTEL (MARMARIS - DLM)</option>
-            <option value="SERAY DELUXE HOTEL" data-region="MARMARIS" data-airport="DLM" data-category="Otel">SERAY DELUXE HOTEL (MARMARIS - DLM)</option>
-            <option value="SEVEN FOR LIFE THERMAL" data-region="KUSADASI" data-airport="ADB" data-category="Otel">SEVEN FOR LIFE THERMAL (KUSADASI - ADB)</option>
-            <option value="SEVEN FOR LIFE THERMAL HDS ÜSTLENDI" data-region="KUSADASI" data-airport="ADB" data-category="HDS Üstlendi">SEVEN FOR LIFE THERMAL HDS ÜSTLENDI (KUSADASI - ADB)</option>
-            <option value="MAYA WORLD DIDYMA HDS ÜSTLENDI" data-region="DIDIM" data-airport="ADB" data-category="HDS Üstlendi">MAYA WORLD DIDYMA HDS ÜSTLENDI (DIDIM - ADB)</option>
-            <option value="ISLA PANORAMA HOTEL HDS ÜSTLENDİ" data-region="MARMARIS" data-airport="DLM" data-category="HDS Üstlendi">ISLA PANORAMA HOTEL HDS ÜSTLENDİ (MARMARIS - DLM)</option>
-            <option value="SERAY DELUXE HOTEL HDS ÜSTLENDİ" data-region="MARMARIS" data-airport="DLM" data-category="HDS Üstlendi">SERAY DELUXE HOTEL HDS ÜSTLENDİ (MARMARIS - DLM)</option>
-            <option value="OPERATÖR ANTALYA" data-region="ANTALYA" data-airport="AYT" data-category="Operatör">OPERATÖR ANTALYA (ANTALYA - AYT)</option>
-            <option value="OPERATÖR DALAMAN" data-region="DALAMAN" data-airport="DLM" data-category="Operatör">OPERATÖR DALAMAN (DALAMAN - DLM)</option>
-            <option value="OPERATÖR BODRUM" data-region="BODRUM" data-airport="BJV" data-category="Operatör">OPERATÖR BODRUM (BODRUM - BJV)</option>
-            <option value="OPERATÖR KUSADASI" data-region="KUSADASI" data-airport="ADB" data-category="Operatör">OPERATÖR KUSADASI (KUSADASI - ADB)</option>
-            <option value="OPERATÖR ISTANBUL" data-region="ISTANBUL" data-airport="IST" data-category="Operatör">OPERATÖR ISTANBUL (ISTANBUL - IST)</option>
-            <option value="SOZ HOTEL" data-region="BODRUM" data-airport="BJV" data-category="Otel">SOZ HOTEL (BODRUM - BJV)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-transfertype">Transfer Type (Tür)</label>
-          <select id="c-transfertype">
-            <option value="VIP">VIP</option>
-            <option value="Shuttle">Shuttle</option>
-            <option value="Express Shuttle">Express Shuttle</option>
-          </select>
+  <option value="" data-region="" data-airport="" data-category="">— Bir Otel Seçiniz (Opsiyonel) —</option>
+  <option value="A GOOD LIFE UTOPIA FAMILY RESORT" data-region="ALANYA" data-airport="AYT" data-category="Otel">A GOOD LIFE UTOPIA FAMILY RESORT (ALANYA - AYT)</option>
+  <option value="A HOTEL SIDE" data-region="SIDE" data-airport="AYT" data-category="Otel">A HOTEL SIDE (SIDE - AYT)</option>
+  <option value="A SUITE SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">A SUITE SIDE HOTEL (SIDE - AYT)</option>
+  <option value="A11 HOTEL OBAKOY" data-region="ALANYA" data-airport="AYT" data-category="Otel">A11 HOTEL OBAKOY (ALANYA - AYT)</option>
+  <option value="ACAR HOTEL" data-region="ALANYA" data-airport="AYT" data-category="Otel">ACAR HOTEL (ALANYA - AYT)</option>
+  <option value="ADA PORT HOTELS ADULT ONLY +16" data-region="ALANYA" data-airport="AYT" data-category="Otel">ADA PORT HOTELS ADULT ONLY +16 (ALANYA - AYT)</option>
+  <option value="ADALYA ART SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA ART SIDE HOTEL (SIDE - AYT)</option>
+  <option value="ADALYA ELITE LARA" data-region="ANTALYA" data-airport="AYT" data-category="Otel">ADALYA ELITE LARA (ANTALYA - AYT)</option>
+  <option value="ADALYA OCEAN HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA OCEAN HOTEL (SIDE - AYT)</option>
+  <option value="ADALYA RESORT HOTEL ADULT ONLY +16" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA RESORT HOTEL ADULT ONLY +16 (SIDE - AYT)</option>
+  <option value="ADAM&EVE ONLY ADULT +16" data-region="BELEK" data-airport="AYT" data-category="Otel">ADAM&EVE ONLY ADULT +16 (BELEK - AYT)</option>
+  <option value="ADELLA SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">ADELLA SIDE HOTEL (SIDE - AYT)</option>
+  <option value="ADIN RESORT HOTEL" data-region="ALANYA" data-airport="AYT" data-category="Otel">ADIN RESORT HOTEL (ALANYA - AYT)</option>
+  <option value="ADONIS HOTEL" data-region="ANTALYA" data-airport="AYT" data-category="Otel">ADONIS HOTEL (ANTALYA - AYT)</option>
+  <option value="AYDINBEY SIU COLLECT" data-region="KEMER" data-airport="AYT" data-category="Otel">AYDINBEY SIU COLLECT (KEMER - AYT)</option>
+  <option value="SUNRISE QUEEN RESORT" data-region="SIDE" data-airport="AYT" data-category="Otel">SUNRISE QUEEN RESORT (SIDE - AYT)</option>
+  <option value="MEGA SARAY RESORT SIDE" data-region="SIDE" data-airport="AYT" data-category="Otel">MEGA SARAY RESORT SIDE (SIDE - AYT)</option>
+  <option value="MARDIVA FAMILY HOTEL ECO" data-region="SIDE" data-airport="AYT" data-category="Otel">MARDIVA FAMILY HOTEL ECO (SIDE - AYT)</option>
+  <option value="ISLA PANORAMA HOTEL" data-region="MARMARIS" data-airport="DLM" data-category="Otel">ISLA PANORAMA HOTEL (MARMARIS - DLM)</option>
+  <option value="SERAY DELUXE HOTEL" data-region="MARMARIS" data-airport="DLM" data-category="Otel">SERAY DELUXE HOTEL (MARMARIS - DLM)</option>
+  <option value="SEVEN FOR LIFE THERMAL" data-region="KUSADASI" data-airport="ADB" data-category="Otel">SEVEN FOR LIFE THERMAL (KUSADASI - ADB)</option>
+  <option value="SEVEN FOR LIFE THERMAL HDS ÜSTLENDI" data-region="KUSADASI" data-airport="ADB" data-category="HDS Üstlendi">SEVEN FOR LIFE THERMAL HDS ÜSTLENDI (KUSADASI - ADB)</option>
+  <option value="MAYA WORLD DIDYMA HDS ÜSTLENDI" data-region="DIDIM" data-airport="ADB" data-category="HDS Üstlendi">MAYA WORLD DIDYMA HDS ÜSTLENDI (DIDIM - ADB)</option>
+  <option value="ISLA PANORAMA HOTEL HDS ÜSTLENDİ" data-region="MARMARIS" data-airport="DLM" data-category="HDS Üstlendi">ISLA PANORAMA HOTEL HDS ÜSTLENDİ (MARMARIS - DLM)</option>
+  <option value="SERAY DELUXE HOTEL HDS ÜSTLENDİ" data-region="MARMARIS" data-airport="DLM" data-category="HDS Üstlendi">SERAY DELUXE HOTEL HDS ÜSTLENDİ (MARMARIS - DLM)</option>
+  <option value="OPERATÖR ANTALYA" data-region="ANTALYA" data-airport="AYT" data-category="Operatör">OPERATÖR ANTALYA (ANTALYA - AYT)</option>
+  <option value="OPERATÖR DALAMAN" data-region="DALAMAN" data-airport="DLM" data-category="Operatör">OPERATÖR DALAMAN (DALAMAN - DLM)</option>
+  <option value="OPERATÖR BODRUM" data-region="BODRUM" data-airport="BJV" data-category="Operatör">OPERATÖR BODRUM (BODRUM - BJV)</option>
+  <option value="OPERATÖR KUSADASI" data-region="KUSADASI" data-airport="ADB" data-category="Operatör">OPERATÖR KUSADASI (KUSADASI - ADB)</option>
+  <option value="OPERATÖR ISTANBUL" data-region="ISTANBUL" data-airport="IST" data-category="Operatör">OPERATÖR ISTANBUL (ISTANBUL - IST)</option>
+  <option value="UÇAK ŞİRKETİ ANTALYA" data-region="ANTALYA" data-airport="AYT" data-category="Uçak Şirketi">UÇAK ŞİRKETİ ANTALYA (ANTALYA - AYT)</option>
+  <option value="UÇAK ŞİRKETİ DALAMAN" data-region="DALAMAN" data-airport="DLM" data-category="Uçak Şirketi">UÇAK ŞİRKETİ DALAMAN (DALAMAN - DLM)</option>
+  <option value="UÇAK ŞİRKETİ BODRUM" data-region="BODRUM" data-airport="BJV" data-category="Uçak Şirketi">UÇAK ŞİRKETİ BODRUM (BODRUM - BJV)</option>
+  <option value="UÇAK ŞİRKETİ KUSADASI" data-region="KUSADASI" data-airport="ADB" data-category="Uçak Şirketi">UÇAK ŞİRKETİ KUSADASI (KUSADASI - ADB)</option>
+  <option value="UÇAK ŞİRKETİ ISTANBUL" data-region="ISTANBUL" data-airport="IST" data-category="Uçak Şirketi">UÇAK ŞİRKETİ ISTANBUL (ISTANBUL - IST)</option>
+  <option value="SOZ HOTEL" data-region="BODRUM" data-airport="BJV" data-category="Otel">SOZ HOTEL (BODRUM - BJV)</option>
+</select>
         </div>
       </div>
 
+      <!-- BÖLÜM 4 -->
       <div class="section-title">Bölüm 4: Çoklu Şikayet Modülleri &amp; Dil Kırılımları</div>
       <div class="form-grid">
         <div class="form-group">
@@ -587,6 +604,7 @@
   </div>
 </div>
 
+<!-- ===== MODAL: YENİ FATURA KAYDI ===== -->
 <div class="modal-overlay" id="invoice-modal-overlay">
   <div class="modal">
     <div class="modal-header">
@@ -667,6 +685,7 @@
   </div>
 </div>
 
+<!-- ===== MODAL: TAM DETAY GÖRÜNTÜLEME ===== -->
 <div class="modal-overlay" id="detail-modal-overlay">
   <div class="modal">
     <div class="modal-header">
@@ -680,13 +699,14 @@
   </div>
 </div>
 
+<!-- TOAST -->
 <div class="toast" id="toast"><span>&#10003;</span><span id="toast-msg"></span></div>
 
 <script>
 // ==================== HAFIZA ENTEGRASYONU ====================
 var initialComplaints = [
-  {id:1, kw:'KW17', quarter:'Q2', user:'ÜNAL BÜYÜKSUNGUR', date:'2025-04-25', timeout:'Hayır', sn:'yok', booking:'1283842', subbooking:'1283945', adult:1, child:0, infant:0, bdate:'2025-04-25', adate:'2025-04-16', veranstalter:'HOLIDAY CHECK TOURISTIC', partner:'IC', Verursacher:'HDS ÜSTLENDİ', region:'ANTALYA', airport:'AYT', servis:'Transfer', hotel:'', transfertype:'VIP', ptr:'Transfer ( yok )', pde:'Transfer ( kein Transfer gebucht )', pen:'Transfer (no transfer booked)', konu2:'', konu3:'', result:'Haksız', price:0, currency:'EUR', notes:''},
-  {id:2, kw:'KW19', quarter:'Q2', user:'ÜNAL BÜYÜKSUNGUR', date:'2025-05-08', timeout:'Hayır', sn:'yok', booking:'1727784', subbooking:'1286238', adult:3, child:0, infant:0, bdate:'2025-05-06', adate:'2025-04-21', veranstalter:'HOLIDAY CHECK TOURISTIC', partner:'IC', Verursacher:'HOTEL', region:'ANTALYA', airport:'AYT', servis:'Transfer', hotel:'AYDINBEY SIU COLLECT', transfertype:'VIP', ptr:'Transfer ( yok )', pde:'Transfer (zum falschen Hotel gebracht)', pen:'Transfer (taken to the wrong hotel)', konu2:'Temizlik', konu3:'AI Konsept', result:'Haklı', price:125, currency:'EUR', notes:'Özel transfer şikayeti 125€ iade'}
+  {id:1, kw:'KW17', quarter:'Q2', user:'ÜNAL BÜYÜKSUNGUR', date:'2025-04-25', timeout:'False', sn:'False', booking:'1283842', subbooking:'1283945', adult:1, child:0, infant:0, bdate:'2025-04-25', adate:'2025-04-16', veranstalter:'HOLIDAY CHECK TOURISTIC', partner:'IC', Verursacher:'HDS ÜSTLENDİ', region:'ANTALYA', airport:'AYT', servis:'Transfer', hotel:'', transfertype:'VIP', ptr:'Transfer ( yok )', pde:'Transfer ( kein Transfer gebucht )', pen:'Transfer (no transfer booked)', konu2:'', konu3:'', result:'Haksız', price:0, currency:'EUR', notes:''},
+  {id:2, kw:'KW19', quarter:'Q2', user:'ÜNAL BÜYÜKSUNGUR', date:'2025-05-08', timeout:'False', sn:'False', booking:'1727784', subbooking:'1286238', adult:3, child:0, infant:0, bdate:'2025-05-06', adate:'2025-04-21', veranstalter:'HOLIDAY CHECK TOURISTIC', partner:'IC', Verursacher:'HOTEL', region:'ANTALYA', airport:'AYT', servis:'Transfer', hotel:'AYDINBEY SIU COLLECT', transfertype:'VIP', ptr:'Transfer ( yok )', pde:'Transfer (zum falschen Hotel gebracht)', pen:'Transfer (taken to the wrong hotel)', konu2:'Temizlik', konu3:'AI Konsept', result:'Haklı', price:125, currency:'EUR', notes:'Özel transfer şikayeti 125€ iade'}
 ];
 
 var initialInvoices = [
@@ -740,19 +760,6 @@ function autoCalculateTimeFields() {
   }
 }
 
-function onHotelChange(selectElement) {
-  var selectedOption = selectElement.options[selectElement.selectedIndex];
-  var region = selectedOption.getAttribute('data-region');
-  var airport = selectedOption.getAttribute('data-airport');
-  var category = selectedOption.getAttribute('data-category');
-  
-  if (region) document.getElementById('c-region').value = region;
-  if (airport) document.getElementById('c-airport').value = airport;
-  if (category && category === "HDS Üstlendi") {
-    document.getElementById('c-verursacher').value = "HDS ÜSTLENDİ";
-  }
-}
-
 // ==================== NAVİGASYON MODÜLÜ ====================
 function showPage(page) {
   var pages = ['dashboard', 'records', 'accounting'];
@@ -797,18 +804,17 @@ function clearComplaintForm() {
   document.getElementById('c-infant').value = '0';
   document.getElementById('c-price').value = '0';
   document.getElementById('c-notes').value = '';
-  document.getElementById('c-hotel').value = '';
 }
 
-// ==================== VERİ YAZMA KATMANI ====================
+// ==================== VERİ KAYDETME KATMANI ====================
 function saveComplaint() {
   var dateVal = document.getElementById('c-date').value;
   var nextId = complaints.length > 0 ? Math.max.apply(Math, complaints.map(function(o) { return o.id; })) + 1 : 1;
 
   var rec = {
     id: nextId,
-    kw: document.getElementById('c-kw').value || getKW(dateVal),
-    quarter: document.getElementById('c-quarter').value || getQuarter(dateVal),
+    kw: getKW(dateVal),
+    quarter: getQuarter(dateVal),
     user: document.getElementById('c-user').value,
     date: dateVal,
     timeout: document.getElementById('c-timeout').value,
@@ -843,7 +849,7 @@ function saveComplaint() {
   syncStorage();
   clearComplaintForm();
   closeComplaintModal();
-  showToast('Şikayet kartı eklendi.');
+  showToast('Şikayet kartı veritabanına işlendi.');
   renderRecordsTable();
   renderDashboard();
 }
@@ -880,7 +886,7 @@ function renderRecordsTable() {
   var tbody = document.getElementById('rec-tbody'); if (!tbody) return;
 
   var filtered = complaints.filter(function(r) {
-    var haystack = (r.booking + r.user + r.ptr + r.veranstalter + r.region + (r.hotel || '')).toLowerCase();
+    var haystack = (r.booking + r.user + r.ptr + r.veranstalter + r.region + r.hotel).toLowerCase();
     return (!q || haystack.indexOf(q) !== -1) && (!fs || r.result === fs);
   });
 
@@ -894,7 +900,7 @@ function renderRecordsTable() {
     var r = filtered[i];
     html += '<tr>' +
       '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
-      '<td><span class="badge badge-purple">' + r.quarter + '</span></td>
+      '<td><span class="badge badge-purple">' + r.quarter + '</span></td>' +
       '<td>' + r.date + '</td>' +
       '<td>' + truncate(r.user, 14) + '</td>' +
       '<td style="font-family:monospace; font-weight:bold;">' + r.booking + '</td>' +
@@ -923,4 +929,206 @@ function renderAccounting() {
     var pList = ['SWT', 'HDS AYT OPERATIONS', 'MTS/OTS EGE', 'SERAMONI'];
     for (var p = 0; p < pList.length; p++) {
       var opt = document.createElement('option'); opt.value = pList[p]; opt.textContent = pList[p];
-      partnerMenu
+      partnerMenu.appendChild(opt);
+    }
+  }
+
+  var filtered = invoices.filter(function(r) {
+    return (!fPart || r.partner === fPart) && (!fDurum || r.durum === fDurum) && (!fDoviz || r.doviz === fDoviz);
+  });
+
+  var totalSent = filtered.reduce(function(s, o) { return s + o.tutar; }, 0);
+  var totalReceived = filtered.reduce(function(s, o) { return s + o.iadeTutar; }, 0);
+  var totalPending = filtered.filter(function(o) { return o.durum === 'Beklemede' || o.durum === 'Gönderildi'; }).reduce(function(s, o) { return s + o.tutar; }, 0);
+  var objectedCount = filtered.filter(function(o) { return o.durum === 'İtiraz edildi'; }).length;
+
+  document.getElementById('acc-stats').innerHTML = 
+    '<div class="stat-card"><div class="s-lbl">Toplam Gönderilen Fatura Tutarı</div><div class="s-val">' + fmt(totalSent) + ' €</div><div class="s-sub">' + filtered.length + ' Fatura Takipte</div></div>' +
+    '<div class="stat-card"><div class="s-lbl">Tahsil Edilen (İade Edilen) Miktar</div><div class="s-val" style="color:#3B6D11;">' + fmt(totalReceived) + ' €</div></div>' +
+    '<div class="stat-card"><div class="s-lbl">Yanıt Bekleyen Tutar</div><div class="s-val" style="color:#854F0B;">' + fmt(totalPending) + ' €</div></div>' +
+    '<div class="stat-card"><div class="s-lbl">İtiraz Edilen Fatura Sayısı</div><div class="s-val" style="color:#A32D2D;">' + objectedCount + ' Adet</div></div>';
+
+  var tbody = document.getElementById('acc-tbody'); if (!tbody) return;
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="12" class="empty-state">Filtre kriterlerine uyan regress fatura kartı bulunmuyor.</td></tr>';
+  } else {
+    var html = '';
+    for (var k = 0; k < filtered.length; k++) {
+      var inv = filtered[k];
+      var dBadge = inv.durum === 'Kabul edildi' || inv.durum === 'Kabul edildi' ? 'badge-green' : (inv.durum === 'İtiraz edildi' ? 'badge-red' : 'badge-gray');
+      html += '<tr>' +
+        '<td style="font-family:monospace; font-weight:bold;">' + inv.faturaNo + '</td>' +
+        '<td>' + inv.tarih + '</td>' +
+        '<td>' + inv.partner + '</td>' +
+        '<td style="font-family:monospace;">' + inv.booking + '</td>' +
+        '<td style="font-weight:600;">' + fmt(inv.tutar) + '</td>' +
+        '<td>' + inv.doviz + '</td>' +
+        '<td><span class="badge ' + dBadge + '">' + inv.durum + '</span></td>' +
+        '<td style="font-weight:600; color:#3B6D11;">' + (inv.iadeTutar > 0 ? fmt(inv.iadeTutar) : '—') + '</td>' +
+        '<td>' + (inv.iadeDate || '—') + '</td>' +
+        '<td><span class="badge badge-purple">' + (inv.kabul || '—') + '</span></td>' +
+        '<td>' + truncate(inv.kesinti, 24) + '</td>' +
+        '<td>' +
+          '<button class="icon-btn" onclick="openInvoiceDetail(' + inv.id + ')" title="Göz İkonu - Detay Aç">&#128065;</button>' +
+          '<button class="icon-btn btn-delete" onclick="deleteInvoice(' + inv.id + ')" title="Sil">&#128465;</button>' +
+        '</td>' +
+      '</tr>';
+    }
+    tbody.innerHTML = html;
+  }
+
+  var partners = ['SWT', 'HDS AYT OPERATIONS', 'MTS/OTS EGE', 'SERAMONI'];
+  var sumTbody = document.getElementById('acc-summary-tbody'); if (!sumTbody) return;
+  var sumHtml = '';
+
+  for (var p = 0; p < partners.length; p++) {
+    var pName = partners[p];
+    var pInvs = invoices.filter(function(o) { return o.partner === pName; });
+    
+    var pSent = pInvs.reduce(function(s, o) { return s + o.tutar; }, 0);
+    var pRecv = pInvs.reduce(function(s, o) { return s + o.iadeTutar; }, 0);
+    var pKabul = pInvs.filter(function(o) { return o.kabul === 'Evet' || o.kabul === 'Kısmi kabul'; }).reduce(function(s, o) { return s + o.iadeTutar; }, 0);
+    var pPend = pInvs.filter(function(o) { return o.durum === 'Beklemede' || o.durum === 'Gönderildi'; }).reduce(function(s, o) { return s + o.tutar; }, 0);
+    
+    var rate = pSent > 0 ? Math.round((pRecv / pSent) * 100) : 0;
+    var color = rate > 75 ? '#3B6D11' : (rate > 40 ? '#BA7517' : '#A32D2D');
+
+    sumHtml += '<tr>' +
+      '<td style="font-weight:600;">' + pName + '</td>' +
+      '<td>' + fmt(pSent) + ' €</td>' +
+      '<td>' + fmt(pRecv) + ' €</td>' +
+      '<td>' + fmt(pKabul) + ' €</td>' +
+      '<td>' + fmt(pPend) + ' €</td>' +
+      '<td>' +
+        '<div style="display:flex; align-items:center; gap:8px;">' +
+          '<div class="progress-wrap"><div class="progress-bar" style="width:' + rate + '%; background:' + color + ';"></div></div>' +
+          '<span style="font-weight:600; font-size:11px; min-width:30px; text-align:right;">%' + rate + '</span>' +
+        '</div>' +
+      '</td>' +
+    '</tr>';
+  }
+  sumTbody.innerHTML = sumHtml;
+}
+
+// ==================== DETAY ANALİZ MODALLARI ====================
+function openComplaintDetail(id) {
+  var r = complaints.find(function(o) { return o.id === id; }); if (!r) return;
+  document.getElementById('detail-modal-title').textContent = 'Şikayet Kartı Detay Analiz İzleyicisi: ' + r.booking;
+  
+  document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
+    '<div class="detail-item"><span class="detail-lbl">Hafta No (KW) / Quarter (Çeyrek)</span><span class="detail-val">' + r.kw + ' / ' + r.quarter + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Benutzer (Kullanıcı)</span><span class="detail-val">' + r.user + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Datum (Tarih)</span><span class="detail-val">' + r.date + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Cevap için süre aşımı / SN erhalten</span><span class="detail-val">' + r.timeout + ' / ' + r.sn + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Buchungsnummer (Rezervasyon No)</span><span class="detail-val">' + r.booking + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Sub-Buchungsnummer</span><span class="detail-val">' + (r.subbooking || '—') + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Pax (Erwachsene/Kind/Infant)</span><span class="detail-val">' + r.adult + ' Y / ' + r.child + ' Ç / ' + r.infant + ' B</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Beschwerdedatum (Şikayet Tarihi)</span><span class="detail-val">' + r.bdate + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Ankunftsdatum (Varış Tarihi)</span><span class="detail-val">' + r.adate + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Veranstalter (Tur Operatörü) / Partner</span><span class="detail-val">' + r.veranstalter + ' [' + r.partner + ']</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Beschwerdeverursacher (Şikayete Sebep Olan)</span><span class="detail-val">' + r.Verursacher + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Region / Flughafen</span><span class="detail-val">' + r.region + ' / ' + r.airport + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Servis (Hizmet) / Transfer Type</span><span class="detail-val">' + r.servis + ' — ' + r.transfertype + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">İlgili Otel</span><span class="detail-val">' + (r.hotel || '—') + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Şikayet Sonucu / Tazminat</span><span class="detail-val">' + r.result + ' — ' + fmt(r.price) + ' ' + r.currency + '</span></div>' +
+    '<div class="detail-item full"><span class="detail-lbl">Şikayet Konusu TR</span><span class="detail-val" style="color:var(--blue); font-weight:600;">' + r.ptr + '</span></div>' +
+    '<div class="detail-item full"><span class="detail-lbl">Şikayet Konusu DE</span><span class="detail-val">' + r.pde + '</span></div>' +
+    '<div class="detail-item full"><span class="detail-lbl">Şikayet Konusu EN</span><span class="detail-val">' + r.pen + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">İkinci Şikayet Konusu</span><span class="detail-val">' + (r.konu2 || '—') + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Üçüncü Şikayet Konusu</span><span class="detail-val">' + (r.konu3 || '—') + '</span></div>' +
+    '<div class="detail-item full"><span class="detail-lbl">Notiz (Not)</span><div class="note-box">' + (r.notes || 'Açıklama girilmedi.') + '</div></div>' +
+  '</div>';
+  document.getElementById('detail-modal-overlay').classList.add('open');
+}
+
+function openInvoiceDetail(id) {
+  var r = invoices.find(function(o) { return o.id === id; }); if (!r) return;
+  document.getElementById('detail-modal-title').textContent = 'Fatura Finans Kart Detayı: ' + r.faturaNo;
+  
+  document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
+    '<div class="detail-item"><span class="detail-lbl">Fatura Numarası</span><span class="detail-val">' + r.faturaNo + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Fatura Tarihi</span><span class="detail-val">' + r.tarih + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Partner (Kime Gönderildi)</span><span class="detail-val">' + r.partner + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">İlgili Rezervasyon (Booking)</span><span class="detail-val">' + r.booking + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Gönderilen Tutar</span><span class="detail-val">' + fmt(r.tutar) + ' ' + r.doviz + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Durum</span><span class="detail-val">' + r.durum + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">Kabul Durumu</span><span class="detail-val">' + (r.kabul || 'Beklemede') + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">İade / Tahsil Edilen Tutar</span><span class="detail-val">' + fmt(r.iadeTutar) + ' ' + r.doviz + '</span></div>' +
+    '<div class="detail-item"><span class="detail-lbl">İade / Tahsilat Tarihi</span><span class="detail-val">' + (r.iadeDate || '—') + '</span></div>' +
+    '<div class="detail-item full"><span class="detail-lbl">Kesinti Sebebi Gerekçesi / Finans Notu</span><div class="note-box">' + (r.kesinti || '—') + '</div></div>' +
+  '</div>';
+  document.getElementById('detail-modal-overlay').classList.add('open');
+}
+
+// ==================== SİLME MEKANİZMALARI ====================
+function deleteComplaint(id) {
+  if (!confirm('Bu şikayet kaydını kalıcı olarak silmek istiyor musunuz?')) return;
+  complaints = complaints.filter(function(o) { return o.id !== id; }); syncStorage();
+  renderRecordsTable(); renderDashboard(); showToast('Kayıt silindi.');
+}
+function deleteInvoice(id) {
+  if (!confirm('Bu fatura takip kaydını kalıcı olarak silmek istiyor musunuz?')) return;
+  invoices = invoices.filter(function(o) { return o.id !== id; }); syncStorage();
+  renderAccounting(); renderDashboard(); showToast('Fatura silindi.');
+}
+
+// ==================== DASHBOARD VE CSS GRAPHICS ====================
+function renderDashboard() {
+  var total = complaints.length;
+  var hakliCount = complaints.filter(function(o) { return o.result === 'Haklı'; }).length;
+  var activeInvs = invoices.length;
+
+  document.getElementById('dash-stats').innerHTML = 
+    '<div class="stat-card"><div class="s-lbl">Toplam Aktif Şikayet Kartı</div><div class="s-val">' + total + '</div></div>' +
+    '<div class="stat-card"><div class="s-lbl">Haklı Bulunan Dosyalar</div><div class="s-val" style="color:#3B6D11;">' + hakliCount + '</div><div class="s-sub">%' + (total ? Math.round((hakliCount/total)*100) : 0) + ' Mutabakat Oranı</div></div>' +
+    '<div class="stat-card"><div class="s-lbl">Muhasebe Fatura Takip Sayısı</div><div class="s-val" style="color:#185FA5;">' + activeInvs + '</div></div>' +
+    '<div class="stat-card"><div class="s-lbl">Cevap Süresi Aşalan Dosyalar</div><div class="s-val" style="color:#A32D2D;">' + complaints.filter(function(o){return o.timeout === 'Evet';}).length + '</div></div>';
+
+  renderDonutChart('chart-servis', countBy(complaints, 'servis'), ['#185FA5','#1D9E75','#D85A30','#BA7517','#534AB7']);
+  renderDonutChart('chart-sonuc', countBy(complaints, 'result'), ['#A32D2D','#3B6D11']);
+  renderTrendChart('chart-kw', countBy(complaints, 'kw'));
+}
+
+function renderDonutChart(containerId, data, colors) {
+  var el = document.getElementById(containerId); if (!el) return;
+  var labels = Object.keys(data), values = Object.values(data), total = values.reduce(function(a,b){return a+b;},0);
+  if (!total) { el.innerHTML = '<div class="empty-state">Yeterli metrik yok</div>'; return; }
+
+  var legendHtml = '';
+  for (var i = 0; i < labels.length; i++) {
+    legendHtml += '<div class="donut-leg-item"><div class="donut-leg-dot" style="background:' + colors[i % colors.length] + ';"></div><span>' + labels[i] + ' (' + values[i] + ')</span></div>';
+  }
+  el.innerHTML = '<svg width="80" height="80" viewBox="0 0 120 120"><circle cx="60" cy="60" r="45" fill="none" stroke="#edede9" stroke-width="16"/><circle cx="60" cy="60" r="45" fill="none" stroke="' + colors[0] + '" stroke-width="16" stroke-dasharray="282.7" stroke-dashoffset="80"/><text x="60" y="66" text-anchor="middle" font-size="18" font-weight="bold" fill="currentColor">' + total + '</text></svg><div class="donut-legend">' + legendHtml + '</div>';
+}
+
+function renderTrendChart(containerId, kwData) {
+  var el = document.getElementById(containerId); if (!el) return;
+  var keys = Object.keys(kwData).sort(), max = 0;
+  if (!keys.length) { el.innerHTML = '<div class="empty-state">Trend verisi yok</div>'; return; }
+  for (var i = 0; i < keys.length; i++) { if (kwData[keys[i]] > max) max = kwData[keys[i]]; }
+
+  var html = '';
+  for (var j = 0; j < keys.length; j++) {
+    var h = Math.max(6, Math.round((kwData[keys[j]] / max) * 110));
+    html += '<div class="kw-col"><div class="kw-val">' + kwData[keys[j]] + '</div><div class="kw-bar" style="height:' + h + 'px; background:var(--blue); width:24px;"></div><div class="kw-lbl">' + keys[j] + '</div></div>';
+  }
+  el.innerHTML = html;
+}
+
+// Overlay Kapatıcı Kuralı
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'complaint-modal-overlay') closeComplaintModal();
+  if (e.target.id === 'invoice-modal-overlay') closeInvoiceModal();
+  if (e.target.id === 'detail-modal-overlay') closeDetailModal();
+});
+
+// INITIALIZER
+document.addEventListener('DOMContentLoaded', function() {
+  renderDashboard();
+  renderRecordsTable();
+  renderAccounting();
+});
+</script>
+</body>
+</html>
+
