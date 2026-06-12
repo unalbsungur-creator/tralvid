@@ -2860,6 +2860,8 @@ if (grid) {
     });
 }
 
+}
+
 function renderDonutChart(containerId, data, colors) {
   var el = document.getElementById(containerId); if (!el) return;
   var labels = Object.keys(data), values = Object.values(data), total = values.reduce(function(a,b){return a+b;},0);
