@@ -2448,35 +2448,55 @@
 
 <!-- ===== MODAL: TAM DETAY GÖRÜNTÜLEME ===== -->
 <div class="modal-overlay" id="login-modal">
+<div class="login-card">
 
-    <div class="modal" style="max-width:420px">
+    <div class="login-left">
+        <div class="login-logo">✓</div>
 
-        <div class="modal-header">
-            <h2>Giriş yap</h2>
+        <h1>TRALVID CRM</h1>
+
+        <p>
+            Şikayet Yönetimi ve<br>
+            Muhasebe Takip Sistemi
+        </p>
+
+        <div class="chart-icon">📊</div>
+    </div>
+
+    <div class="login-right">
+
+        <div class="user-icon">👤</div>
+
+        <h2>Giriş Yap</h2>
+
+        <p class="login-subtitle">
+            Lütfen kullanıcı bilgilerinizi giriniz
+        </p>
+
+        <div class="input-group">
+            <label>Kullanıcı Adı</label>
+            <input
+                type="text"
+                id="loginUser"
+                placeholder="Kullanıcı adınızı giriniz">
         </div>
 
-        <div class="modal-body">
-
-            <div class="form-group">
-                <label>Kullanıcı Adı</label>
-                <input type="text" id="loginUser">
-            </div>
-
-            <div class="form-group">
-                <label>Şifre</label>
-                <input type="password" id="loginPass">
-            </div>
-
+        <div class="input-group">
+            <label>Şifre</label>
+            <input
+                type="password"
+                id="loginPass"
+                placeholder="Şifrenizi giriniz">
         </div>
 
-        <div class="modal-footer">
-            <button class="fab" onclick="login()">
-                Giriş Yap
-            </button>
-        </div>
+        <button class="btn-login" onclick="login()">
+            Giriş Yap
+        </button>
 
     </div>
 
+</div>
+    
 </div>
 
 <!-- TOAST -->
