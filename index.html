@@ -2457,9 +2457,29 @@ function saveComplaint() {
 
 console.log("saveComplaint başladı");
 
+console.log("c-user =", document.getElementById('c-user'));
+console.log("c-date =", document.getElementById('c-date'));
+console.log("c-timeout =", document.getElementById('c-timeout'));
+console.log("c-sn =", document.getElementById('c-sn'));
+console.log("c-booking =", document.getElementById('c-booking'));
+console.log("c-subbooking =", document.getElementById('c-subbooking'));
+console.log("c-region =", document.getElementById('c-region'));
+console.log("c-airport =", document.getElementById('c-airport'));
+console.log("c-servis =", document.getElementById('c-servis'));
+console.log("c-hotel =", document.getElementById('c-hotel'));
+console.log("c-transfertype =", document.getElementById('c-transfertype'));
+console.log("c-ptr =", document.getElementById('c-ptr'));
+console.log("c-pde =", document.getElementById('c-pde'));
+console.log("c-pen =", document.getElementById('c-pen'));
+console.log("c-result =", document.getElementById('c-result'));
+console.log("c-price =", document.getElementById('c-price'));
+console.log("c-currency =", document.getElementById('c-currency'));
+console.log("c-notes =", document.getElementById('c-notes'));
+
+
 try {
 
-```
+
 var rec = {
   id: complaints.length > 0
     ? Math.max.apply(Math, complaints.map(function(o){ return o.id; })) + 1
@@ -2493,23 +2513,13 @@ var rec = {
 
   hotel: document.getElementById('c-hotel').value,
 
-  transfertype: document.getElementById('c-transfertype')
-    ? document.getElementById('c-transfertype').value
-    : '',
+transfertype: '',
+ptr: '',
 
-  ptr: document.getElementById('c-ptr')
-    ? document.getElementById('c-ptr').value
-    : '',
+pde: document.getElementById('c-pde').value,
+pen: document.getElementById('c-pen').value,
 
-  pde: document.getElementById('c-pde')
-    ? document.getElementById('c-pde').value
-    : '',
-
-  pen: document.getElementById('c-pen')
-    ? document.getElementById('c-pen').value
-    : '',
-
-  result: document.getElementById('c-result').value,
+result: document.getElementById('c-result').value,
 
   price: parseFloat(document.getElementById('c-price').value) || 0,
 
@@ -2530,18 +2540,18 @@ showToast('Şikayet kartı veritabanına işlendi.');
 
 renderRecordsTable();
 renderDashboard();
-```
+
 
 } catch (err) {
 
-```
+
 console.error("saveComplaint HATASI:", err);
 
 alert(
   "Kayıt sırasında hata oluştu:\n\n" +
   err.message
 );
-```
+
 
 }
 }
