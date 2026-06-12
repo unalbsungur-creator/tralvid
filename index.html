@@ -2424,8 +2424,8 @@ var initialInvoices = [
   {id:2, faturaNo:'HDS2025000000049', tarih:'2025-05-24', partner:'HDS AYT OPERATIONS', booking:'1268795', tutar:100, doviz:'EUR', durum:'İtiraz edildi', kabul:'Hayır', iadeTutar:0, iadeDate:'', kesinti:'Sorumluluk kabul edilmiyor'}
 ];
 
-var complaints = JSON.parse(localStorage.getItem('tralvid_pages_complaints')) || initialComplaints;
-var invoices = JSON.parse(localStorage.getItem('tralvid_pages_invoices')) || initialInvoices;
+var complaints = JSON.parse(localStorage.getItem('tralvid_pages_complaints')) || [];
+var invoices = JSON.parse(localStorage.getItem('tralvid_pages_invoices')) || [];
 
 function syncStorage() {
   localStorage.setItem('tralvid_pages_complaints', JSON.stringify(complaints));
