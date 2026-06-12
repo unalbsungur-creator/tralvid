@@ -2499,7 +2499,58 @@ function syncStorage() {
   localStorage.setItem('tralvid_pages_complaints', JSON.stringify(complaints));
   localStorage.setItem('tralvid_pages_invoices', JSON.stringify(invoices));
 }
+function login() {
 
+    var user = document.getElementById('loginUser').value.trim();
+    var pass = document.getElementById('loginPass').value.trim();
+
+    if (!USERS[user]) {
+        alert('Kullanıcı bulunamadı');
+        return;
+    }
+
+    if (USERS[user].password !== pass) {
+        alert('Şifre hatalı');
+        return;
+    }
+
+    currentUser = {
+        username: user,
+        role: USERS[user].role
+    };
+
+    localStorage.setItem(
+        'currentUser',
+        JSON.stringify(currentUser)
+    );
+
+    document.getElementById('login-modal').style.display = 'none';
+
+    applyPermissions();
+
+    showToast('Giriş başarılı');
+}
+
+function logout() {
+
+    localStorage.removeItem('currentUser');
+
+    location.reload();
+}
+
+function applyPermissions() {
+
+    if (!currentUser) return;
+
+    if (currentUser.role === 'admin') {
+        return;
+    }
+
+    document.querySelectorAll('.admin-only')
+        .forEach(function(el) {
+            el.style.display = 'none';
+        });
+}
 function getKW(dateStr) {
   var d = new Date(dateStr); if (isNaN(d.getTime())) return 'KW24';
   var jan1 = new Date(d.getFullYear(), 0, 1);
@@ -3070,9 +3121,26 @@ document.addEventListener('click', function(e) {
 
 // INITIALIZER
 document.addEventListener('DOMContentLoaded', function() {
-  renderDashboard();
-  renderRecordsTable();
-  renderAccounting();
+
+    var savedUser =
+        localStorage.getItem('currentUser');
+
+    if (savedUser) {
+
+        currentUser = JSON.parse(savedUser);
+
+        applyPermissions();
+
+        renderDashboard();
+        renderRecordsTable();
+        renderAccounting();
+
+    } else {
+
+        document.getElementById('login-modal')
+            .style.display = 'flex';
+    }
+
 });
 </script>
 </body>
