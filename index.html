@@ -313,11 +313,30 @@
     🗑 Veritabanını Temizle
 </button>
 
+<span id="user-badge"
+      style="
+      padding:8px 14px;
+      background:#455a64;
+      color:white;
+      border-radius:8px;
+      font-size:13px;
+      font-weight:600;
+      ">
+</span>
+
 <button class="fab"
         style="background:#455a64"
         onclick="logout()">
     🚪 Çıkış
 </button>
+
+<button class="fab"
+        style="background:#455a64"
+        onclick="logout()">
+    🚪 Çıkış
+</button>
+
+
 
     <input type="file"
            id="restoreFile"
@@ -2557,6 +2576,18 @@ function applyPermissions() {
 
     if (!currentUser) return;
 
+    var badge =
+        document.getElementById('user-badge');
+
+    if (badge) {
+
+        badge.textContent =
+            currentUser.role === 'admin'
+            ? '👤 Admin'
+            : '👤 Personel';
+
+    }
+
     if (currentUser.role === 'admin') {
         return;
     }
@@ -2565,6 +2596,7 @@ function applyPermissions() {
         .forEach(function(el) {
             el.style.display = 'none';
         });
+
 }
 function getKW(dateStr) {
   var d = new Date(dateStr); if (isNaN(d.getTime())) return 'KW24';
