@@ -486,48 +486,141 @@
       </div>
 
       <!-- BÖLÜM 4 -->
-      <div class="section-title">Bölüm 4: Çoklu Şikayet Modülleri &amp; Dil Kırılımları</div>
+      <div class="section-title">Bölüm 4:</div>
       <div class="form-grid">
         <div class="form-group">
-          <label class="form-label" for="c-ptr">Beschwerdepunkt TR (Şikayet Konusu TR)</label>
+          <label class="form-label" for="c-ptr">Şikayet Konusu</label>
           <select id="c-hotel" onchange="onHotelChange(this)">
-  <option value="" data-region="" data-airport="" data-category="">— Bir Otel Seçiniz (Opsiyonel) —</option>
-  <option value="A GOOD LIFE UTOPIA FAMILY RESORT" data-region="ALANYA" data-airport="AYT" data-category="Otel">A GOOD LIFE UTOPIA FAMILY RESORT (ALANYA - AYT)</option>
-  <option value="A HOTEL SIDE" data-region="SIDE" data-airport="AYT" data-category="Otel">A HOTEL SIDE (SIDE - AYT)</option>
-  <option value="A SUITE SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">A SUITE SIDE HOTEL (SIDE - AYT)</option>
-  <option value="A11 HOTEL OBAKOY" data-region="ALANYA" data-airport="AYT" data-category="Otel">A11 HOTEL OBAKOY (ALANYA - AYT)</option>
-  <option value="ACAR HOTEL" data-region="ALANYA" data-airport="AYT" data-category="Otel">ACAR HOTEL (ALANYA - AYT)</option>
-  <option value="ADA PORT HOTELS ADULT ONLY +16" data-region="ALANYA" data-airport="AYT" data-category="Otel">ADA PORT HOTELS ADULT ONLY +16 (ALANYA - AYT)</option>
-  <option value="ADALYA ART SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA ART SIDE HOTEL (SIDE - AYT)</option>
-  <option value="ADALYA ELITE LARA" data-region="ANTALYA" data-airport="AYT" data-category="Otel">ADALYA ELITE LARA (ANTALYA - AYT)</option>
-  <option value="ADALYA OCEAN HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA OCEAN HOTEL (SIDE - AYT)</option>
-  <option value="ADALYA RESORT HOTEL ADULT ONLY +16" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA RESORT HOTEL ADULT ONLY +16 (SIDE - AYT)</option>
-  <option value="ADAM&EVE ONLY ADULT +16" data-region="BELEK" data-airport="AYT" data-category="Otel">ADAM&EVE ONLY ADULT +16 (BELEK - AYT)</option>
-  <option value="ADELLA SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">ADELLA SIDE HOTEL (SIDE - AYT)</option>
-  <option value="ADIN RESORT HOTEL" data-region="ALANYA" data-airport="AYT" data-category="Otel">ADIN RESORT HOTEL (ALANYA - AYT)</option>
-  <option value="ADONIS HOTEL" data-region="ANTALYA" data-airport="AYT" data-category="Otel">ADONIS HOTEL (ANTALYA - AYT)</option>
-  <option value="AYDINBEY SIU COLLECT" data-region="KEMER" data-airport="AYT" data-category="Otel">AYDINBEY SIU COLLECT (KEMER - AYT)</option>
-  <option value="SUNRISE QUEEN RESORT" data-region="SIDE" data-airport="AYT" data-category="Otel">SUNRISE QUEEN RESORT (SIDE - AYT)</option>
-  <option value="MEGA SARAY RESORT SIDE" data-region="SIDE" data-airport="AYT" data-category="Otel">MEGA SARAY RESORT SIDE (SIDE - AYT)</option>
-  <option value="MARDIVA FAMILY HOTEL ECO" data-region="SIDE" data-airport="AYT" data-category="Otel">MARDIVA FAMILY HOTEL ECO (SIDE - AYT)</option>
-  <option value="ISLA PANORAMA HOTEL" data-region="MARMARIS" data-airport="DLM" data-category="Otel">ISLA PANORAMA HOTEL (MARMARIS - DLM)</option>
-  <option value="SERAY DELUXE HOTEL" data-region="MARMARIS" data-airport="DLM" data-category="Otel">SERAY DELUXE HOTEL (MARMARIS - DLM)</option>
-  <option value="SEVEN FOR LIFE THERMAL" data-region="KUSADASI" data-airport="ADB" data-category="Otel">SEVEN FOR LIFE THERMAL (KUSADASI - ADB)</option>
-  <option value="SEVEN FOR LIFE THERMAL HDS ÜSTLENDI" data-region="KUSADASI" data-airport="ADB" data-category="HDS Üstlendi">SEVEN FOR LIFE THERMAL HDS ÜSTLENDI (KUSADASI - ADB)</option>
-  <option value="MAYA WORLD DIDYMA HDS ÜSTLENDI" data-region="DIDIM" data-airport="ADB" data-category="HDS Üstlendi">MAYA WORLD DIDYMA HDS ÜSTLENDI (DIDIM - ADB)</option>
-  <option value="ISLA PANORAMA HOTEL HDS ÜSTLENDİ" data-region="MARMARIS" data-airport="DLM" data-category="HDS Üstlendi">ISLA PANORAMA HOTEL HDS ÜSTLENDİ (MARMARIS - DLM)</option>
-  <option value="SERAY DELUXE HOTEL HDS ÜSTLENDİ" data-region="MARMARIS" data-airport="DLM" data-category="HDS Üstlendi">SERAY DELUXE HOTEL HDS ÜSTLENDİ (MARMARIS - DLM)</option>
-  <option value="OPERATÖR ANTALYA" data-region="ANTALYA" data-airport="AYT" data-category="Operatör">OPERATÖR ANTALYA (ANTALYA - AYT)</option>
-  <option value="OPERATÖR DALAMAN" data-region="DALAMAN" data-airport="DLM" data-category="Operatör">OPERATÖR DALAMAN (DALAMAN - DLM)</option>
-  <option value="OPERATÖR BODRUM" data-region="BODRUM" data-airport="BJV" data-category="Operatör">OPERATÖR BODRUM (BODRUM - BJV)</option>
-  <option value="OPERATÖR KUSADASI" data-region="KUSADASI" data-airport="ADB" data-category="Operatör">OPERATÖR KUSADASI (KUSADASI - ADB)</option>
-  <option value="OPERATÖR ISTANBUL" data-region="ISTANBUL" data-airport="IST" data-category="Operatör">OPERATÖR ISTANBUL (ISTANBUL - IST)</option>
-  <option value="UÇAK ŞİRKETİ ANTALYA" data-region="ANTALYA" data-airport="AYT" data-category="Uçak Şirketi">UÇAK ŞİRKETİ ANTALYA (ANTALYA - AYT)</option>
-  <option value="UÇAK ŞİRKETİ DALAMAN" data-region="DALAMAN" data-airport="DLM" data-category="Uçak Şirketi">UÇAK ŞİRKETİ DALAMAN (DALAMAN - DLM)</option>
-  <option value="UÇAK ŞİRKETİ BODRUM" data-region="BODRUM" data-airport="BJV" data-category="Uçak Şirketi">UÇAK ŞİRKETİ BODRUM (BODRUM - BJV)</option>
-  <option value="UÇAK ŞİRKETİ KUSADASI" data-region="KUSADASI" data-airport="ADB" data-category="Uçak Şirketi">UÇAK ŞİRKETİ KUSADASI (KUSADASI - ADB)</option>
-  <option value="UÇAK ŞİRKETİ ISTANBUL" data-region="ISTANBUL" data-airport="IST" data-category="Uçak Şirketi">UÇAK ŞİRKETİ ISTANBUL (ISTANBUL - IST)</option>
-  <option value="SOZ HOTEL" data-region="BODRUM" data-airport="BJV" data-category="Otel">SOZ HOTEL (BODRUM - BJV)</option>
+  <option value="Add On">Add On</option>
+<option value="AI Konsept">AI Konsept</option>
+<option value="Aktarım hatası">Aktarım hatası</option>
+<option value="Alınış Bilgisi">Alınış Bilgisi</option>
+<option value="Animasyon">Animasyon</option>
+<option value="Aquapark">Aquapark</option>
+<option value="Asansör bozulması">Asansör bozulması</option>
+<option value="Avukatlık/Mahkemelik">Avukatlık/Mahkemelik</option>
+<option value="Bagaj">Bagaj</option>
+<option value="Blacklist">Blacklist</option>
+<option value="Call Center">Call Center</option>
+<option value="Cancel Fee">Cancel Fee</option>
+<option value="Cash-Gutschein">Cash-Gutschein</option>
+<option value="Cevap tarih aşımı">Cevap tarih aşımı</option>
+<option value="Check In">Check In</option>
+<option value="Check Out">Check Out</option>
+<option value="Cocuk koltuğu">Cocuk koltuğu</option>
+<option value="Çift rezervasyon">Çift rezervasyon</option>
+<option value="Diğer">Diğer</option>
+<option value="Dil Bilgisi">Dil Bilgisi</option>
+<option value="Doğal Afet">Doğal Afet</option>
+<option value="Eksik Hizmet">Eksik Hizmet</option>
+<option value="Eksik hizmet (bar/cafeteria)">Eksik hizmet (bar/cafeteria)</option>
+<option value="Eksik hizmet (doktor)">Eksik hizmet (doktor)</option>
+<option value="Ekstra Ücret">Ekstra Ücret</option>
+<option value="Elektrik / Su sorunu">Elektrik / Su sorunu</option>
+<option value="Erken Çıkış">Erken Çıkış</option>
+<option value="Erken Kapanış">Erken Kapanış</option>
+<option value="Erken kapatılan şikayet">Erken kapatılan şikayet</option>
+<option value="Fitness">Fitness</option>
+<option value="Free Sale">Free Sale</option>
+<option value="Gala yemeği">Gala yemeği</option>
+<option value="Geç Açılış">Geç Açılış</option>
+<option value="Genel Otel Şikayeti">Genel Otel Şikayeti</option>
+<option value="Grev">Grev</option>
+<option value="Gürültü">Gürültü</option>
+<option value="Hamam">Hamam</option>
+<option value="Hastalık">Hastalık</option>
+<option value="Haşere">Haşere</option>
+<option value="havaalanı bekleme süresi">havaalanı bekleme süresi</option>
+<option value="Havuz">Havuz</option>
+<option value="Hayvanlar">Hayvanlar</option>
+<option value="Hırsızlık">Hırsızlık</option>
+<option value="Hotel Konsept">Hotel Konsept</option>
+<option value="Inkompetenz">Inkompetenz</option>
+<option value="Irkçılık">Irkçılık</option>
+<option value="Katalog Farklılığı">Katalog Farklılığı</option>
+<option value="Kaydırma Oda">Kaydırma Oda</option>
+<option value="Kayıp Eşya">Kayıp Eşya</option>
+<option value="Kaza">Kaza</option>
+<option value="Kişisel Veri Şikayeti">Kişisel Veri Şikayeti</option>
+<option value="Klima">Klima</option>
+<option value="Koku">Koku</option>
+<option value="Konaklayan diğer misafirler">Konaklayan diğer misafirler</option>
+<option value="Kovid önlemlerine uyulmaması">Kovid önlemlerine uyulmaması</option>
+<option value="Kuru Temizleme">Kuru Temizleme</option>
+<option value="Küf">Küf</option>
+<option value="Milliyet Farkı">Milliyet Farkı</option>
+<option value="Minibar">Minibar</option>
+<option value="No Show">No Show</option>
+<option value="Oda durumu">Oda durumu</option>
+<option value="Oda kategori">Oda kategori</option>
+<option value="Otel Genel Durumu">Otel Genel Durumu</option>
+<option value="Otel İçi/Dışı İnşaat-Tadilat">Otel İçi/Dışı İnşaat-Tadilat</option>
+<option value="Otel Konumu">Otel Konumu</option>
+<option value="Otel Sezona Hazır Değil">Otel Sezona Hazır Değil</option>
+<option value="Otelde kavga">Otelde kavga</option>
+<option value="Otelin yıldız kategorisi">Otelin yıldız kategorisi</option>
+<option value="Overbooking">Overbooking</option>
+<option value="Ödeme Problemi">Ödeme Problemi</option>
+<option value="PCR Test (Genel)">PCR Test (Genel)</option>
+<option value="PCR Test (Ücret)">PCR Test (Ücret)</option>
+<option value="Personel">Personel</option>
+<option value="Plaj">Plaj</option>
+<option value="Rehberlik Servisi">Rehberlik Servisi</option>
+<option value="Restaurant">Restaurant</option>
+<option value="Rezervasyon">Rezervasyon</option>
+<option value="Servis">Servis</option>
+<option value="Sezon sonu">Sezon sonu</option>
+<option value="Sistemlerin olmaması">Sistemlerin olmaması</option>
+<option value="Stop Sale">Stop Sale</option>
+<option value="Şikayetten dolayı Otel Değişikliği">Şikayetten dolayı Otel Değişikliği</option>
+<option value="Şikayetten dolayı erken çıkış">Şikayetten dolayı erken çıkış</option>
+<option value="Şikayetten dolayı oda değişikligi">Şikayetten dolayı oda değişikligi</option>
+<option value="Taciz">Taciz</option>
+<option value="Temizlik">Temizlik</option>
+<option value="Test">Test</option>
+<option value="Thermal">Thermal</option>
+<option value="TO Rezervasyon">TO Rezervasyon</option>
+<option value="Trafik Kazası">Trafik Kazası</option>
+<option value="Transfer">Transfer</option>
+<option value="Transfer ( CIP alana bildirilmemiş )">Transfer ( CIP alana bildirilmemiş )</option>
+<option value="Transfer ( Çocuk/Bebek koltuğu yok )">Transfer ( Çocuk/Bebek koltuğu yok )</option>
+<option value="Transfer ( Deskte karşılama yok )">Transfer ( Deskte karşılama yok )</option>
+<option value="Transfer ( Otele uzak indirme )">Transfer ( Otele uzak indirme )</option>
+<option value="Transfer ( yanlış otele bırakıldı )">Transfer ( yanlış otele bırakıldı )</option>
+<option value="Transfer ( yok )">Transfer ( yok )</option>
+<option value="Transfer (alınmamış geliş-dönüş)">Transfer (alınmamış geliş-dönüş)</option>
+<option value="Transfer (alınmamış) Arrival">Transfer (alınmamış) Arrival</option>
+<option value="Transfer (alınmamış) Depar">Transfer (alınmamış) Depar</option>
+<option value="Transfer (Araç kalabalığı)">Transfer (Araç kalabalığı)</option>
+<option value="Transfer (Araç temizliği)">Transfer (Araç temizliği)</option>
+<option value="Transfer (Dönüş bilgisi)">Transfer (Dönüş bilgisi)</option>
+<option value="Transfer (Hasarlı araç)">Transfer (Hasarlı araç)</option>
+<option value="Transfer (hasarlı bagaj)">Transfer (hasarlı bagaj)</option>
+<option value="Transfer (Havaalanında bekleme süresi)">Transfer (Havaalanında bekleme süresi)</option>
+<option value="Transfer (kayıp bagaj)">Transfer (kayıp bagaj)</option>
+<option value="Transfer (Klima)">Transfer (Klima)</option>
+<option value="Transfer (Oturacak yer olmaması)">Transfer (Oturacak yer olmaması)</option>
+<option value="Transfer (Şoför davranış)">Transfer (Şoför davranış)</option>
+<option value="Transfer (Tehlikeli Araç Kullanma)">Transfer (Tehlikeli Araç Kullanma)</option>
+<option value="Transfer (türü)">Transfer (türü)</option>
+<option value="Transfer (uçağını kaçırmış)">Transfer (uçağını kaçırmış)</option>
+<option value="Transfer (Uykulu Şöför)">Transfer (Uykulu Şöför)</option>
+<option value="Transfer (yanlış terminal / otel)">Transfer (yanlış terminal / otel)</option>
+<option value="Transfer Alınış saati (erken)">Transfer Alınış saati (erken)</option>
+<option value="Transfer Extra Ücret">Transfer Extra Ücret</option>
+<option value="Transfer gecikmesi">Transfer gecikmesi</option>
+<option value="Transfer mola">Transfer mola</option>
+<option value="Transfer süresi">Transfer süresi</option>
+<option value="Tur">Tur</option>
+<option value="Uçuş">Uçuş</option>
+<option value="WIFI">WIFI</option>
+<option value="Yan Taraf İnşaat">Yan Taraf İnşaat</option>
+<option value="Yangın">Yangın</option>
+<option value="Yaralanma">Yaralanma</option>
+<option value="Yatak sayı problemi">Yatak sayı problemi</option>
+<option value="Yemek">Yemek</option>
+<option value="Yeni Otel inşaat durumu">Yeni Otel inşaat durumu</option>
+<option value="Zehirlenme">Zehirlenme</option>
 </select>
         </div>
         <div class="form-group">
