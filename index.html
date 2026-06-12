@@ -330,10 +330,11 @@
       <button class="modal-close" onclick="closeComplaintModal()">&times;</button>
     </div>
     <div class="modal-body">
-      <div class="section-title">Bölüm 1</div>
+      
+      <div class="section-title">Bölüm 1: Sistem ve Zaman Bilgileri</div>
       <div class="form-grid">
         <div class="form-group">
-          <label class="form-label" for="c-user">Kullanıcı</label>
+          <label class="form-label" for="c-user">Kullanıcı (Benutzer)</label>
           <select id="c-user">
             <option value="ÜNAL BÜYÜKSUNGUR">ÜNAL BÜYÜKSUNGUR</option>
             <option value="EFE ILHAN">EFE ILHAN</option>
@@ -341,52 +342,49 @@
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-date">Kayıt Tarihi</label>
+          <label class="form-label" for="c-date">Tarih (Datum)</label>
           <input type="date" id="c-date">
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-timeout">KW/Hafta</label>
+          <label class="form-label" for="c-kw">Hafta Numarası (KW)</label>
+          <input type="text" id="c-kw" placeholder="Tarihten otomatik hesaplanır" readonly>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-quarter">Çeyrek Dönem (QUARTER)</label>
+          <input type="text" id="c-quarter" placeholder="Tarihten otomatik hesaplanır" readonly>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-timeout">Cevap Süresi Aşıldı</label>
           <select id="c-timeout">
-            <option value="KW/Hafta"> 1</option>
-            <option value="KW/Hafta"> 2</option>
+            <option value="Hayır">Hayır</option>
+            <option value="Evet">Evet</option>
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-sn">Savunma yazısı</label>
+          <label class="form-label" for="c-sn">SN Alındı (SN erhalten)</label>
           <select id="c-sn">
-            <option value="False">var</option>
-            <option value="True">yok</option>
+            <option value="Hayır">Hayır</option>
+            <option value="Evet">Evet</option>
           </select>
         </div>
-        <div class="form-group">
-          <label class="form-label" for="c-timeout">KW/Hafta</label>
-          <select id="c-timeout">
-            <option value="Quarter"> 1</option>
-            <option value="Quarter"> 2</option>
-            <option value="Quarter"> 3</option>
-            <option value="Quarter"> 4</option>
-          </select>
-        </div>
-        
       </div>
 
-      <div class="section-title">Bölüm 2</div>
+      <div class="section-title">Bölüm 2: Rezervasyon ve Demografi</div>
       <div class="form-grid">
         <div class="form-group">
           <label class="form-label" for="c-booking">Rezervasyon Numarası (Buchungsnummer)</label>
           <input type="text" id="c-booking" placeholder="Örn: 1283842">
         </div>
         <div class="form-group">
-          <div class="form-group">
-          <label class="form-label" for="c-subbooking">Rezervasyon Numarası (Buchungsnummer)</label>
-          <input type="text" id="c-booking" placeholder="Örn: 1283842">
+          <label class="form-label" for="c-subbooking">Alt Rezervasyon Numarası (Sub-Buchungsnummer)</label>
+          <input type="text" id="c-subbooking" placeholder="Örn: 1283945">
         </div>
         <div class="form-group">
           <label class="form-label" for="c-veranstalter">Tur Operatörü (Veranstalter)</label>
           <select id="c-veranstalter">
-            <option>HOLIDAY CHECK TOURISTIC</option>
-            <option>PAXIMUM WEST MARKETS</option>
-            <option>DİĞER</option>
+            <option value="HOLIDAY CHECK TOURISTIC">HOLIDAY CHECK TOURISTIC</option>
+            <option value="PAXIMUM WEST MARKETS">PAXIMUM WEST MARKETS</option>
+            <option value="DİĞER">DİĞER</option>
           </select>
         </div>
         <div class="form-group">
@@ -401,203 +399,12 @@
           <label class="form-label" for="c-infant">Bebek (Infant)</label>
           <input type="number" id="c-infant" min="0" value="0">
         </div>
-        
       </div>
 
-      <div class="section-title">Kontrat Ortakları &amp; Lokasyon Entegrasyonu (GENEL-OTEL VERI)</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label" for="c-veranstalter">Veranstalter (Tur Operatörü)</label>
-          <select id="c-veranstalter">
-            <option value="HOLIDAY CHECK TOURISTIC">HOLIDAY CHECK TOURISTIC</option>
-            <option value="PAXIMUM WEST MARKETS">PAXIMUM WEST MARKETS</option>
-            <option value="ONEX TOUR">ONEX TOUR</option>
-            <option value="TIMELESS TRAVEL">TIMELESS TRAVEL</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-partner">Partner (İş Ortağı Kodu)</label>
-          <select id="c-partner">
-            <option value="IC">IC</option>
-            <option value="PP">PP</option>
-            <option value="SWT">SWT</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-verursacher">Beschwerdeverursacher (Şikayete Sebep Olan)</label>
-          <select id="c-verursacher">
-            <option value="HDS ÜSTLENDİ">HDS ÜSTLENDİ</option>
-            <option value="HDS AIRPORT">HDS AIRPORT</option>
-            <option value="HDS CALL CENTER">HDS CALL CENTER</option>
-            <option value="TAŞIMACI">TAŞIMACI</option>
-            <option value="HOTEL">HOTEL</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-region">Region (Bölge)</label>
-          <select id="c-region">
-            <option value="ANTALYA">ANTALYA</option>
-            <option value="SIDE">SIDE</option>
-            <option value="KEMER">KEMER</option>
-            <option value="BELEK">BELEK</option>
-            <option value="ALANYA">ALANYA</option>
-            <option value="EGE">EGE</option>
-            <option value="DIDIM">DIDIM</option>
-            <option value="KUSADASI">KUSADASI</option>
-            <option value="MARMARIS">MARMARIS</option>
-            <option value="BODRUM">BODRUM</option>
-            <option value="DALAMAN">DALAMAN</option>
-            <option value="ISTANBUL IST">ISTANBUL IST</option>
-            <option value="ANTALYA">KONYAALTI</option>
-
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-airport">Flughafen (Havalimanı)</label>
-          <select id="c-airport">
-            <option value="AYT">AYT</option>
-            <option value="ADB">ADB</option>
-            <option value="BJV">BJV</option>
-            <option value="DLM">DLM</option>
-            <option value="IST">IST</option>
-            <option value="SAW">SAW</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-servis">Servis (Sunulan Hizmet)</label>
-          <select id="c-servis">
-            <option value="Transfer">Transfer</option>
-            <option value="OTS">OTS</option>
-            <option value="Otel">Otel</option>
-            <option value="Rehberlik">Rehberlik</option>
-            <option value="HDS">HDS</option>
-          </select>
-        </div>
-        <div class="form-group span-2">
-          <label class="form-label" for="c-hotel">İlgili Otel Listesi (OTEL VERI Drop-Down)</label>
-          <select id="c-hotel">
-            <option value="">— Bir Otel Seçebilirsiniz (Opsiyonel) —</option>
-            <option value="A GOOD LIFE UTOPIA FAMILY RESORT">A GOOD LIFE UTOPIA FAMILY RESORT</option>
-            <option value="A HOTEL SIDE">A HOTEL SIDE</option>
-            <option value="A SUITE SIDE HOTEL">A SUITE SIDE HOTEL</option>
-            <option value="A11 HOTEL OBAKOY">A11 HOTEL OBAKOY</option>
-            <option value="ACAR HOTEL">ACAR HOTEL</option>
-            <option value="ADA PORT HOTELS ADULT ONLY +16">ADA PORT HOTELS ADULT ONLY +16</option>
-            <option value="ADALYA ART SIDE HOTEL">ADALYA ART SIDE HOTEL</option>
-            <option value="ADALYA ELITE LARA">ADALYA ELITE LARA</option>
-            <option value="ADALYA OCEAN HOTEL">ADALYA OCEAN HOTEL</option>
-            <option value="ADALYA RESORT HOTEL ADULT ONLY">ADALYA RESORT HOTEL ADULT ONLY</option>
-            <option value="ADAM&EVE ONLY ADULT +16">ADAM&EVE ONLY ADULT +16</option>
-            <option value="AYDINBEY SIU COLLECT">AYDINBEY SIU COLLECT</option>
-            <option value="SUNRISE QUEEN RESORT">SUNRISE QUEEN RESORT</option>
-            <option value="MEGA SARAY RESORT SIDE">MEGA SARAY RESORT SIDE</option>
-            <option value="ISLA PANORAMA HOTEL">ISLA PANORAMA HOTEL</option>
-            <option value="SERAY DELUXE HOTEL">SERAY DELUXE HOTEL</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-transfertype">Transfer Type (Tür)</label>
-          <select id="c-transfertype">
-            <option value="VIP">VIP</option>
-            <option value="Shuttle">Shuttle</option>
-            <option value="Express Shuttle">Express Shuttle</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="section-title">Kategorik Dil Yapıları &amp; Şikayet Konuları</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label" for="c-ptr">Beschwerdepunkt TR (Şikayet Konusu TR)</label>
-          <select id="c-ptr">
-            <option value="Transfer ( yok )">Transfer ( yok )</option>
-            <option value="Transfer (alınmamış geliş-dönüş)">Transfer (alınmamış geliş-dönüş)</option>
-            <option value="Transfer ( CIP alana bildirilmemiş )">Transfer ( CIP alana bildirilmemiş )</option>
-            <option value="Transfer ( yanlış otele bırakıldı )">Transfer ( yanlış otele bırakıldı )</option>
-            <option value="Transfer Alınış saati (erken)">Transfer Alınış saati (erken)</option>
-            <option value="Transfer (Havaalanında bekleme süresi)">Transfer (Havaalanında bekleme süresi)</option>
-            <option value="Transfer (alınmamış) Depar">Transfer (alınmamış) Depar</option>
-            <option value="Transfer (alınmamış) Arrival">Transfer (alınmamış) Arrival</option>
-            <option value="Oda kategori">Oda kategori</option>
-            <option value="Gürültü">Gürültü</option>
-            <option value="Temizlik">Temizlik</option>
-            <option value="AI Konsept">AI Konsept</option>
-            <option value="Alınış Bilgisi">Alınış Bilgisi</option>
-            <option value="Gala yemeği">Gala yemeği</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-pde">Beschwerdepunkt DE (Şikayet Konusu DE)</label>
-          <select id="c-pde">
-            <option value="Transfer ( kein Transfer gebucht )">Transfer ( kein Transfer gebucht )</option>
-            <option value="Transfer (nicht an CIP-Abteilung gemeldet)">Transfer (nicht an CIP-Abteilung gemeldet)</option>
-            <option value="Transfer (zum falschen Hotel gebracht)">Transfer (zum falschen Hotel gebracht)</option>
-            <option value="Zimmerkategorie">Zimmerkategorie</option>
-            <option value="Allgemeine Hotelbeschwerde">Allgemeine Hotelbeschwerde</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-pen">Beschwerdepunkt EN (Şikayet Konusu EN)</label>
-          <select id="c-pen">
-            <option value="Transfer (no transfer booked)">Transfer (no transfer booked)</option>
-            <option value="Transfer (not reported to CIP)">Transfer (not reported to CIP)</option>
-            <option value="Transfer (taken to the wrong hotel)">Transfer (taken to the wrong hotel)</option>
-            <option value="Room category">Room category</option>
-            <option value="General Hotel Complaint">General Hotel Complaint</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-konu2">Şikayet 2</label>
-          <select id="c-konu2">
-            <option value="">— Yok —</option>
-            <option value="AI Konsept">AI Konsept</option>
-            <option value="Temizlik">Temizlik</option>
-            <option value="Oda kategori">Oda kategori</option>
-            <option value="Gürültü">Gürültü</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-konu3">Şikayet 3</label>
-          <select id="c-konu3">
-            <option value="">— Yok —</option>
-            <option value="AI Konsept">AI Konsept</option>
-            <option value="Temizlik">Temizlik</option>
-            <option value="Gürültü">Gürültü</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-result">complaint result (Şikayet Sonucu)</label>
-          <select id="c-result">
-            <option value="Haksız">Haksız</option>
-            <option value="Haklı">Haklı</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-price">Ücret / Tazminat Tutarı</label>
-          <input type="number" id="c-price" min="0" value="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="c-currency">Döviz</label>
-          <select id="c-currency">
-            <option value="EUR">EUR</option>
-            <option value="USD">USD</option>
-            <option value="GBP">GBP</option>
-            <option value="TRY">TRY</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="section-title">Açıklama Katmanı</div>
-      <div class="form-grid">
-        <div class="form-group full">
-          <label class="form-label" for="c-notes">Notiz (Not)</label>
-          <textarea id="c-notes" placeholder="Tazmin veya mutabakata dair önemli açıklamaları ekleyin…"></textarea>
-        </div>
-      </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeComplaintModal()">Vazgeç</button>
-      <button class="btn-primary" onclick="saveComplaint()">Şikayet Kartını Kaydet</button>
+      <button class="btn-secondary" onclick="closeComplaintModal()">İptal</button>
+      <button class="btn-primary" onclick="saveComplaint()">Veriyi Kaydet</button>
     </div>
   </div>
 </div>
