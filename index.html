@@ -171,11 +171,16 @@
   .section-title { font-size: 11px; font-weight: 600; color: var(--blue); letter-spacing: 0.6px; text-transform: uppercase; margin: 16px 0 10px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
   .section-title:first-child { margin-top: 0; }
   
-  .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .form-group { display: flex; flex-direction: column; gap: 4px; }
   .form-group.full { grid-column: 1 / -1; }
   .form-group.span-2 { grid-column: span 2; }
-  .form-label { font-size: 11px; color: var(--text-secondary); font-weight: 500; }
+  .form-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
 
   /* ===== DETAY GÖRÜNÜM ===== */
   .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr);
@@ -199,10 +204,31 @@
   .icon-btn.btn-delete { color: var(--red-text); }
   .icon-btn.btn-delete:hover { color: #791F1F; }
 
-  .toast { position: fixed; bottom: 24px; right: 24px; background: #1D9E75; color: #fff; padding: 10px 18px; border-radius: var(--radius-md); font-size: 13px; z-index: 9999; display: none; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-  .toast.show { display: flex; }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1D9E75;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    z-index: 9999;
+}
 
-  .charts-grid-pure { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+.toast.show {
+    display: flex;
+}
+
+  .charts-grid-pure {
+    display:flex;
+    gap:20px;
+    width:100%;
+}
+
+.charts-grid-pure > div {
+    flex:1;
+}
   .kw-chart-box { display: flex; align-items: flex-end; height: 140px; gap: 4px; width: 100%; border-bottom: 1px solid var(--border); padding-bottom: 2px; }
   .kw-col { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
   .kw-bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.3s; }
@@ -2823,16 +2849,38 @@ function renderDonutChart(containerId, data, colors) {
 }
 
 function renderTrendChart(containerId, kwData) {
-  var el = document.getElementById(containerId); if (!el) return;
-  var keys = Object.keys(kwData).sort(), max = 0;
-  if (!keys.length) { el.innerHTML = '<div class="empty-state">Trend verisi yok</div>'; return; }
-  for (var i = 0; i < keys.length; i++) { if (kwData[keys[i]] > max) max = kwData[keys[i]]; }
+
+  var el = document.getElementById(containerId);
+  if (!el) return;
+
+  var keys = Object.keys(kwData).sort();
+  var max = 0;
+
+  if (!keys.length) {
+    el.innerHTML = '<div class="empty-state">Trend verisi yok</div>';
+    return;
+  }
+
+  for (var i = 0; i < keys.length; i++) {
+    if (kwData[keys[i]] > max) max = kwData[keys[i]];
+  }
 
   var html = '';
+
   for (var j = 0; j < keys.length; j++) {
-    var h = Math.max(6, Math.round((kwData[keys[j]] / max) * 110));
-    html += '<div class="kw-col"><div class="kw-val">' + kwData[keys[j]] + '</div><div class="kw-bar" style="height:' + h + 'px; background:var(--blue); width:24px;"></div><div class="kw-lbl">' + keys[j] + '</div></div>';
+
+    var h = Math.max(6,
+      Math.round((kwData[keys[j]] / max) * 110)
+    );
+
+    html +=
+      '<div class="kw-col">' +
+        '<div class="kw-val">' + kwData[keys[j]] + '</div>' +
+        '<div class="kw-bar" style="height:' + h + 'px;background:var(--blue);width:24px;"></div>' +
+        '<div class="kw-lbl">' + keys[j] + '</div>' +
+      '</div>';
   }
+
   el.innerHTML = html;
 }
 
