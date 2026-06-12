@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRALVID CRM</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f4;
+    --bg-tertiary: #edede9;
+    --text-primary: #1c1c1a;
+    --text-secondary: #6b6b67;
+    --text-hint: #9c9c98;
+    --border: rgba(0,0,0,0.12);
+    --border-md: rgba(0,0,0,0.20);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --blue: #185FA5;
+    --blue-dark: #0C447C;
+    --blue-bg: #E6F1FB;
+    --blue-text: #185FA5;
+    --green-bg: #EAF3DE;
+    --green-text: #3B6D11;
+    --red-bg: #FCEBEB;
+    --red-text: #A32D2D;
+    --amber-bg: #FAEEDA;
+    --amber-text: #854F0B;
+    --gray-bg: #F1EFE8;
+    --gray-text: #5F5E5A;
+    --purple-bg: #EEEDFE;
+    --purple-text: #534AB7;
+    --teal-bg: #E1F5EE;
+    --teal-text: #0F6E56;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #1e1e1c;
+      --bg-secondary: #2a2a27;
+      --bg-tertiary: #252523;
+      --text-primary: #f0efea;
+      --text-secondary: #a8a8a3;
+      --text-hint: #6b6b67;
+      --border: rgba(255,255,255,0.10);
+      --border-md: rgba(255,255,255,0.18);
+      --blue-bg: #0C447C;
+      --blue-text: #B5D4F4;
+      --green-bg: #27500A;
+      --green-text: #C0DD97;
+      --red-bg: #791F1F;
+      --red-text: #F7C1C1;
+      --amber-bg: #633806;
+      --amber-text: #FAC775;
+      --gray-bg: #444441;
+      --gray-text: #D3D1C7;
+      --purple-bg: #3C3489;
+      --purple-text: #CECBF6;
+      --teal-bg: #085041;
+      --teal-text: #9FE1CB;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    min-height: 100vh;
+  }
+
+  /* ===== TOPBAR ===== */
+  .topbar {
+    background: var(--bg-primary);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 52px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--text-primary);
+  }
+  .logo span { color: var(--blue); }
+  .nav {
+    display: flex;
+    gap: 2px;
+    flex: 1;
+    overflow-x: auto;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-family: inherit;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+  .nav-btn.active { background: var(--bg-secondary); color: var(--text-primary); font-weight: 500; }
+  .fab {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 14px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .fab:hover { background: var(--blue-dark); }
+
+  /* ===== CONTENT ===== */
+  .content { padding: 20px; max-width: 1100px; margin: 0 auto; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== STAT CARDS ===== */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+  }
+  .stat-card .s-lbl { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+  .stat-card .s-val { font-size: 22px; font-weight: 500; color: var(--text-primary); }
+  .stat-card .s-sub { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+
+  /* ===== CHARTS GRID ===== */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .chart-card {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border: 0.5px solid var(--border);
+    padding: 18px;
+  }
+  .chart-card.full { grid-column: 1 / -1; }
+  .chart-card h3 { font-size: 13px; font-weight: 500; margin-bottom: 14px; color: var(--text-primary); }
+
+  /* ===== TABLES ===== */
+  .table-wrap {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border: 0.5px solid var(--border);
+    overflow: hidden;
+  }
+  .table-toolbar {
+    padding: 12px 14px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    border-bottom: 0.5px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 600px; }
+  th {
+    padding: 9px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-bottom: 0.5px solid var(--border);
+    background: var(--bg-secondary);
+    white-space: nowrap;
+  }
+  td {
+    padding: 9px 12px;
+    font-size: 12px;
+    border-bottom: 0.5px solid var(--border);
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    color: var(--text-primary);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg-secondary); }
+
+  /* ===== FORM ELEMENTS ===== */
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius-md);
+    padding: 7px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s;
+  }
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  input[type="date"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 2px rgba(24, 95, 165, 0.15);
+  }
+  textarea { resize: vertical; min-height: 64px; }
+  .toolbar-input { flex: 1; min-width: 140px; max-width: 240px; }
+  .toolbar-select { min-width: 120px; max-width: 180px; }
+
+  /* ===== BUTTONS ===== */
+  .btn-primary {
+    padding: 7px 16px;
+    border-radius: var(--radius-md);
+    border: none;
+    background: var(--blue);
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--blue-dark); }
+  .btn-secondary {
+    padding: 7px 16px;
+    border-radius: var(--radius-md);
+    border: 0.5px solid var(--border-md);
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-primary);
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--bg-secondary); }
+  .btn-sm {
+    padding: 4px 10px;
+    border-radius: var(--radius-md);
+    border: 0.5px solid var(--border-md);
+    background: transparent;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: inherit;
+    color: var(--text-primary);
+    transition: background 0.15s;
+  }
+  .btn-sm:hover { background: var(--bg-secondary); }
+  .btn-danger-sm {
+    padding: 4px 10px;
+    border-radius: var(--radius-md);
+    border: 0.5px solid var(--border-md);
+    background: transparent;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: inherit;
+    color: var(--red-text);
+    transition: background 0.15s;
+  }
+  .btn-danger-sm:hover { background: var(--red-bg); }
+
+  /* ===== BADGES ===== */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge-green  { background: var(--green-bg);  color: var(--green-text);  }
+  .badge-red    { background: var(--red-bg);    color: var(--red-text);    }
+  .badge-blue   { background: var(--blue-bg);   color: var(--blue-text);   }
+  .badge-gray   { background: var(--gray-bg);   color: var(--gray-text);   }
+  .badge-amber  { background: var(--amber-bg);  color: var(--amber-text);  }
+  .badge-purple { background: var(--purple-bg); color: var(--purple-text); }
+  .badge-teal   { background: var(--teal-bg);   color: var(--teal-text);   }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 500;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px 40px;
+    overflow-y: auto;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border: 0.5px solid var(--border);
+    width: 680px;
+    max-width: 100%;
+    position: relative;
+  }
+  .modal-header {
+    padding: 18px 22px 14px;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-header h2 { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+  .modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 20px;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: var(--bg-secondary); }
+  .modal-body { padding: 20px 22px; }
+  .modal-footer {
+    padding: 14px 22px;
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .section-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin: 18px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .section-title:first-child { margin-top: 0; }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  /* ===== DETAIL MODAL ===== */
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .detail-item { display: flex; flex-direction: column; gap: 2px; }
+  .detail-lbl { font-size: 11px; color: var(--text-secondary); }
+  .detail-val { font-size: 13px; color: var(--text-primary); font-weight: 500; }
+  .detail-item.full { grid-column: 1 / -1; }
+  .note-box {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-top: 4px;
+    min-height: 40px;
+  }
+
+  /* ===== ACCOUNTING ===== */
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .acc-section {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border: 0.5px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .acc-section-head {
+    padding: 12px 16px;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-secondary);
+  }
+  .acc-section-head h3 { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .acc-badge { font-size: 12px; color: var(--text-secondary); }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-wrap {
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+    flex: 1;
+  }
+  .progress-bar { height: 6px; border-radius: 4px; transition: width 0.3s; }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1D9E75;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .toast.show { display: flex; }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .charts-grid { grid-template-columns: 1fr; }
+    .chart-card.full { grid-column: 1; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: 1; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .detail-item.full { grid-column: 1; }
+  }
+  @media (max-width: 420px) {
+    .stats-row { grid-template-columns: 1fr; }
+  }
+
+  /* ===== CHARTS ===== */
+  .bar-chart { display: flex; flex-direction: column; gap: 6px; }
+  .bar-row { display: flex; align-items: center; gap: 8px; }
+  .bar-label { font-size: 11px; color: var(--text-secondary); width: 140px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; }
+  .bar-track { flex: 1; background: var(--bg-secondary); border-radius: 3px; height: 14px; overflow: hidden; }
+  .bar-fill { height: 14px; border-radius: 3px; transition: width 0.4s; }
+  .bar-count { font-size: 11px; color: var(--text-secondary); width: 24px; flex-shrink: 0; }
+  .donut-wrap { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .donut-svg { flex-shrink: 0; }
+  .donut-legend { display: flex; flex-direction: column; gap: 6px; }
+  .donut-leg-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+  .donut-leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .kw-chart { display: flex; align-items: flex-end; gap: 4px; height: 120px; padding-bottom: 4px; }
+  .kw-col { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+  .kw-bar { width: 100%; border-radius: 3px 3px 0 0; background: var(--blue); min-height: 4px; transition: height 0.4s; }
+  .kw-lbl { font-size: 9px; color: var(--text-secondary); white-space: nowrap; }
+  .kw-val { font-size: 10px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">TRALVID <span>CRM</span></div>
+  <nav class="nav" aria-label="Ana navigasyon">
+    <button class="nav-btn active" id="nav-dashboard" onclick="showPage('dashboard')">&#9635; Anasayfa</button>
+    <button class="nav-btn" id="nav-records" onclick="showPage('records')">&#9776; Kayıtlar</button>
+    <button class="nav-btn" id="nav-accounting" onclick="showPage('accounting')">&#9781; Muhasebe</button>
+    <button class="nav-btn" id="nav-reports" onclick="showPage('reports')">&#9636; Raporlar</button>
+  </nav>
+  <button class="fab" onclick="openComplaintModal()">&#43; Yeni kayıt</button>
+</div>
+
+<div class="content">
+
+  <div id="page-dashboard" class="page active">
+    <div class="stats-row" id="dash-stats"></div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Servise göre dağılım</h3>
+        <div id="chart-servis" class="donut-wrap"></div>
+      </div>
+      <div class="chart-card">
+        <h3>Sonuca göre dağılım</h3>
+        <div id="chart-sonuc" class="donut-wrap"></div>
+      </div>
+      <div class="chart-card full">
+        <h3>Haftalık şikayet trendi</h3>
+        <div id="chart-kw" class="kw-chart"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-records" class="page">
+    <div class="table-wrap">
+      <div class="table-toolbar">
+        <input class="toolbar-input" type="text" id="rec-search" placeholder="Booking no, konu, bölge ara…" oninput="renderRecordsTable()">
+        <select class="toolbar-select" id="rec-filter-sonuc" onchange="renderRecordsTable()">
+          <option value="">Tüm sonuçlar</option>
+          <option value="Haklı">Haklı</option>
+          <option value="Haksız">Haksız</option>
+        </select>
+        <select class="toolbar-select" id="rec-filter-servis" onchange="renderRecordsTable()">
+          <option value="">Tüm servisler</option>
+        </select>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>KW</th><th>Tarih</th><th>Operatör</th><th>Booking No</th>
+              <th>Veranstalter</th><th>Bölge</th><th>Servis</th><th>Konu</th>
+              <th>Sonuç</th><th>Tazminat</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="rec-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-accounting" class="page">
+    <div class="stats-row" id="acc-stats"></div>
+    <div class="filter-row">
+      <select class="toolbar-select" id="acc-filter-partner" onchange="renderAccounting()">
+        <option value="">Tüm partnerler</option>
+      </select>
+      <select class="toolbar-select" id="acc-filter-durum" onchange="renderAccounting()">
+        <option value="">Tüm durumlar</option>
+        <option value="Beklemede">Beklemede</option>
+        <option value="Gönderildi">Gönderildi</option>
+        <option value="İade edildi">İade edildi</option>
+        <option value="Kabul edildi">Kabul edildi</option>
+        <option value="İtiraz edildi">İtiraz edildi</option>
+      </select>
+      <select class="toolbar-select" id="acc-filter-doviz" onchange="renderAccounting()">
+        <option value="">Tüm dövizler</option>
+        <option value="EUR">EUR</option>
+        <option value="USD">USD</option>
+        <option value="GBP">GBP</option>
+        <option value="TRY">TRY</option>
+      </select>
+      <button class="btn-primary" onclick="openInvoiceModal()" style="margin-left:auto;">&#43; Yeni fatura</button>
+    </div>
+
+    <div class="acc-section">
+      <div class="acc-section-head">
+        <h3>Fatura takibi</h3>
+        <span class="acc-badge" id="acc-count-label"></span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Fatura No</th><th>Tarih</th><th>Partner</th><th>Booking</th>
+              <th>Tutar</th><th>Döviz</th><th>Durum</th>
+              <th>İade tutarı</th><th>İade tarihi</th><th>Kabul</th>
+              <th>Kesinti sebebi</th><th>Not</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="acc-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="acc-section">
+      <div class="acc-section-head">
+        <h3>Partner bazlı tazminat özeti</h3>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Partner</th><th>Gönderilen (€)</th><th>İade edilen (€)</th>
+              <th>Kabul edilen (€)</th><th>Bekleyen (€)</th><th>Tahsilat oranı</th>
+            </tr>
+          </thead>
+          <tbody id="acc-summary-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-reports" class="page">
+    <div class="filter-row">
+      <select class="toolbar-select" id="rpt-op" onchange="renderReports()"><option value="">Tüm operatörler</option></select>
+      <select class="toolbar-select" id="rpt-bl" onchange="renderReports()"><option value="">Tüm bölgeler</option></select>
+      <select class="toolbar-select" id="rpt-sr" onchange="renderReports()"><option value="">Tüm servisler</option></select>
+      <select class="toolbar-select" id="rpt-kw" onchange="renderReports()"><option value="">Tüm haftalar</option></select>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card full">
+        <h3>Konuya göre şikayetler</h3>
+        <div id="rpt-chart-konu" class="bar-chart"></div>
+      </div>
+      <div class="chart-card">
+        <h3>Partnere göre dağılım</h3>
+        <div id="rpt-chart-partner" class="donut-wrap"></div>
+      </div>
+      <div class="chart-card">
+        <h3>Bölge bazlı analiz</h3>
+        <div id="rpt-chart-bolge" class="bar-chart"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="complaint-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="complaint-modal-title">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="complaint-modal-title">Yeni şikayet kaydı</h2>
+      <button class="modal-close" onclick="closeComplaintModal()" aria-label="Kapat">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="section-title">Genel bilgiler</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="c-operator">Operatör</label>
+          <select id="c-operator">
+            <option>ÜNAL BÜYÜKSUNGUR</option>
+            <option>EFE ILHAN</option>
+            <option>DİĞER</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-tarih">Tarih</label>
+          <input type="date" id="c-tarih">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-booking">Booking no</label>
+          <input type="text" id="c-booking" placeholder="örn. 1283842">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-subbooking">Sub-booking no</label>
+          <input type="text" id="c-subbooking">
+        </div>
+        <div class="form-group">
+          <label class="number" for="c-adult">Yetişkin</label>
+          <input type="number" id="c-adult" min="0" value="2">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-child">Çocuk</label>
+          <input type="number" id="c-child" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-sktarih">Şikayet tarihi</label>
+          <input type="date" id="c-sktarih">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-vtarih">Varış tarihi</label>
+          <input type="date" id="c-vtarih">
+        </div>
+      </div>
+      <div class="section-title">Partner &amp; konum</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="c-veranstalter">Veranstalter</label>
+          <select id="c-veranstalter">
+            <option>HOLIDAY CHECK TOURISTIC</option>
+            <option>PAXIMUM WEST MARKETS</option>
+            <option>DİĞER</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-partner">Partner kodu</label>
+          <select id="c-partner">
+            <option value="IC">IC</option>
+            <option value="PP">PP</option>
+            <option value="DİĞER">DİĞER</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-bolge">Bölge</label>
+          <select id="c-bolge">
+            <option>ANTALYA</option><option>SIDE</option><option>KEMER</option>
+            <option>BELEK</option><option>ALANYA</option><option>EGE</option>
+            <option>ISTANBUL IST</option><option>ISTANBUL SAW</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-airport">Havalimanı</label>
+          <select id="c-airport">
+            <option>AYT</option><option>ADB</option><option>IST</option><option>SAW</option>
+          </select>
+        </div>
+      </div>
+      <div class="section-title">Şikayet detayı</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="c-servis">Servis</label>
+          <select id="c-servis">
+            <option>Transfer</option><option>OTS</option><option>Otel</option>
+            <option>Rehberlik</option><option>HDS</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-konu">Şikayet konusu</label>
+          <select id="c-konu">
+            <option>Transfer ( yok )</option>
+            <option>Transfer (alınmamış) Arrival</option>
+            <option>Transfer (alınmamış) Depar</option>
+            <option>Transfer (alınmamış geliş-dönüş)</option>
+            <option>Transfer süresi</option>
+            <option>Transfer mola</option>
+            <option>Transfer gecikmesi</option>
+            <option>Transfer Alınış saati (erken)</option>
+            <option>Transfer (yanlış terminal / otel)</option>
+            <option>Transfer (türü)</option>
+            <option>Transfer (Tehlikeli Araç Kullanma)</option>
+            <option>Transfer (Havaalanında bekleme süresi)</option>
+            <option>Alınış Bilgisi</option>
+            <option>Oda kategori</option>
+            <option>Otel Genel Durumu</option>
+            <option>Gürültü</option>
+            <option>Temizlik</option>
+            <option>AI Konsept</option>
+            <option>Eksik Hizmet</option>
+            <option>Tur</option>
+            <option>Rehberlik Servisi</option>
+            <option>DİĞER</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-konu2">Şikayet 2 (opsiyonel)</label>
+          <select id="c-konu2">
+            <option value="">— Seçiniz —</option>
+            <option>Transfer ( yok )</option>
+            <option>Transfer süresi</option>
+            <option>Oda kategori</option>
+            <option>Otel Genel Durumu</option>
+            <option>Gürültü</option>
+            <option>Temizlik</option>
+            <option>DİĞER</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-sonuc">Sonuç</label>
+          <select id="c-sonuc">
+            <option value="Haklı">Haklı</option>
+            <option value="Haksız">Haksız</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-tutar">Tazminat tutarı</label>
+          <input type="number" id="c-tutar" placeholder="0" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="c-doviz">Döviz</label>
+          <select id="c-doviz">
+            <option>EUR</option><option>USD</option><option>GBP</option><option>TRY</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="c-notlar">Notlar</label>
+          <textarea id="c-notlar" placeholder="Ek açıklama veya not…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeComplaintModal()">İptal</button>
+      <button class="btn-primary" onclick="saveComplaint()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="invoice-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="invoice-modal-title">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="invoice-modal-title">Yeni fatura kaydı</h2>
+      <button class="modal-close" onclick="closeInvoiceModal()" aria-label="Kapat">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="section-title">Fatura bilgileri</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="inv-no">Fatura no</label>
+          <input type="text" id="inv-no" placeholder="örn. HDA2025000001">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-tarih">Fatura tarihi</label>
+          <input type="date" id="inv-tarih">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-partner">Partner (fatura gönderilen)</label>
+          <select id="inv-partner">
+            <option>SWT</option>
+            <option>MTS/OTS AYT</option>
+            <option>MTS/OTS SAW</option>
+            <option>MTS/OTS EGE</option>
+            <option>MTS/OTS IST</option>
+            <option>HDS AYT OPERATIONS</option>
+            <option>SERAMONI</option>
+            <option>DİĞER</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-booking">İlgili booking no</label>
+          <input type="text" id="inv-booking" placeholder="Şikayetle eşleştir">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-tutar">Fatura tutarı</label>
+          <input type="number" id="inv-tutar" placeholder="0" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-doviz">Döviz</label>
+          <select id="inv-doviz">
+            <option>EUR</option><option>USD</option><option>GBP</option><option>TRY</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-durum">Durum</label>
+          <select id="inv-durum">
+            <option>Beklemede</option>
+            <option>Gönderildi</option>
+            <option>İade edildi</option>
+            <option>Kabul edildi</option>
+            <option>İtiraz edildi</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-kabul">Kabul durumu</label>
+          <select id="inv-kabul">
+            <option value="">— Seçiniz —</option>
+            <option value="Evet">Evet</option>
+            <option value="Hayır">Hayır</option>
+            <option value="Kısmi kabul">Kısmi kabul</option>
+          </select>
+        </div>
+      </div>
+      <div class="section-title">İade bilgileri</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="inv-iade-no">İade fatura no</label>
+          <input type="text" id="inv-iade-no" placeholder="İade fatura numarası">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-iade-tarih">İade tarihi</label>
+          <input type="date" id="inv-iade-tarih">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-iade-tutar">İade tutarı</label>
+          <input type="number" id="inv-iade-tutar" placeholder="0" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inv-iade-doviz">İade dövizi</label>
+          <select id="inv-iade-doviz">
+            <option>EUR</option><option>USD</option><option>GBP</option><option>TRY</option>
+          </select>
+        </div>
+      </div>
+      <div class="section-title">Kesinti &amp; notlar</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="form-label" for="inv-kesinti">Kesinti sebebi</label>
+          <input type="text" id="inv-kesinti" placeholder="Kesinti gerekçesi, itiraz açıklaması…">
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="inv-notlar">Ek notlar</label>
+          <textarea id="inv-notlar" placeholder="Muhasebe notu, referans, iletişim kaydı…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeInvoiceModal()">İptal</button>
+      <button class="btn-primary" onclick="saveInvoice()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="detail-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="detail-modal-title">Kayıt detayı</h2>
+      <button class="modal-close" onclick="closeDetailModal()" aria-label="Kapat">&times;</button>
+    </div>
+    <div class="modal-body" id="detail-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeDetailModal()">Kapat</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span>&#10003;</span>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+// ==================== VERİ (TEMİZ BAŞLANGIÇ) ====================
+var defaultComplaints = [];
+var defaultInvoices = [];
+
+var complaints = JSON.parse(localStorage.getItem('tralvid_complaints')) || defaultComplaints;
+var invoices = JSON.parse(localStorage.getItem('tralvid_invoices')) || defaultInvoices;
+
+var nextComplaintId = complaints.length > 0 ? Math.max.apply(Math, complaints.map(function(o) { return o.id; })) + 1 : 1;
+var nextInvoiceId = invoices.length > 0 ? Math.max.apply(Math, invoices.map(function(o) { return o.id; })) + 1 : 1;
+
+function saveToLocalStorage() {
+  localStorage.setItem('tralvid_complaints', JSON.stringify(complaints));
+  localStorage.setItem('tralvid_invoices', JSON.stringify(invoices));
+}
+
+// ==================== YARDIMCI ====================
+function fmt(n) {
+  var num = parseFloat(n) || 0;
+  return num % 1 === 0 ? num.toString() : num.toFixed(2);
+}
+
+function truncate(str, len) {
+  if (!str) return '—';
+  return str.length > len ? str.substring(0, len) + '…' : str;
+}
+
+function getKW(dateStr) {
+  var d = new Date(dateStr);
+  var jan1 = new Date(d.getFullYear(), 0, 1);
+  return 'KW' + Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+}
+
+function countBy(arr, key) {
+  var result = {};
+  for (var i = 0; i < arr.length; i++) {
+    var v = arr[i][key] || 'Bilinmiyor';
+    result[v] = (result[v] || 0) + 1;
+  }
+  return result;
+}
+
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  var msgEl = document.getElementById('toast-msg');
+  if (el && msgEl) {
+    msgEl.textContent = msg;
+    el.classList.add('show');
+    setTimeout(function() { el.classList.remove('show'); }, 3000);
+  }
+}
+
+// ==================== NAVİGASYON ====================
+function showPage(page) {
+  var pages = ['dashboard', 'records', 'accounting', 'reports'];
+  for (var i = 0; i < pages.length; i++) {
+    var pageEl = document.getElementById('page-' + pages[i]);
+    var navEl = document.getElementById('nav-' + pages[i]);
+    if (pageEl) pageEl.classList.remove('active');
+    if (navEl) navEl.classList.remove('active');
+  }
+  var targetPage = document.getElementById('page-' + page);
+  var targetNav = document.getElementById('nav-' + page);
+  if (targetPage) targetPage.classList.add('active');
+  if (targetNav) targetNav.classList.add('active');
+
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'records') renderRecordsTable();
+  if (page === 'accounting') renderAccounting();
+  if (page === 'reports') renderReports();
+}
+
+// ==================== MODALLAR ====================
+function openComplaintModal() {
+  var today = new Date().toISOString().split('T')[0];
+  var tarihEl = document.getElementById('c-tarih');
+  var sktarihEl = document.getElementById('c-sktarih');
+  if (tarihEl) tarihEl.value = today;
+  if (sktarihEl) sktarihEl.value = today;
+  var overlayEl = document.getElementById('complaint-modal-overlay');
+  if (overlayEl) overlayEl.classList.add('open');
+}
+
+function closeComplaintModal() {
+  var overlayEl = document.getElementById('complaint-modal-overlay');
+  if (overlayEl) overlayEl.classList.remove('open');
+}
+
+function clearComplaintForm() {
+  document.getElementById('c-booking').value = '';
+  document.getElementById('c-subbooking').value = '';
+  document.getElementById('c-adult').value = '2';
+  document.getElementById('c-child').value = '0';
+  document.getElementById('c-tutar').value = '0';
+  document.getElementById('c-notlar').value = '';
+  document.getElementById('c-konu2').value = '';
+}
+
+function openInvoiceModal() {
+  var today = new Date().toISOString().split('T')[0];
+  var tarihEl = document.getElementById('inv-tarih');
+  if (tarihEl) tarihEl.value = today;
+  var overlayEl = document.getElementById('invoice-modal-overlay');
+  if (overlayEl) overlayEl.classList.add('open');
+}
+
+function closeInvoiceModal() {
+  var overlayEl = document.getElementById('invoice-modal-overlay');
+  if (overlayEl) overlayEl.classList.remove('open');
+}
+
+function clearInvoiceForm() {
+  document.getElementById('inv-no').value = '';
+  document.getElementById('inv-booking').value = '';
+  document.getElementById('inv-tutar').value = '0';
+  document.getElementById('inv-iade-no').value = '';
+  document.getElementById('inv-iade-tutar').value = '0';
+  document.getElementById('inv-kesinti').value = '';
+  document.getElementById('inv-notlar').value = '';
+  document.getElementById('inv-kabul').value = '';
+}
+
+function closeDetailModal() {
+  var overlayEl = document.getElementById('detail-modal-overlay');
+  if (overlayEl) overlayEl.classList.remove('open');
+}
+
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'complaint-modal-overlay') closeComplaintModal();
+  if (e.target.id === 'invoice-modal-overlay') closeInvoiceModal();
+  if (e.target.id === 'detail-modal-overlay') closeDetailModal();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeComplaintModal();
+    closeInvoiceModal();
+    closeDetailModal();
+  }
+});
+
+// ==================== KAYDET: ŞİKAYET ====================
+function saveComplaint() {
+  var tarih = document.getElementById('c-tarih').value || new Date().toISOString().split('T')[0];
+  var record = {
+    id: nextComplaintId++,
+    kw: getKW(tarih),
+    tarih: tarih,
+    operator: document.getElementById('c-operator').value,
+    booking: document.getElementById('c-booking').value.trim(),
+    subBooking: document.getElementById('c-subbooking').value.trim(),
+    adult: parseInt(document.getElementById('c-adult').value) || 0,
+    child: parseInt(document.getElementById('c-child').value) || 0,
+    infant: 0,
+    sikayetTarih: document.getElementById('c-sktarih').value,
+    varisTarih: document.getElementById('c-vtarih').value,
+    veranstalter: document.getElementById('c-veranstalter').value,
+    partner: document.getElementById('c-partner').value,
+    bolge: document.getElementById('c-bolge').value,
+    airport: document.getElementById('c-airport').value,
+    servis: document.getElementById('c-servis').value,
+    konu: document.getElementById('c-konu').value,
+    konu2: document.getElementById('c-konu2').value,
+    sonuc: document.getElementById('c-sonuc').value,
+    tutar: parseFloat(document.getElementById('c-tutar').value) || 0,
+    doviz: document.getElementById('c-doviz').value,
+    notlar: document.getElementById('c-notlar').value.trim()
+  };
+  complaints.unshift(record);
+  saveToLocalStorage();
+  clearComplaintForm();
+  closeComplaintModal();
+  showToast('Şikayet kaydı eklendi');
+  renderRecordsTable();
+  renderDashboard();
+}
+
+// ==================== KAYDET: FATURA ====================
+function saveInvoice() {
+  var record = {
+    id: nextInvoiceId++,
+    faturaNo: document.getElementById('inv-no').value.trim(),
+    tarih: document.getElementById('inv-tarih').value,
+    partner: document.getElementById('inv-partner').value,
+    booking: document.getElementById('inv-booking').value.trim(),
+    tutar: parseFloat(document.getElementById('inv-tutar').value) || 0,
+    doviz: document.getElementById('inv-doviz').value,
+    durum: document.getElementById('inv-durum').value,
+    kabul: document.getElementById('inv-kabul').value,
+    iadeFaturaNo: document.getElementById('inv-iade-no').value.trim(),
+    iadeTarih: document.getElementById('inv-iade-tarih').value,
+    iadetutar: parseFloat(document.getElementById('inv-iade-tutar').value) || 0,
+    iadeDoviz: document.getElementById('inv-iade-doviz').value,
+    kesinti: document.getElementById('inv-kesinti').value.trim(),
+    notlar: document.getElementById('inv-notlar').value.trim()
+  };
+  invoices.unshift(record);
+  saveToLocalStorage();
+  clearInvoiceForm();
+  closeInvoiceModal();
+  showToast('Fatura kaydı eklendi');
+  renderAccounting();
+}
+
+// ==================== DETAYLAR ====================
+function showComplaintDetail(id) {
+  var r = null;
+  for (var i = 0; i < complaints.length; i++) {
+    if (complaints[i].id === id) { r = complaints[i]; break; }
+  }
+  if (!r) return;
+  var body = document.getElementById('detail-modal-body');
+  var title = document.getElementById('detail-modal-title');
+  if (title) title.textContent = 'Şikayet: ' + r.booking;
+  if (body) {
+    body.innerHTML =
+      '<div class="detail-grid">' +
+        '<div class="detail-item"><span class="detail-lbl">KW / Tarih</span><span class="detail-val">' + r.kw + ' — ' + r.tarih + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Operatör</span><span class="detail-val">' + r.operator + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Booking no</span><span class="detail-val">' + (r.booking || '—') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Sub-booking</span><span class="detail-val">' + (r.subBooking || '—') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Yetişkin / Çocuk</span><span class="detail-val">' + r.adult + ' / ' + r.child + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Şikayet tarihi</span><span class="detail-val">' + (r.sikayetTarih || '—') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Varış tarihi</span><span class="detail-val">' + (r.varisTarih || '—') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Veranstalter</span><span class="detail-val">' + r.veranstalter + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Bölge / Havalimanı</span><span class="detail-val">' + r.bolge + ' / ' + r.airport + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Servis</span><span class="detail-val">' + r.servis + '</span></div>' +
+        '<div class="detail-item full"><span class="detail-lbl">Şikayet konusu</span><span class="detail-val">' + r.konu + (r.konu2 ? ' | ' + r.konu2 : '') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Sonuç</span><span class="detail-val">' + r.sonuc + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Tazminat</span><span class="detail-val">' + (r.tutar > 0 ? fmt(r.tutar) + ' ' + r.doviz : '—') + '</span></div>' +
+        '<div class="detail-item full"><span class="detail-lbl">Notlar</span><div class="note-box">' + (r.notlar || '—') + '</div></div>' +
+      '</div>';
+  }
+  var overlayEl = document.getElementById('detail-modal-overlay');
+  if (overlayEl) overlayEl.classList.add('open');
+}
+
+function showInvoiceDetail(id) {
+  var r = null;
+  for (var i = 0; i < invoices.length; i++) {
+    if (invoices[i].id === id) { r = invoices[i]; break; }
+  }
+  if (!r) return;
+  var body = document.getElementById('detail-modal-body');
+  var title = document.getElementById('detail-modal-title');
+  if (title) title.textContent = 'Fatura: ' + (r.faturaNo || r.id);
+  if (body) {
+    body.innerHTML =
+      '<div class="detail-grid">' +
+        '<div class="detail-item"><span class="detail-lbl">Fatura no</span><span class="detail-val">' + (r.faturaNo || '—') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Fatura tarihi</span><span class="detail-val">' + (r.tarih || '—') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Partner</span><span class="detail-val">' + r.partner + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Booking no</span><span class="detail-val">' + (r.booking || '—') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Fatura tutarı</span><span class="detail-val">' + fmt(r.tutar) + ' ' + r.doviz + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Durum</span><span class="detail-val">' + r.durum + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Kabul durumu</span><span class="detail-val">' + (r.kabul || '—') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">İade fatura no</span><span class="detail-val">' + (r.iadeFaturaNo || '—') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">İade tarihi</span><span class="detail-val">' + (r.iadeTarih || '—') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">İade tutarı</span><span class="detail-val">' + (r.iadetutar > 0 ? fmt(r.iadetutar) + ' ' + r.iadeDoviz : '—') + '</span></div>' +
+        '<div class="detail-item full"><span class="detail-lbl">Kesinti sebebi</span><div class="note-box">' + (r.kesinti || '—') + '</div></div>' +
+        '<div class="detail-item full"><span class="detail-lbl">Notlar</span><div class="note-box">' + (r.notlar || '—') + '</div></div>' +
+      '</div>';
+  }
+  var overlayEl = document.getElementById('detail-modal-overlay');
+  if (overlayEl) overlayEl.classList.add('open');
+}
+
+// ==================== SİLME ====================
+function deleteComplaint(id) {
+  if (!confirm('Bu şikayet kaydını silmek istediğinizden emin misiniz?')) return;
+  complaints = complaints.filter(function(r) { return r.id !== id; });
+  saveToLocalStorage();
+  showToast('Kayıt silindi');
+  renderRecordsTable();
+  renderDashboard();
+}
+
+function deleteInvoice(id) {
+  if (!confirm('Bu fatura kaydını silmek istediğinizden emin misiniz?')) return;
+  invoices = invoices.filter(function(r) { return r.id !== id; });
+  saveToLocalStorage();
+  showToast('Fatura silindi');
+  renderAccounting();
+}
+
+// ==================== DASHBOARD ====================
+function renderDashboard() {
+  var total = complaints.length;
+  var hakli = complaints.filter(function(r) { return r.sonuc === 'Haklı'; }).length;
+  var tazminat = complaints.reduce(function(s, r) { return s + (r.tutar || 0); }, 0);
+  var toplFatura = invoices.reduce(function(s, r) { return s + (r.tutar || 0); }, 0);
+  var statsEl = document.getElementById('dash-stats');
+  if (statsEl) {
+    statsEl.innerHTML =
+      '<div class="stat-card"><div class="s-lbl">Toplam şikayet</div><div class="s-val">' + total + '</div></div>' +
+      '<div class="stat-card"><div class="s-lbl">Haklı bulunan</div><div class="s-val">' + hakli + '</div><div class="s-sub">%' + (total ? Math.round(hakli / total * 100) : 0) + ' oran</div></div>' +
+      '<div class="stat-card"><div class="s-lbl">Toplam tazminat</div><div class="s-val">' + fmt(tazminat) + ' €</div></div>' +
+      '<div class="stat-card"><div class="s-lbl">Toplam fatura</div><div class="s-val">' + fmt(toplFatura) + ' €</div></div>';
+  }
+  renderDonut('chart-servis', countBy(complaints, 'servis'), ['#185FA5','#1D9E75','#D85A30','#BA7517','#534AB7','#E24B4A']);
+  renderDonut('chart-sonuc', countBy(complaints, 'sonuc'), ['#639922','#E24B4A','#BA7517']);
+  renderKWChart('chart-kw', countBy(complaints, 'kw'));
+}
+
+// ==================== KAYITLAR TABLOSU ====================
+function renderRecordsTable() {
+  var q = (document.getElementById('rec-search') ? document.getElementById('rec-search').value : '').toLowerCase();
+  var fs = document.getElementById('rec-filter-sonuc') ? document.getElementById('rec-filter-sonuc').value : '';
+  var fser = document.getElementById('rec-filter-servis') ? document.getElementById('rec-filter-servis').value : '';
+
+  var servises = [];
+  for (var i = 0; i < complaints.length; i++) {
+    if (servises.indexOf(complaints[i].servis) === -1) servises.push(complaints[i].servis);
+  }
+  var servisEl = document.getElementById('rec-filter-servis');
+  if (servisEl) {
+    var curVal = servisEl.value;
+    var opts = '<option value="">Tüm servisler</option>';
+    for (var j = 0; j < servises.length; j++) {
+      opts += '<option value="' + servises[j] + '"' + (servises[j] === curVal ? ' selected' : '') + '>' + servises[j] + '</option>';
+    }
+    servisEl.innerHTML = opts;
+  }
+
+  var filtered = complaints.filter(function(r) {
+    var haystack = (r.booking + r.konu + r.bolge + r.operator + r.servis + r.veranstalter + r.subBooking).toLowerCase();
+    var matchQ = !q || haystack.indexOf(q) !== -1;
+    var matchS = !fs || r.sonuc === fs;
+    var matchSer = !fser || r.servis === fser;
+    return matchQ && matchS && matchSer;
+  });
+
+  var tbody = document.getElementById('rec-tbody');
+  if (!tbody) return;
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Kayıt bulunamadı</td></tr>';
+    return;
+  }
+  var html = '';
+  for (var k = 0; k < filtered.length; k++) {
+    var r = filtered[k];
+    html +=
+      '<tr>' +
+        '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
+        '<td>' + r.tarih + '</td>' +
+        '<td>' + truncate(r.operator.split(' ')[0], 16) + '</td>' +
+        '<td style="font-family:monospace;font-size:11px">' + (r.booking || '—') + '</td>' +
+        '<td>' + truncate(r.veranstalter, 22) + '</td>' +
+        '<td>' + r.bolge + '</td>' +
+        '<td><span class="badge badge-blue">' + r.servis + '</span></td>' +
+        '<td>' + truncate(r.konu, 30) + '</td>' +
+        '<td><span class="badge ' + (r.sonuc === 'Haklı' ? 'badge-green' : 'badge-red') + '">' + r.sonuc + '</span></td>' +
+        '<td style="font-weight:500">' + (r.tutar > 0 ? fmt(r.tutar) + ' ' + r.doviz : '—') + '</td>' +
+        '<td style="display:flex;gap:4px">' +
+          '<button class="btn-sm" onclick="showComplaintDetail(' + r.id + ')">Detay</button>' +
+          '<button class="btn-danger-sm" onclick="deleteComplaint(' + r.id + ')">Sil</button>' +
+        '</td>' +
+      '</tr>';
+  }
+  tbody.innerHTML = html;
+}
+
+// ==================== MUHASEBE ====================
+function durumBadge(d) {
+  var cls = {
+    'Beklemede': 'badge-gray',
+    'Gönderildi': 'badge-blue',
+    'İade edildi': 'badge-teal',
+    'Kabul edildi': 'badge-green',
+    'İtiraz edildi': 'badge-red'
+  };
+  return '<span class="badge ' + (cls[d] || 'badge-gray') + '">' + d + '</span>';
+}
+
+function kabulBadge(k) {
+  if (!k) return '<span style="color:var(--text-secondary);font-size:11px">—</span>';
+  var cls = { 'Evet': 'badge-green', 'Hayır': 'badge-red', 'Kısmi kabul': 'badge-amber' };
+  return '<span class="badge ' + (cls[k] || 'badge-gray') + '">' + k + '</span>';
+}
+
+function renderAccounting() {
+  var partners = [];
+  for (var i = 0; i < invoices.length; i++) {
+    if (partners.indexOf(invoices[i].partner) === -1) partners.push(invoices[i].partner);
+  }
+  var partnerEl = document.getElementById('acc-filter-partner');
+  if (partnerEl) {
+    var cv = partnerEl.value;
+    var opts = '<option value="">Tüm partnerler</option>';
+    for (var j = 0; j < partners.length; j++) {
+      opts += '<option value="' + partners[j] + '"' + (partners[j] === cv ? ' selected' : '') + '>' + partners[j] + '</option>';
+    }
+    partnerEl.innerHTML = opts;
+  }
+
+  var fpa = document.getElementById('acc-filter-partner') ? document.getElementById('acc-filter-partner').value : '';
+  var fdu = document.getElementById('acc-filter-durum') ? document.getElementById('acc-filter-durum').value : '';
+  var fdv = document.getElementById('acc-filter-doviz') ? document.getElementById('acc-filter-doviz').value : '';
+
+  var filtered = invoices.filter(function(r) {
+    return (!fpa || r.partner === fpa) && (!fdu || r.durum === fdu) && (!fdv || r.doviz === fdv);
+  });
+
+  var toplGon = filtered.reduce(function(s, r) { return s + (r.tutar || 0); }, 0);
+  var toplIade = filtered.reduce(function(s, r) { return s + (r.iadetutar || 0); }, 0);
+  var bekleyen = filtered.filter(function(r) { return r.durum === 'Beklemede' || r.durum === 'Gönderildi'; }).reduce(function(s, r) { return s + (r.tutar || 0); }, 0);
+  var itiraz = filtered.filter(function(r) { return r.durum === 'İtiraz edildi'; }).length;
+
+  var accStats = document.getElementById('acc-stats');
+  if (accStats) {
+    accStats.innerHTML =
+      '<div class="stat-card"><div class="s-lbl">Toplam gönderilen</div><div class="s-val">' + fmt(toplGon) + ' €</div><div class="s-sub">' + filtered.length + ' fatura</div></div>' +
+      '<div class="stat-card"><div class="s-lbl">İade edilen</div><div class="s-val">' + fmt(toplIade) + ' €</div><div class="s-sub">%' + (toplGon ? Math.round(toplIade / toplGon * 100) : 0) + ' tahsilat</div></div>' +
+      '<div class="stat-card"><div class="s-lbl">Bekleyen</div><div class="s-val">' + fmt(bekleyen) + ' €</div><div class="s-sub">Cevap bekleniyor</div></div>' +
+      '<div class="stat-card"><div class="s-lbl">İtiraz edilen</div><div class="s-val">' + itiraz + '</div><div class="s-sub">Fatura itirazda</div></div>';
+  }
+
+  var countLabel = document.getElementById('acc-count-label');
+  if (countLabel) countLabel.textContent = filtered.length + ' kayıt';
+
+  var tbody = document.getElementById('acc-tbody');
+  if (tbody) {
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="13" class="empty-state">Kayıt bulunamadı</td></tr>';
+    } else {
+      var html = '';
+      for (var k = 0; k < filtered.length; k++) {
+        var r = filtered[k];
+        html +=
+          '<tr>' +
+            '<td style="font-family:monospace;font-size:11px">' + (r.faturaNo || '—') + '</td>' +
+            '<td>' + (r.tarih || '—') + '</td>' +
+            '<td>' + truncate(r.partner, 18) + '</td>' +
+            '<td style="font-family:monospace;font-size:11px">' + (r.booking || '—') + '</td>' +
+            '<td style="font-weight:500">' + fmt(r.tutar) + '</td>' +
+            '<td>' + r.doviz + '</td>' +
+            '<td>' + durumBadge(r.durum) + '</td>' +
+            '<td style="font-weight:500">' + (r.iadetutar > 0 ? fmt(r.iadetutar) + ' ' + r.iadeDoviz : '—') + '</td>' +
+            '<td>' + (r.iadeTarih || '—') + '</td>' +
+            '<td>' + kabulBadge(r.kabul) + '</td>' +
+            '<td>' + truncate(r.kesinti, 25) + '</td>' +
+            '<td>' + truncate(r.notlar, 20) + '</td>' +
+            '<td style="display:flex;gap:4px">' +
+              '<button class="btn-sm" onclick="showInvoiceDetail(' + r.id + ')">Detay</button>' +
+              '<button class="btn-danger-sm" onclick="deleteInvoice(' + r.id + ')">Sil</button>' +
+            '</td>' +
+          '</tr>';
+      }
+      tbody.innerHTML = html;
+    }
+  }
+
+  var sumMap = {};
+  for (var m = 0; m < invoices.length; m++) {
+    var inv = invoices[m];
+    if (!sumMap[inv.partner]) sumMap[inv.partner] = { gon: 0, iade: 0, kabul: 0, bekle: 0 };
+    sumMap[inv.partner].gon += inv.tutar || 0;
+    sumMap[inv.partner].iade += inv.iadetutar || 0;
+    if (inv.kabul === 'Evet' || inv.kabul === 'Kısmi kabul') sumMap[inv.partner].kabul += inv.iadetutar || 0;
+    if (inv.durum === 'Beklemede' || inv.durum === 'Gönderildi') sumMap[inv.partner].bekle += inv.tutar || 0;
+  }
+  var summaryTbody = document.getElementById('acc-summary-tbody');
+  if (summaryTbody) {
+    var sHtml = '';
+    var partnerKeys = Object.keys(sumMap);
+    for (var n = 0; n < partnerKeys.length; n++) {
+      var p = partnerKeys[n];
+      var v = sumMap[p];
+      var oran = v.gon ? Math.round(v.iade / v.gon * 100) : 0;
+      var barColor = oran > 70 ? '#639922' : oran > 40 ? '#BA7517' : '#E24B4A';
+      sHtml +=
+        '<tr>' +
+          '<td style="font-weight:500">' + p + '</td>' +
+          '<td>' + fmt(v.gon) + ' €</td>' +
+          '<td>' + fmt(v.iade) + ' €</td>' +
+          '<td>' + fmt(v.kabul) + ' €</td>' +
+          '<td>' + fmt(v.bekle) + ' €</td>' +
+          '<td>' +
+            '<div style="display:flex;align-items:center;gap:8px">' +
+              '<div class="progress-wrap"><div class="progress-bar" style="width:' + oran + '%;background:' + barColor + '"></div></div>' +
+              '<span style="font-size:11px;font-weight:500;min-width:28px">%' + oran + '</span>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+    }
+    summaryTbody.innerHTML = sHtml || '<tr><td colspan="6" class="empty-state">Kayıt bulunamadı</td></tr>';
+  }
+}
+
+// ==================== RAPORLAR ====================
+function renderReports() {
+  var ops = [], bls = [], srs = [], kws = [];
+  for (var i = 0; i < complaints.length; i++) {
+    var r = complaints[i];
+    if (ops.indexOf(r.operator) === -1) ops.push(r.operator);
+    if (bls.indexOf(r.bolge) === -1) bls.push(r.bolge);
+    if (srs.indexOf(r.servis) === -1) srs.push(r.servis);
+    if (kws.indexOf(r.kw) === -1) kws.push(r.kw);
+  }
+  kws.sort();
+
+  var filters = [
+    { id: 'rpt-op', items: ops, label: 'Tüm operatörler' },
+    { id: 'rpt-bl', items: bls, label: 'Tüm bölgeler' },
+    { id: 'rpt-sr', items: srs, label: 'Tüm servisler' },
+    { id: 'rpt-kw', items: kws, label: 'Tüm haftalar' }
+  ];
+  for (var f = 0; f < filters.length; f++) {
+    var el = document.getElementById(filters[f].id);
+    if (el) {
+      var cv = el.value;
+      var opts = '<option value="">' + filters[f].label + '</option>';
+      for (var j = 0; j < filters[f].items.length; j++) {
+        var v = filters[f].items[j];
+        opts += '<option value="' + v + '"' + (v === cv ? ' selected' : '') + '>' + v + '</option>';
+      }
+      el.innerHTML = opts;
+    }
+  }
+
+  var fop = document.getElementById('rpt-op') ? document.getElementById('rpt-op').value : '';
+  var fbl = document.getElementById('rpt-bl') ? document.getElementById('rpt-bl').value : '';
+  var fsr = document.getElementById('rpt-sr') ? document.getElementById('rpt-sr').value : '';
+  var fkw = document.getElementById('rpt-kw') ? document.getElementById('rpt-kw').value : '';
+
+  var filtered = complaints.filter(function(r) {
+    return (!fop || r.operator === fop) &&
+           (!fbl || r.bolge === fbl) &&
+           (!fsr || r.servis === fsr) &&
+           (!fkw || r.kw === fkw);
+  });
+
+  var konuCounts = countBy(filtered, 'konu');
+  var konuArr = [];
+  var konuKeys = Object.keys(konuCounts);
+  for (var k = 0; k < konuKeys.length; k++) {
+    konuArr.push({ label: konuKeys[k], val: konuCounts[konuKeys[k]] });
+  }
+  konuArr.sort(function(a, b) { return b.val - a.val; });
+  renderBarChart('rpt-chart-konu', konuArr.slice(0, 10), '#534AB7');
+
+  renderDonut('rpt-chart-partner', countBy(filtered, 'veranstalter'), ['#185FA5','#1D9E75','#D85A30','#BA7517','#534AB7']);
+
+  var bolgeCounts = countBy(filtered, 'bolge');
+  var bolgeArr = [];
+  var bolgeKeys = Object.keys(bolgeCounts);
+  for (var b = 0; b < bolgeKeys.length; b++) {
+    bolgeArr.push({ label: bolgeKeys[b], val: bolgeCounts[bolgeKeys[b]] });
+  }
+  bolgeArr.sort(function(a, b) { return b.val - a.val; });
+  renderBarChart('rpt-chart-bolge', bolgeArr, '#1D9E75');
+}
+
+// ==================== GRAFİKLER ====================
+function renderDonut(containerId, data, colors) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+
+  var labels = Object.keys(data);
+  var values = Object.values(data);
+  var total = values.reduce(function(a, b) { return a + b; }, 0);
+  if (total === 0) { el.innerHTML = '<div class="empty-state">Veri yok</div>'; return; }
+
+  var size = 120;
+  var r = 40;
+  var cx = 60, cy = 60;
+  var strokeW = 22;
+
+  var svgPaths = '';
+  var legendHtml = '';
+  var offset = -0.25 * 2 * Math.PI;
+
+  for (var i = 0; i < values.length; i++) {
+    var pct = values[i] / total;
+    var startAngle = offset;
+    var endAngle = offset + pct * 2 * Math.PI;
+    var x1 = cx + r * Math.cos(startAngle);
+    var y1 = cy + r * Math.sin(startAngle);
+    var x2 = cx + r * Math.cos(endAngle);
+    var y2 = cy + r * Math.sin(endAngle);
+    var large = pct > 0.5 ? 1 : 0;
+    var color = colors[i % colors.length];
+
+    if (values.length === 1) {
+      svgPaths += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="' + strokeW + '"/>';
+    } else {
+      svgPaths += '<path d="M ' + x1 + ' ' + y1 + ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' + x2 + ' ' + y2 + '" fill="none" stroke="' + color + '" stroke-width="' + strokeW + '" stroke-linecap="butt"/>';
+    }
+
+    legendHtml += '<div class="donut-leg-item"><div class="donut-leg-dot" style="background:' + color + '"></div><span>' + labels[i] + ' (' + values[i] + ')</span></div>';
+    offset = endAngle;
+  }
+
+  var svg = '<svg class="donut-svg" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '">' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + (document.documentElement.style.colorScheme === 'dark' ? '#2a2a27' : '#f5f5f4') + '" stroke-width="' + strokeW + '"/>' +
+    svgPaths +
+    '<text x="' + cx + '" y="' + (cy + 5) + '" text-anchor="middle" font-size="16" font-weight="500" fill="currentColor">' + total + '</text>' +
+    '</svg>';
+
+  el.innerHTML = svg + '<div class="donut-legend">' + legendHtml + '</div>';
+}
+
+function renderBarChart(containerId, dataArr, color) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  if (!dataArr.length) { el.innerHTML = '<div class="empty-state">Veri yok</div>'; return; }
+
+  var maxVal = 0;
+  for (var i = 0; i < dataArr.length; i++) {
+    if (dataArr[i].val > maxVal) maxVal = dataArr[i].val;
+  }
+  if (maxVal === 0) { el.innerHTML = '<div class="empty-state">Veri yok</div>'; return; }
+
+  var html = '';
+  for (var j = 0; j < dataArr.length; j++) {
+    var pct = Math.round(dataArr[j].val / maxVal * 100);
+    var lbl = dataArr[j].label.length > 30 ? dataArr[j].label.substring(0, 30) + '…' : dataArr[j].label;
+    html +=
+      '<div class="bar-row">' +
+        '<div class="bar-label" title="' + dataArr[j].label + '">' + lbl + '</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;background:' + color + '"></div></div>' +
+        '<div class="bar-count">' + dataArr[j].val + '</div>' +
+      '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function renderKWChart(containerId, kwData) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+
+  var keys = Object.keys(kwData).sort();
+  if (!keys.length) { el.innerHTML = '<div class="empty-state">Veri yok</div>'; return; }
+
+  var maxVal = 0;
+  for (var i = 0; i < keys.length; i++) {
+    if (kwData[keys[i]] > maxVal) maxVal = kwData[keys[i]];
+  }
+  if (maxVal === 0) return;
+
+  var html = '';
+  for (var j = 0; j < keys.length; j++) {
+    var pct = Math.round(kwData[keys[j]] / maxVal * 100);
+    var barH = Math.max(4, Math.round(pct * 1.0));
+    html +=
+      '<div class="kw-col">' +
+        '<div class="kw-val">' + kwData[keys[j]] + '</div>' +
+        '<div class="kw-bar" style="height:' + barH + 'px"></div>' +
+        '<div class="kw-lbl">' + keys[j] + '</div>' +
+      '</div>';
+  }
+  el.innerHTML = html;
+}
+
+// ==================== İLK YÜKLEME ====================
+window.addEventListener('DOMContentLoaded', function() {
+  renderDashboard();
+  renderRecordsTable();
+  renderAccounting();
+  renderReports();
+});
+</script>
+</body>
+</html>
