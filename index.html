@@ -334,16 +334,16 @@
 <div class="modal-overlay" id="complaint-modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <h2>Yeni Müşteri Şikayet &amp; Mutabakat Kaydı</h2>
+      <h2>Yeni Şikayet Kaydı</h2>
       <button class="modal-close" onclick="closeComplaintModal()">&times;</button>
     </div>
     <div class="modal-body">
       
       <!-- BÖLÜM 1 -->
-      <div class="section-title">Bölüm 1: Sistem &amp; Zaman Yönetimi Başlıkları</div>
+      <div class="section-title">Bölüm 1:</div>
       <div class="form-grid">
         <div class="form-group">
-          <label class="form-label" for="c-user">Benutzer (Kullanıcı)</label>
+          <label class="form-label" for="c-user">Kullanıcı</label>
           <select id="c-user">
             <option value="ÜNAL BÜYÜKSUNGUR">ÜNAL BÜYÜKSUNGUR</option>
             <option value="EFE ILHAN">EFE ILHAN</option>
@@ -351,7 +351,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-date">Datum (Tarih)</label>
+          <label class="form-label" for="c-date">Kayıt Tarihi</label>
           <input type="date" id="c-date" onchange="autoCalculateTimeFields()">
         </div>
         <div class="form-group">
@@ -370,7 +370,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-sn">SN erhalten (SN Alındı)</label>
+          <label class="form-label" for="c-sn">Savunma yazısı</label>
           <select id="c-sn">
             <option value="Hayır">Hayır</option>
             <option value="Evet">Evet</option>
@@ -379,18 +379,18 @@
       </div>
 
       <!-- BÖLÜM 2 -->
-      <div class="section-title">Bölüm 2: Rezervasyon &amp; Demografi Verileri</div>
+      <div class="section-title">Bölüm 2:</div>
       <div class="form-grid">
         <div class="form-group">
-          <label class="form-label" for="c-booking">Buchungsnummer (Rezervasyon Numarası)</label>
+          <label class="form-label" for="c-booking">Rezervasyon Numarası</label>
           <input type="text" id="c-booking" placeholder="Örn: 1283842">
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-subbooking">Sub-Buchungsnummer (Alt Rezervasyon No)</label>
+          <label class="form-label" for="c-subbooking">Alt Rezervasyon No</label>
           <input type="text" id="c-subbooking" placeholder="Örn: 1283945">
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-veranstalter">Veranstalter (Tur Operatörü)</label>
+          <label class="form-label" for="c-veranstalter">Tur Operatörü</label>
           <select id="c-veranstalter">
             <option value="HOLIDAY CHECK TOURISTIC">HOLIDAY CHECK TOURISTIC</option>
             <option value="PAXIMUM WEST MARKETS">PAXIMUM WEST MARKETS</option>
@@ -399,46 +399,45 @@
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-adult">Erwachsene (Yetişkin)</label>
+          <label class="form-label" for="c-adult">Yetişkin</label>
           <input type="number" id="c-adult" min="0" value="2">
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-child">Kind (Çocuk)</label>
+          <label class="form-label" for="c-child">Çocuk</label>
           <input type="number" id="c-child" min="0" value="0">
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-infant">Infant (Bebek)</label>
+          <label class="form-label" for="c-infant">Bebek</label>
           <input type="number" id="c-infant" min="0" value="0">
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-bdate">Beschwerdedatum (Şikayet Tarihi)</label>
+          <label class="form-label" for="c-bdate">Şikayet Tarihi</label>
           <input type="date" id="c-bdate">
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-adate">Ankunftsdatum (Varış Tarihi)</label>
+          <label class="form-label" for="c-adate">Geliş Tarihi</label>
           <input type="date" id="c-adate">
         </div>
       </div>
 
       <!-- BÖLÜM 3 (GENEL-OTEL LİSTELERİ) -->
-      <div class="section-title">Bölüm 3: Kontrat Ortakları &amp; Lokasyon Entegrasyonu</div>
+      <div class="section-title">Bölüm 3: </div>
       <div class="form-grid">
         <div class="form-group">
           <label class="form-label" for="c-partner">Partner (İş Ortağı)</label>
           <select id="c-partner">
-            <option value="IC">IC</option>
-            <option value="PP">PP</option>
-            <option value="SWT">SWT</option>
+            <option value="IC">Inter Company</option>
+            <option value="PP">Prefer Part</option>
             <option value="DİĞER">DİĞER</option>
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label" for="c-verursacher">Beschwerdeverursacher (Şikayete Sebep Olan Taraf)</label>
+          <label class="form-label" for="c-verursacher">Sorumlu taraf</label>
           <select id="c-verursacher">
-            <option value="Otel">Otel</option>
-            <option value="Rehber">Rehber</option>
-            <option value="Transfer Sürücüsü">Transfer Sürücüsü</option>
-            <option value="Havalimanı Ekibi">Havalimanı Ekibi</option>
+            <option value="Otel">Konaklama</option>
+            <option value="Rehber">Rehberlik hizmeti</option>
+            <option value="Transfer Sürücüsü">Transfer</option>
+            <option value="Havalimanı Ekibi">Uçak</option>
             <option value="Acente Operasyon">Acente Operasyon</option>
           </select>
         </div>
@@ -489,19 +488,45 @@
       <div class="form-grid">
         <div class="form-group">
           <label class="form-label" for="c-ptr">Beschwerdepunkt TR (Şikayet Konusu TR)</label>
-          <select id="c-ptr">
-            <option value="Transfer ( yok )">Transfer ( yok )</option>
-            <option value="Transfer (alınmamış geliş-dönüş)">Transfer (alınmamış geliş-dönüş)</option>
-            <option value="Transfer ( CIP alana bildirilmemiş )">Transfer ( CIP alana bildirilmemiş )</option>
-            <option value="Transfer ( yanlış otele bırakıldı )">Transfer ( yanlış otele bırakıldı )</option>
-            <option value="Transfer Alınış saati (erken)">Transfer Alınış saati (erken)</option>
-            <option value="Transfer (Havaalanında bekleme süresi)">Transfer (Havaalanında bekleme süresi)</option>
-            <option value="Transfer (alınmamış) Depar">Transfer (alınmamış) Depar</option>
-            <option value="Oda kategori">Oda kategori</option>
-            <option value="Gürültü">Gürültü</option>
-            <option value="Temizlik">Temizlik</option>
-            <option value="AI Konsept">AI Konsept</option>
-          </select>
+          <select id="c-hotel" onchange="onHotelChange(this)">
+  <option value="" data-region="" data-airport="" data-category="">— Bir Otel Seçiniz (Opsiyonel) —</option>
+  <option value="A GOOD LIFE UTOPIA FAMILY RESORT" data-region="ALANYA" data-airport="AYT" data-category="Otel">A GOOD LIFE UTOPIA FAMILY RESORT (ALANYA - AYT)</option>
+  <option value="A HOTEL SIDE" data-region="SIDE" data-airport="AYT" data-category="Otel">A HOTEL SIDE (SIDE - AYT)</option>
+  <option value="A SUITE SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">A SUITE SIDE HOTEL (SIDE - AYT)</option>
+  <option value="A11 HOTEL OBAKOY" data-region="ALANYA" data-airport="AYT" data-category="Otel">A11 HOTEL OBAKOY (ALANYA - AYT)</option>
+  <option value="ACAR HOTEL" data-region="ALANYA" data-airport="AYT" data-category="Otel">ACAR HOTEL (ALANYA - AYT)</option>
+  <option value="ADA PORT HOTELS ADULT ONLY +16" data-region="ALANYA" data-airport="AYT" data-category="Otel">ADA PORT HOTELS ADULT ONLY +16 (ALANYA - AYT)</option>
+  <option value="ADALYA ART SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA ART SIDE HOTEL (SIDE - AYT)</option>
+  <option value="ADALYA ELITE LARA" data-region="ANTALYA" data-airport="AYT" data-category="Otel">ADALYA ELITE LARA (ANTALYA - AYT)</option>
+  <option value="ADALYA OCEAN HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA OCEAN HOTEL (SIDE - AYT)</option>
+  <option value="ADALYA RESORT HOTEL ADULT ONLY +16" data-region="SIDE" data-airport="AYT" data-category="Otel">ADALYA RESORT HOTEL ADULT ONLY +16 (SIDE - AYT)</option>
+  <option value="ADAM&EVE ONLY ADULT +16" data-region="BELEK" data-airport="AYT" data-category="Otel">ADAM&EVE ONLY ADULT +16 (BELEK - AYT)</option>
+  <option value="ADELLA SIDE HOTEL" data-region="SIDE" data-airport="AYT" data-category="Otel">ADELLA SIDE HOTEL (SIDE - AYT)</option>
+  <option value="ADIN RESORT HOTEL" data-region="ALANYA" data-airport="AYT" data-category="Otel">ADIN RESORT HOTEL (ALANYA - AYT)</option>
+  <option value="ADONIS HOTEL" data-region="ANTALYA" data-airport="AYT" data-category="Otel">ADONIS HOTEL (ANTALYA - AYT)</option>
+  <option value="AYDINBEY SIU COLLECT" data-region="KEMER" data-airport="AYT" data-category="Otel">AYDINBEY SIU COLLECT (KEMER - AYT)</option>
+  <option value="SUNRISE QUEEN RESORT" data-region="SIDE" data-airport="AYT" data-category="Otel">SUNRISE QUEEN RESORT (SIDE - AYT)</option>
+  <option value="MEGA SARAY RESORT SIDE" data-region="SIDE" data-airport="AYT" data-category="Otel">MEGA SARAY RESORT SIDE (SIDE - AYT)</option>
+  <option value="MARDIVA FAMILY HOTEL ECO" data-region="SIDE" data-airport="AYT" data-category="Otel">MARDIVA FAMILY HOTEL ECO (SIDE - AYT)</option>
+  <option value="ISLA PANORAMA HOTEL" data-region="MARMARIS" data-airport="DLM" data-category="Otel">ISLA PANORAMA HOTEL (MARMARIS - DLM)</option>
+  <option value="SERAY DELUXE HOTEL" data-region="MARMARIS" data-airport="DLM" data-category="Otel">SERAY DELUXE HOTEL (MARMARIS - DLM)</option>
+  <option value="SEVEN FOR LIFE THERMAL" data-region="KUSADASI" data-airport="ADB" data-category="Otel">SEVEN FOR LIFE THERMAL (KUSADASI - ADB)</option>
+  <option value="SEVEN FOR LIFE THERMAL HDS ÜSTLENDI" data-region="KUSADASI" data-airport="ADB" data-category="HDS Üstlendi">SEVEN FOR LIFE THERMAL HDS ÜSTLENDI (KUSADASI - ADB)</option>
+  <option value="MAYA WORLD DIDYMA HDS ÜSTLENDI" data-region="DIDIM" data-airport="ADB" data-category="HDS Üstlendi">MAYA WORLD DIDYMA HDS ÜSTLENDI (DIDIM - ADB)</option>
+  <option value="ISLA PANORAMA HOTEL HDS ÜSTLENDİ" data-region="MARMARIS" data-airport="DLM" data-category="HDS Üstlendi">ISLA PANORAMA HOTEL HDS ÜSTLENDİ (MARMARIS - DLM)</option>
+  <option value="SERAY DELUXE HOTEL HDS ÜSTLENDİ" data-region="MARMARIS" data-airport="DLM" data-category="HDS Üstlendi">SERAY DELUXE HOTEL HDS ÜSTLENDİ (MARMARIS - DLM)</option>
+  <option value="OPERATÖR ANTALYA" data-region="ANTALYA" data-airport="AYT" data-category="Operatör">OPERATÖR ANTALYA (ANTALYA - AYT)</option>
+  <option value="OPERATÖR DALAMAN" data-region="DALAMAN" data-airport="DLM" data-category="Operatör">OPERATÖR DALAMAN (DALAMAN - DLM)</option>
+  <option value="OPERATÖR BODRUM" data-region="BODRUM" data-airport="BJV" data-category="Operatör">OPERATÖR BODRUM (BODRUM - BJV)</option>
+  <option value="OPERATÖR KUSADASI" data-region="KUSADASI" data-airport="ADB" data-category="Operatör">OPERATÖR KUSADASI (KUSADASI - ADB)</option>
+  <option value="OPERATÖR ISTANBUL" data-region="ISTANBUL" data-airport="IST" data-category="Operatör">OPERATÖR ISTANBUL (ISTANBUL - IST)</option>
+  <option value="UÇAK ŞİRKETİ ANTALYA" data-region="ANTALYA" data-airport="AYT" data-category="Uçak Şirketi">UÇAK ŞİRKETİ ANTALYA (ANTALYA - AYT)</option>
+  <option value="UÇAK ŞİRKETİ DALAMAN" data-region="DALAMAN" data-airport="DLM" data-category="Uçak Şirketi">UÇAK ŞİRKETİ DALAMAN (DALAMAN - DLM)</option>
+  <option value="UÇAK ŞİRKETİ BODRUM" data-region="BODRUM" data-airport="BJV" data-category="Uçak Şirketi">UÇAK ŞİRKETİ BODRUM (BODRUM - BJV)</option>
+  <option value="UÇAK ŞİRKETİ KUSADASI" data-region="KUSADASI" data-airport="ADB" data-category="Uçak Şirketi">UÇAK ŞİRKETİ KUSADASI (KUSADASI - ADB)</option>
+  <option value="UÇAK ŞİRKETİ ISTANBUL" data-region="ISTANBUL" data-airport="IST" data-category="Uçak Şirketi">UÇAK ŞİRKETİ ISTANBUL (ISTANBUL - IST)</option>
+  <option value="SOZ HOTEL" data-region="BODRUM" data-airport="BJV" data-category="Otel">SOZ HOTEL (BODRUM - BJV)</option>
+</select>
         </div>
         <div class="form-group">
           <label class="form-label" for="c-pde">Beschwerdepunkt DE (Şikayet Konusu DE)</label>
