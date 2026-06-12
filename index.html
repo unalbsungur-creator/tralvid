@@ -2454,8 +2454,13 @@ function clearComplaintForm() {
 
 // ==================== VERİ KAYDETME KATMANI ====================
 function saveComplaint() {
+
+  console.log("1 - saveComplaint başladı");
+
   var dateVal = document.getElementById('c-date').value;
-  var nextId = complaints.length > 0 ? Math.max.apply(Math, complaints.map(function(o) { return o.id; })) + 1 : 1;
+  var nextId = complaints.length > 0
+    ? Math.max.apply(Math, complaints.map(function(o) { return o.id; })) + 1
+    : 1;
 
   var rec = {
     id: nextId,
@@ -2488,6 +2493,37 @@ function saveComplaint() {
     currency: document.getElementById('c-currency').value,
     notes: document.getElementById('c-notes').value.trim()
   };
+
+  console.log("2 - rec oluşturuldu", rec);
+
+  complaints.unshift(rec);
+
+  console.log("3 - complaints eklendi");
+
+  syncStorage();
+
+  console.log("4 - syncStorage tamam");
+
+  clearComplaintForm();
+
+  console.log("5 - form temizlendi");
+
+  closeComplaintModal();
+
+  console.log("6 - modal kapandı");
+
+  showToast('Şikayet kartı veritabanına işlendi.');
+
+  console.log("7 - toast gösterildi");
+
+  renderRecordsTable();
+
+  console.log("8 - tablo render edildi");
+
+  renderDashboard();
+
+  console.log("9 - dashboard render edildi");
+}
 
   complaints.unshift(rec);
   syncStorage();
