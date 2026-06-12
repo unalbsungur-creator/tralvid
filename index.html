@@ -2970,16 +2970,7 @@ function renderDashboard() {
 renderDonutChart('chart-sonuc', countBy(complaints, 'result'), ['#A32D2D','#3B6D11']);
 renderTrendChart('chart-kw', countBy(complaints, 'kw'));
 
-var grid = document.querySelector('.charts-grid-pure');
 
-if (grid) {
-    grid.style.display = 'flex';
-    grid.style.gap = '20px';
-
-    grid.querySelectorAll('.chart-card').forEach(function(card){
-        card.style.flex = '1';
-    });
-}
 
 }
 
