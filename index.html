@@ -2513,15 +2513,25 @@ result: document.getElementById('c-result').value,
 console.log("Kayıt oluşturuldu:", rec);
 
 complaints.unshift(rec);
+console.log("1");
 
 syncStorage();
+console.log("2");
+
 clearComplaintForm();
+console.log("3");
+
 closeComplaintModal();
+console.log("4");
 
 showToast('Şikayet kartı veritabanına işlendi.');
+console.log("5");
 
 renderRecordsTable();
+console.log("6");
+
 renderDashboard();
+console.log("7");
 
 
 } catch (err) {
