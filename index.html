@@ -272,6 +272,148 @@
     height:180px;
     gap:12px;
 }
+/* ===== LOGIN TASARIMI ===== */
+
+#login-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.login-card{
+    width:950px;
+    max-width:95%;
+    min-height:520px;
+    display:flex;
+    overflow:hidden;
+    border-radius:24px;
+    background:#fff;
+    box-shadow:0 25px 60px rgba(0,0,0,.25);
+}
+
+.login-left{
+    width:40%;
+    background:linear-gradient(135deg,#185FA5,#00C47C);
+    color:white;
+    padding:50px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.login-logo{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    border:4px solid rgba(255,255,255,.4);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:42px;
+    margin-bottom:20px;
+}
+
+.login-left h1{
+    font-size:40px;
+    margin-bottom:15px;
+}
+
+.login-left p{
+    font-size:18px;
+    line-height:1.6;
+    opacity:.95;
+}
+
+.chart-icon{
+    font-size:70px;
+    margin-top:35px;
+}
+
+.login-right{
+    flex:1;
+    padding:60px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.user-icon{
+    font-size:56px;
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.login-right h2{
+    text-align:center;
+    font-size:36px;
+    margin-bottom:10px;
+}
+
+.login-subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:35px;
+}
+
+.input-group{
+    margin-bottom:20px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.input-group input{
+    width:100%;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:15px;
+}
+
+.input-group input:focus{
+    outline:none;
+    border-color:#185FA5;
+}
+
+.btn-login{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:10px;
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+    background:linear-gradient(90deg,#185FA5,#00C47C);
+    transition:.3s;
+}
+
+.btn-login:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+@media(max-width:900px){
+
+    .login-card{
+        flex-direction:column;
+        width:95%;
+    }
+
+    .login-left,
+    .login-right{
+        width:100%;
+    }
+}
 </style>
 </head>
 <body>
