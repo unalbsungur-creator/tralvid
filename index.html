@@ -229,7 +229,17 @@
 .charts-grid-pure > div {
     flex:1;
 }
-  .kw-chart-box { display: flex; align-items: flex-end; height: 140px; gap: 4px; width: 100%; border-bottom: 1px solid var(--border); padding-bottom: 2px; }
+
+.chart-card {
+    flex:1;
+    min-width:0;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px;
+}
+
+.kw-chart-box { display: flex; align-items: flex-end; height: 140px; gap: 4px; width: 100%; border-bottom: 1px solid var(--border); padding-bottom: 2px; }
   .kw-col { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
   .kw-bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.3s; }
   .kw-lbl { font-size: 9px; color: var(--text-secondary); margin-top: 2px; }
