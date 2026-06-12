@@ -2464,10 +2464,38 @@ function countBy(arr, key) {
 }
 
 function showToast(msg) {
-  var el = document.getElementById('toast'); if (!el) return;
+  var el = document.getElementById('toast');
+  if (!el) return;
+
   document.getElementById('toast-msg').textContent = msg;
   el.classList.add('show');
-  setTimeout(function() { el.classList.remove('show'); }, 3000);
+
+  setTimeout(function() {
+    el.classList.remove('show');
+  }, 3000);
+}
+
+function resetDatabase() {
+
+    if (!confirm('Tüm şikayet ve fatura kayıtları silinsin mi?')) {
+        return;
+    }
+
+    localStorage.removeItem('tralvid_pages_complaints');
+    localStorage.removeItem('tralvid_pages_invoices');
+
+    complaints = [];
+    invoices = [];
+
+    renderRecordsTable();
+
+    if (typeof renderInvoicesTable === 'function') {
+        renderInvoicesTable();
+    }
+
+    renderDashboard();
+
+    showToast('Veritabanı temizlendi.');
 }
 
 function autoCalculateTimeFields() {
