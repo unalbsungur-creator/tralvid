@@ -308,15 +308,20 @@
 }
 
 .login-logo{
-    width:90px;
-    height:90px;
-    border-radius:50%;
-    border:4px solid rgba(255,255,255,.4);
+    width:140px;
+    height:140px;
+    margin-bottom:25px;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:42px;
-    margin-bottom:20px;
+}
+
+.login-logo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
 
 .login-left h1{
@@ -2593,9 +2598,12 @@
 <div class="login-card">
 
     <div class="login-left">
-        <div class="login-logo">✓</div>
 
-        <h1>TRALVID CRM</h1>
+    <div class="login-logo">
+        <img src="logo.jpg" alt="TRALVID CRM">
+    </div>
+
+    <h1>TRALVID CRM</h1>
 
         <p>
             Şikayet Yönetimi ve<br>
