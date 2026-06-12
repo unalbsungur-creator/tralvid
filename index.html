@@ -2533,11 +2533,15 @@ function login() {
 
     document.getElementById('login-modal').style.display = 'none';
 
-    aapplyPermissions();
+applyPermissions();
 
-renderDashboard();
-renderRecordsTable();
-renderAccounting();
+setTimeout(function() {
+
+    renderDashboard();
+    renderRecordsTable();
+    renderAccounting();
+
+}, 100);
 
 showToast('Giriş başarılı');
 }
