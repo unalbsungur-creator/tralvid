@@ -1581,14 +1581,17 @@ if (
     });
 }
 
-var filtered = visibleComplaints.filter(function (r) {
-        var haystack = (r.booking + r.user + r.ptr + r.veranstalter + r.region + r.hotel).toLowerCase();
-        return (
-    (!q || haystack.indexOf(q) !== -1) &&
-    (!fs || r.result === fs) &&
-    (!r.isDeleted || currentUser.role === 'admin')
-);
-      });
+var filtered = complaints.filter(function (r) {
+
+    if (r.isDeleted) return false;
+
+    var haystack =
+        (r.booking + r.user + r.ptr + r.veranstalter +
+         r.region + r.hotel).toLowerCase();
+
+    return (!q || haystack.indexOf(q) !== -1)
+        && (!fs || r.result === fs);
+});
 
       if (!filtered.length) {
         tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; padding:20px;">Kriterlere uygun müşteri şikayeti bulunamadı.</td></tr>';
@@ -1683,7 +1686,47 @@ function renderDeleteRequests() {
         '</tr>';
 
     });
+}
+    
+function approveDeleteComplaint(id) {
 
+    var rec = complaints.find(function(r){
+        return r.id === id;
+    });
+
+    if (!rec) return;
+
+    rec.isDeleted = true;
+    rec.deleteRequested = false;
+    rec.deletedBy = currentUser.username;
+    rec.deletedAt = new Date().toISOString();
+
+    syncStorage();
+
+    renderDeleteRequests();
+    renderRecordsTable();
+    renderDashboard();
+
+    showToast('Kayıt pasif olarak silindi.');
+}
+
+function rejectDeleteComplaint(id) {
+
+    var rec = complaints.find(function(r){
+        return r.id === id;
+    });
+
+    if (!rec) return;
+
+    rec.deleteRequested = false;
+
+    syncStorage();
+
+    renderDeleteRequests();
+    renderRecordsTable();
+    renderDashboard();
+
+    showToast('Silme talebi reddedildi.');
 }
 
 function renderAccounting() {
