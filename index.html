@@ -809,7 +809,34 @@
   <div class="content">
     <div id="page-dashboard" class="page active">
       <div class="stats-row" id="dash-stats"></div>
-      <div class="charts-grid-pure">
+
+<div id="delete-requests-panel"
+     class="table-wrap admin-only"
+     style="margin-bottom:20px; display:none;">
+
+    <div class="section-title">
+        Bekleyen Silme Talepleri
+    </div>
+
+    <div class="table-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Kullanıcı</th>
+                    <th>Tarih</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+
+            <tbody id="delete-requests-body"></tbody>
+
+        </table>
+    </div>
+
+</div>
+
+<div class="charts-grid-pure">
         <div class="chart-card">
           <h3>Hizmet Dağılımı</h3>
           <div id="chart-servis" class="donut-wrap"></div>
@@ -1621,7 +1648,45 @@ function requestDeleteComplaint(id) {
 
     showToast('Silme talebi gönderildi.');
 }
-    function renderAccounting() {
+
+function renderDeleteRequests() {
+
+    var tbody = document.getElementById('delete-requests-body');
+    var panel = document.getElementById('delete-requests-panel');
+
+    if (!tbody || !panel) return;
+
+    var pending = complaints.filter(function(r){
+        return r.deleteRequested === true && !r.isDeleted;
+    });
+
+    if (currentUser && currentUser.role === 'admin') {
+        panel.style.display = 'block';
+    } else {
+        panel.style.display = 'none';
+        return;
+    }
+
+    tbody.innerHTML = '';
+
+    pending.forEach(function(r){
+
+        tbody.innerHTML +=
+        '<tr>' +
+            '<td>' + r.id + '</td>' +
+            '<td>' + r.user + '</td>' +
+            '<td>' + r.date + '</td>' +
+            '<td>' +
+                '<button class="btn-primary" onclick="approveDeleteComplaint(' + r.id + ')">Kabul</button> ' +
+                '<button class="btn-secondary" onclick="rejectDeleteComplaint(' + r.id + ')">Reddet</button>' +
+            '</td>' +
+        '</tr>';
+
+    });
+
+}
+
+function renderAccounting() {
       var fPart = document.getElementById('acc-filter-partner').value;
       var fDurum = document.getElementById('acc-filter-durum').value;
       var fDoviz = document.getElementById('acc-filter-doviz').value;
@@ -1985,6 +2050,7 @@ renderDashboard();
 renderRecordsTable();
 renderAccounting();
 renderUsers();
+renderDeleteRequests();
 
 showPage(
     localStorage.getItem('activePage') || 'dashboard'
