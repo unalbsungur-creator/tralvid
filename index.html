@@ -1581,13 +1581,37 @@ var filtered = visibleComplaints.filter(function (r) {
           '<td style="font-weight:600;">' + (r.price > 0 ? fmt(r.price) + ' ' + r.currency : '—') + '</td>' +
           '<td>' +
           '<button class="icon-btn" onclick="openComplaintDetail(' + r.id + ')" title="Detay Gör">&#128065;</button>' +
-          '<button class="icon-btn btn-delete" onclick="deleteComplaint(' + r.id + ')" title="Sil">&#128465;</button>' +
+          '<button class="icon-btn btn-delete" onclick="requestDeleteComplaint(' + r.id + ')" title="Silme Talebi">&#128465;</button>' +
           '</td>' +
           '</tr>';
       }
       tbody.innerHTML = html;
     }
+function requestDeleteComplaint(id) {
 
+    var rec = complaints.find(function(r){
+        return r.id === id;
+    });
+
+    if (!rec) return;
+
+    if (rec.deleteRequested) {
+        alert('Bu kayıt için zaten silme talebi gönderilmiş.');
+        return;
+    }
+
+    if (!confirm('Bu kayıt için silme talebi göndermek istiyor musunuz?')) {
+        return;
+    }
+
+    rec.deleteRequested = true;
+
+    syncStorage();
+
+    renderRecordsTable();
+
+    showToast('Silme talebi gönderildi.');
+}
     function renderAccounting() {
       var fPart = document.getElementById('acc-filter-partner').value;
       var fDurum = document.getElementById('acc-filter-durum').value;
