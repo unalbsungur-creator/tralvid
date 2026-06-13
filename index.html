@@ -1299,7 +1299,7 @@
       personel: { password: "123", role: "user" }
     };
 
-    var currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    var currentUser = JSON.parse(sessionStorage.getItem('currentUser') || 'null');
 
     function syncStorage() {
       localStorage.setItem('tralvid_pages_complaints', JSON.stringify(complaints));
@@ -1698,7 +1698,7 @@
         role: role
     };
 
-    localStorage.setItem(
+    sessionStorage.setItem(
         'tralvid_users',
         JSON.stringify(USERS)
     );
@@ -1732,7 +1732,7 @@ function deleteUser(username) {
         currentUser &&
         currentUser.username === username
     ) {
-        localStorage.removeItem('currentUser');
+        sessionStorage.removeItem('currentUser');
         location.reload();
     }
 }
@@ -1890,7 +1890,7 @@ function deleteUser(username) {
 
     // INITIALIZER
     document.addEventListener('DOMContentLoaded', function () {
-      var savedUser = localStorage.getItem('currentUser');
+      var savedUser = sessionStorage.getItem('currentUser');
       if (savedUser) {
 
     currentUser = JSON.parse(savedUser);
