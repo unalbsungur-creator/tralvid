@@ -2985,8 +2985,30 @@ function showPage(page) {
     if (page === 'records') renderRecordsTable();
     if (page === 'accounting') renderAccounting();
     if (page === 'users') renderUsers();
-}
 
+    function openUserModal() {
+
+    let username = prompt("Kullanıcı adı:");
+
+    if (!username) return;
+
+    let password = prompt("Şifre:");
+
+    if (!password) return;
+
+    let role = prompt("Yetki (admin/user):", "user");
+
+    if (!role) role = "user";
+
+    USERS[username] = {
+        password: password,
+        role: role
+    };
+
+    renderUsers();
+
+    alert("Kullanıcı oluşturuldu");
+}
 // ==================== MODAL TETİKLEYİCİLERİ ====================
 function openComplaintModal() {
   var today = new Date().toISOString().split('T')[0];
