@@ -1672,24 +1672,33 @@
     }
 
     function openUserModal() {
-      let username = prompt("Kullanıcı adı:"); if (!username) return;
-      let password = prompt("Şifre:"); if (!password) return;
-      let role = prompt("Yetki (admin/user):", "user"); if (!role) role = "user";
+    let username = prompt("Kullanıcı adı:");
+    if (!username) return;
 
-      USERS[username] = { password: password, role: role };
-      localStorage.setItem('tralvid_users', JSON.stringify(USERS));
-      renderUsers();
-      showToast("Kullanıcı oluşturuldu.");
+    if (USERS[username]) {
+        alert("Bu kullanıcı zaten mevcut.");
+        return;
     }
 
-    function deleteUser(username) {
-      if (username === "admin") { alert("Admin kullanıcısı silinemez!"); return; }
-      if (!confirm(username + " kullanıcısını silmek istiyor musunuz?")) return;
-      delete USERS[username];
-      localStorage.setItem('tralvid_users', JSON.stringify(USERS));
-      renderUsers();
-      showToast("Kullanıcı silindi.");
-    }
+    let password = prompt("Şifre:");
+    if (!password) return;
+
+    let role = prompt("Yetki (admin/user):", "user");
+    if (!role) role = "user";
+
+    USERS[username] = {
+        password: password,
+        role: role
+    };
+
+    localStorage.setItem(
+        'tralvid_users',
+        JSON.stringify(USERS)
+    );
+
+    renderUsers();
+    showToast("Kullanıcı oluşturuldu.");
+}
 
     // ==================== DETAY ANALİZ MODALLARI ====================
     function openComplaintDetail(id) {
