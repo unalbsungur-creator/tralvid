@@ -1885,13 +1885,29 @@ function deleteUser(username) {
     document.addEventListener('DOMContentLoaded', function () {
       var savedUser = localStorage.getItem('currentUser');
       if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        document.getElementById('login-modal').style.display = 'none';
-        applyPermissions();
-        renderDashboard();
-        renderRecordsTable();
-        renderAccounting();
-        renderUsers();
+
+    currentUser = JSON.parse(savedUser);
+
+    if (!USERS[currentUser.username]) {
+
+        localStorage.removeItem('currentUser');
+
+        document.getElementById('login-modal')
+            .style.display = 'flex';
+
+        return;
+    }
+
+    document.getElementById('login-modal')
+        .style.display = 'none';
+
+    applyPermissions();
+
+    renderDashboard();
+    renderRecordsTable();
+    renderAccounting();
+    renderUsers();
+
       } else {
         document.getElementById('login-modal').style.display = 'flex';
       }
