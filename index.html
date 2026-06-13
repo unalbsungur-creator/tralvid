@@ -1650,10 +1650,23 @@
       tbody.innerHTML = '';
       Object.keys(USERS).forEach(username => {
         let row = `<tr>
-            <td>${username}</td>
-            <td><span class="badge badge-purple">${USERS[username].role}</span></td>
-            <td><button class="btn-secondary" style="color:var(--red-text);" onclick="deleteUser('${username}')">Sil</button></td>
-        </tr>`;
+    <td>${username}</td>
+    <td>
+        <span class="badge badge-purple">
+            ${USERS[username].role}
+        </span>
+    </td>
+    <td>
+        ${username !== 'admin'
+            ? `<button class="btn-secondary"
+                 style="color:var(--red-text);"
+                 onclick="deleteUser('${username}')">
+                 Sil
+               </button>`
+            : '<span style="color:#999;">Korunuyor</span>'
+        }
+    </td>
+</tr>`;
         tbody.innerHTML += row;
       });
     }
