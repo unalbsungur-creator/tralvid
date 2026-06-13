@@ -958,7 +958,7 @@
         <div class="form-grid">
           <div class="form-group">
             <label class="form-label" for="c-user">Kullanıcı</label>
-            <select id="c-user">
+            <select id="c-user" disabled>
               <option value="ÜNAL BÜYÜKSUNGUR">ÜNAL BÜYÜKSUNGUR</option>
               <option value="EFE ILHAN">EFE ILHAN</option>
               <option value="SAMET GÜNDÜZCÜ">SAMET GÜNDÜZCÜ</option>
@@ -1413,12 +1413,19 @@
     // ==================== MODAL CONTROLS ====================
     function openComplaintModal() {
       var today = new Date().toISOString().split('T')[0];
-      document.getElementById('c-date').value = today;
-      document.getElementById('c-bdate').value = today;
-      document.getElementById('c-adate').value = today;
-      autoCalculateTimeFields();
-      document.getElementById('complaint-modal-overlay').classList.add('open');
-    }
+
+    document.getElementById('c-date').value = today;
+    document.getElementById('c-bdate').value = today;
+    document.getElementById('c-adate').value = today;
+
+    document.getElementById('c-user').value =
+        currentUser.username;
+
+    autoCalculateTimeFields();
+
+    document.getElementById('complaint-modal-overlay')
+        .classList.add('open');
+}
     function closeComplaintModal() { document.getElementById('complaint-modal-overlay').classList.remove('open'); }
 
     function openInvoiceModal() {
@@ -1446,7 +1453,7 @@
           id: complaints.length > 0 ? Math.max.apply(Math, complaints.map(function (o) { return o.id; })) + 1 : 1,
           kw: document.getElementById('c-kw').value,
           quarter: document.getElementById('c-quarter').value,
-          user: document.getElementById('c-user').value,
+          user: currentUser.username,
           date: document.getElementById('c-date').value,
           timeout: document.getElementById('c-timeout').value,
           sn: document.getElementById('c-sn').value,
