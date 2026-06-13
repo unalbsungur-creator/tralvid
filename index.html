@@ -1861,14 +1861,23 @@ function deleteUser(username) {
     // ==================== DASHBOARD VE CSS GRAPHICS ====================
     function renderDashboard() {
       var total = complaints.length;
-      var hakliCount = complaints.filter(function (o) { return o.result === 'Haklı'; }).length;
-      var activeInvs = invoices.length;
+var hakliCount = complaints.filter(function (o) { return o.result === 'Haklı'; }).length;
+var activeInvs = invoices.length;
+
+var deleteRequests = complaints.filter(function(o){
+    return o.deleteRequested === true && !o.isDeleted;
+}).length;
 
       document.getElementById('dash-stats').innerHTML =
         '<div class="stat-card"><div class="s-lbl">Toplam Aktif Şikayet Kartı</div><div class="s-val">' + total + '</div></div>' +
         '<div class="stat-card"><div class="s-lbl">Haklı Bulunan Dosyalar</div><div class="s-val" style="color:#3B6D11;">' + hakliCount + '</div><div class="s-sub">%' + (total ? Math.round((hakliCount / total) * 100) : 0) + ' Mutabakat Oranı</div></div>' +
         '<div class="stat-card"><div class="s-lbl">Muhasebe Fatura Takip Sayısı</div><div class="s-val" style="color:#185FA5;">' + activeInvs + '</div></div>' +
-        '<div class="stat-card"><div class="s-lbl">Cevap Süresi Aşalan Dosyalar</div><div class="s-val" style="color:#A32D2D;">' + complaints.filter(function (o) { return o.timeout === 'Evet'; }).length + '</div></div>';
+        '<div class="stat-card"><div class="s-lbl">Cevap Süresi Aşalan Dosyalar</div><div class="s-val" style="color:#A32D2D;">' + complaints.filter(function (o) { return o.timeout === 'Evet'; }).length + '</div></div>' +
+
+'<div class="stat-card">' +
+'<div class="s-lbl">Bekleyen Silme Talepleri</div>' +
+'<div class="s-val" style="color:#ff9800;">' + deleteRequests + '</div>' +
+'</div>';
 
       renderDonutChart('chart-servis', countBy(complaints, 'servis'), ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
       renderDonutChart('chart-sonuc', countBy(complaints, 'result'), ['#A32D2D', '#3B6D11']);
