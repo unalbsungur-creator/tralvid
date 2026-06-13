@@ -2564,7 +2564,7 @@
         <div class="form-grid">
           <div class="form-group">
             <label class="form-label" for="c-ptr">Şikayet Konusu</label>
-            <select id="c-hotel" onchange="onHotelChange(this)">
+            <select id="c-ptr" onchange="onHotelChange(this)">
               <option value="Add On">Add On</option>
               <option value="AI Konsept">AI Konsept</option>
               <option value="Aktarım hatası">Aktarım hatası</option>
@@ -3087,26 +3087,28 @@
         <button class="btn-primary" onclick="saveInvoice()">Faturayı Kaydet</button>
       </div>
     </div>
+  </div> 
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeInvoiceModal()">Kapat</button>
+        <button class="btn-primary" onclick="saveInvoice()">Faturayı Kaydet</button>
+      </div>
+    </div>
+  <div class="modal-overlay" id="detail-modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="detail-modal-title">Kart Detayı</h2>
+        <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="detail-modal-body"></div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeDetailModal()">Kapat</button>
+      </div>
+    </div>
   </div>
 
   <!-- ===== MODAL: TAM DETAY GÖRÜNTÜLEME ===== -->
-  <div class="modal-overlay" id="login-modal">
-    <div class="login-card">
-
-      <div class="login-left">
-
-        <div class="login-logo">
-          <img src="logo.png" alt="TRALVID CRM">
-        </div>
-
-        <h1>TRALVID CRM</h1>
-
-        <p>
-          Şikayet Yönetimi ve<br>
-          Muhasebe Takip Sistemi
-        </p>
-
-      </div>
+  
 
       <div class="login-right">
 
@@ -3280,29 +3282,25 @@ alert("Kullanıcı silindi.");
     }
 
     function applyPermissions() {
-
       if (!currentUser) return;
-
-      var badge =
-        document.getElementById('user-badge');
-
+      
+      var badge = document.getElementById('user-badge');
       if (badge) {
-
-        badge.textContent =
-    currentUser.username +
-    ' (' +
-    currentUser.role +
-    ')';
+        badge.textContent = currentUser.username + ' (' + currentUser.role + ')';
+      } // <-- İŞTE EKSİK OLAN ILK PARANTEZ BURASI! (if (badge) bloğunu kapatır)
 
       if (currentUser.role === 'admin') {
+        // Eğer admisse alt taraftaki admin-only elementlerini gizleme, fonksiyondan çık
+        document.querySelectorAll('.admin-only').forEach(function (el) {
+          el.style.display = 'inline-block';
+        });
         return;
       }
 
-      document.querySelectorAll('.admin-only')
-        .forEach(function (el) {
-          el.style.display = 'none';
-        });
-
+      // Eğer admin değilse (düz personelse) admin butonlarını gizle
+      document.querySelectorAll('.admin-only').forEach(function (el) {
+        el.style.display = 'none';
+      });
     }
     function getKW(dateStr) {
       var d = new Date(dateStr); if (isNaN(d.getTime())) return 'KW24';
