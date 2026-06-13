@@ -1581,7 +1581,13 @@ var filtered = visibleComplaints.filter(function (r) {
           '<td style="font-weight:600;">' + (r.price > 0 ? fmt(r.price) + ' ' + r.currency : '—') + '</td>' +
           '<td>' +
           '<button class="icon-btn" onclick="openComplaintDetail(' + r.id + ')" title="Detay Gör">&#128065;</button>' +
-          '<button class="icon-btn btn-delete" onclick="requestDeleteComplaint(' + r.id + ')" title="Silme Talebi">&#128465;</button>' +
+          (r.deleteRequested
+
+? '<span style="color:#ff9800;font-weight:bold;">⏳ Bekliyor</span>'
+
+: '<button class="icon-btn btn-delete" onclick="requestDeleteComplaint(' + r.id + ')" title="Silme Talebi">&#128465;</button>'
+
+) +
           '</td>' +
           '</tr>';
       }
