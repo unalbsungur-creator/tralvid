@@ -3460,7 +3460,7 @@ alert("Kullanıcı silindi.");
 
       }
 
-      function openUserModal() {
+     function openUserModal() {
 
         let username = prompt("Kullanıcı adı:");
 
@@ -3475,8 +3475,8 @@ alert("Kullanıcı silindi.");
         if (!role) role = "user";
 
         USERS[username] = {
-    password: password,
-    role: role
+password: password,
+role: role
 };
 
 localStorage.setItem(
