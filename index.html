@@ -1701,10 +1701,10 @@
         role: role
     };
 
-    sessionStorage.setItem(
-        'tralvid_users',
-        JSON.stringify(USERS)
-    );
+    localStorage.setItem(
+    'tralvid_users',
+    JSON.stringify(USERS)
+);
 
     renderUsers();
     showToast("Kullanıcı oluşturuldu.");
