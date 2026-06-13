@@ -604,7 +604,7 @@
     </div>
   </div>
 
-  
+
 <!-- KULLANICI YÖNETİMİ -->
 <div id="page-users" class="page">
 
@@ -2727,6 +2727,34 @@ var currentUser = JSON.parse(
     localStorage.getItem('currentUser') || 'null'
 );
 
+function renderUsers() {
+
+    let tbody = document.getElementById('users-body');
+
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+
+    Object.keys(USERS).forEach(username => {
+
+        let row = `
+            <tr>
+                <td>${username}</td>
+                <td>${USERS[username].role}</td>
+                <td>
+                    <button class="fab"
+                            onclick="deleteUser('${username}')">
+                        Sil
+                    </button>
+                </td>
+            </tr>
+        `;
+
+        tbody.innerHTML += row;
+    });
+
+}
+
 function syncStorage() {
   localStorage.setItem('tralvid_pages_complaints', JSON.stringify(complaints));
   localStorage.setItem('tralvid_pages_invoices', JSON.stringify(invoices));
@@ -2939,19 +2967,24 @@ function autoCalculateTimeFields() {
 
 // ==================== NAVİGASYON MODÜLÜ ====================
 function showPage(page) {
-  var pages = ['dashboard', 'records', 'accounting'];
-  for (var i = 0; i < pages.length; i++) {
-    var pEl = document.getElementById('page-' + pages[i]);
-    var nEl = document.getElementById('nav-' + pages[i]);
-    if (pEl) pEl.classList.remove('active');
-    if (nEl) nEl.classList.remove('active');
-  }
-  document.getElementById('page-' + page).classList.add('active');
-  document.getElementById('nav-' + page).classList.add('active');
 
-  if (page === 'dashboard') renderDashboard();
-  if (page === 'records') renderRecordsTable();
-  if (page === 'accounting') renderAccounting();
+    var pages = ['dashboard', 'records', 'accounting', 'users'];
+
+    for (var i = 0; i < pages.length; i++) {
+        var pEl = document.getElementById('page-' + pages[i]);
+        var nEl = document.getElementById('nav-' + pages[i]);
+
+        if (pEl) pEl.classList.remove('active');
+        if (nEl) nEl.classList.remove('active');
+    }
+
+    document.getElementById('page-' + page).classList.add('active');
+    document.getElementById('nav-' + page).classList.add('active');
+
+    if (page === 'dashboard') renderDashboard();
+    if (page === 'records') renderRecordsTable();
+    if (page === 'accounting') renderAccounting();
+    if (page === 'users') renderUsers();
 }
 
 // ==================== MODAL TETİKLEYİCİLERİ ====================
