@@ -1397,8 +1397,12 @@
 
     // ==================== NAVİGASYON MODÜLÜ ====================
     function showPage(page) {
-      var pages = ['dashboard', 'records', 'accounting', 'users'];
-      for (var i = 0; i < pages.length; i++) {
+
+    var pages = ['dashboard', 'records', 'accounting', 'users'];
+
+    localStorage.setItem('activePage', page);
+
+    for (var i = 0; i < pages.length; i++) {
         var pEl = document.getElementById('page-' + pages[i]);
         var nEl = document.getElementById('nav-' + pages[i]);
         if (pEl) pEl.classList.remove('active');
@@ -1925,10 +1929,14 @@ function deleteUser(username) {
 
     applyPermissions();
 
-    renderDashboard();
-    renderRecordsTable();
-    renderAccounting();
-    renderUsers();
+renderDashboard();
+renderRecordsTable();
+renderAccounting();
+renderUsers();
+
+showPage(
+    localStorage.getItem('activePage') || 'dashboard'
+);
 
       } else {
         document.getElementById('login-modal').style.display = 'flex';
