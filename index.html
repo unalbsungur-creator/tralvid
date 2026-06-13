@@ -3462,32 +3462,29 @@ alert("Kullanıcı silindi.");
 
      function openUserModal() {
 
-        let username = prompt("Kullanıcı adı:");
+    let username = prompt("Kullanıcı adı:");
+    if (!username) return;
 
-        if (!username) return;
+    let password = prompt("Şifre:");
+    if (!password) return;
 
-        let password = prompt("Şifre:");
+    let role = prompt("Yetki (admin/user):", "user");
+    if (!role) role = "user";
 
-        if (!password) return;
+    USERS[username] = {
+        password: password,
+        role: role
+    };
 
-        let role = prompt("Yetki (admin/user):", "user");
+    localStorage.setItem(
+        'tralvid_users',
+        JSON.stringify(USERS)
+    );
 
-        if (!role) role = "user";
+    renderUsers();
 
-        USERS[username] = {
-password: password,
-role: role
-};
-
-localStorage.setItem(
-    'tralvid_users',
-    JSON.stringify(USERS)
-);
-
-renderUsers();
-
-alert("Kullanıcı oluşturuldu");
-      }
+    alert("Kullanıcı silindi");
+}
       // ==================== MODAL TETİKLEYİCİLERİ ====================
       function openComplaintModal() {
         var today = new Date().toISOString().split('T')[0];
@@ -3909,30 +3906,31 @@ alert("Kullanıcı oluşturuldu");
       // INITIALIZER
       document.addEventListener('DOMContentLoaded', function () {
 
-        var savedUser =
-          localStorage.getItem('currentUser');
+    var savedUser =
+        localStorage.getItem('currentUser');
 
-        if (savedUser) {
+    if (savedUser) {
 
-    currentUser = JSON.parse(savedUser);
+        currentUser = JSON.parse(savedUser);
 
-    document.getElementById('login-modal')
-        .style.display = 'none';
+        document.getElementById('login-modal')
+            .style.display = 'none';
 
-    applyPermissions();
+        applyPermissions();
 
-    renderDashboard();
-    renderRecordsTable();
-    renderAccounting();
-    renderUsers();
+        renderDashboard();
+        renderRecordsTable();
+        renderAccounting();
+        renderUsers();
 
-} else {
+    } else {
 
-    document.getElementById('login-modal')
-        .style.display = 'flex';
-}
+        document.getElementById('login-modal')
+            .style.display = 'flex';
+    }
 
-      });
+});
+console.log("END");
   </script>
 </body>
 
