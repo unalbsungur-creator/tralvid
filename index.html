@@ -1485,7 +1485,12 @@
           result: document.getElementById('c-result').value,
           price: parseFloat(document.getElementById('c-price').value) || 0,
           currency: document.getElementById('c-currency').value,
-          notes: document.getElementById('c-notes').value.trim()
+          notes: document.getElementById('c-notes').value.trim(),
+
+isDeleted: false,
+deleteRequested: false,
+deletedBy: '',
+deletedAt: ''
         };
 
         complaints.unshift(rec);
@@ -1516,6 +1521,11 @@
         iadeTutar: parseFloat(document.getElementById('inv-iade-tutar').value) || 0,
         iadeDate: document.getElementById('inv-iade-date').value,
         kesinti: document.getElementById('inv-kesinti').value.trim()
+
+isDeleted: false,
+deleteRequested: false,
+deletedBy: '',
+deletedAt: ''
       };
 
       invoices.unshift(rec);
