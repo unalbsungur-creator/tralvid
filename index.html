@@ -1699,7 +1699,36 @@
     renderUsers();
     showToast("Kullanıcı oluşturuldu.");
 }
+function deleteUser(username) {
 
+    if (username === 'admin') {
+        alert('Admin kullanıcısı silinemez!');
+        return;
+    }
+
+    if (!confirm(username + ' kullanıcısını silmek istiyor musunuz?')) {
+        return;
+    }
+
+    delete USERS[username];
+
+    localStorage.setItem(
+        'tralvid_users',
+        JSON.stringify(USERS)
+    );
+
+    renderUsers();
+
+    showToast('Kullanıcı silindi.');
+
+    if (
+        currentUser &&
+        currentUser.username === username
+    ) {
+        localStorage.removeItem('currentUser');
+        location.reload();
+    }
+}
     // ==================== DETAY ANALİZ MODALLARI ====================
     function openComplaintDetail(id) {
       var r = complaints.find(function (o) { return o.id === id; }); if (!r) return;
