@@ -3289,11 +3289,10 @@ alert("Kullanıcı silindi.");
       if (badge) {
 
         badge.textContent =
-          currentUser.role === 'admin'
-            ? '👤 Admin'
-            : '👤 Personel';
-
-      }
+    currentUser.username +
+    ' (' +
+    currentUser.role +
+    ')';
 
       if (currentUser.role === 'admin') {
         return;
