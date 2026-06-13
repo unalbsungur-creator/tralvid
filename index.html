@@ -1525,10 +1525,22 @@
     // ==================== RENDERING ENGINE ====================
     function renderRecordsTable() {
       var q = document.getElementById('rec-search').value.toLowerCase();
-      var fs = document.getElementById('rec-filter-sonuc').value;
-      var tbody = document.getElementById('rec-tbody'); if (!tbody) return;
+var fs = document.getElementById('rec-filter-sonuc').value;
+var tbody = document.getElementById('rec-tbody');
+if (!tbody) return;
 
-      var filtered = complaints.filter(function (r) {
+var visibleComplaints = complaints;
+
+if (
+    currentUser &&
+    currentUser.role !== 'admin'
+) {
+    visibleComplaints = complaints.filter(function (r) {
+        return r.user === currentUser.username;
+    });
+}
+
+var filtered = visibleComplaints.filter(function (r) {
         var haystack = (r.booking + r.user + r.ptr + r.veranstalter + r.region + r.hotel).toLowerCase();
         return (!q || haystack.indexOf(q) !== -1) && (!fs || r.result === fs);
       });
