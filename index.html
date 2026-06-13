@@ -3915,19 +3915,23 @@ alert("Kullanıcı oluşturuldu");
 
         if (savedUser) {
 
-          currentUser = JSON.parse(savedUser);
+    currentUser = JSON.parse(savedUser);
 
-          applyPermissions();
+    document.getElementById('login-modal')
+        .style.display = 'none';
 
-          renderDashboard();
-          renderRecordsTable();
-          renderAccounting();
+    applyPermissions();
 
-        } else {
+    renderDashboard();
+    renderRecordsTable();
+    renderAccounting();
+    renderUsers();
 
-          document.getElementById('login-modal')
-            .style.display = 'flex';
-        }
+} else {
+
+    document.getElementById('login-modal')
+        .style.display = 'flex';
+}
 
       });
   </script>
