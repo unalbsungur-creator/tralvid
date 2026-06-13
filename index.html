@@ -2761,6 +2761,8 @@ function syncStorage() {
 }
 function login() {
 
+ alert("login çalıştı");
+
     var user = document.getElementById('loginUser').value.trim();
     var pass = document.getElementById('loginPass').value.trim();
 
@@ -2986,7 +2988,7 @@ function showPage(page) {
     if (page === 'accounting') renderAccounting();
     if (page === 'users') renderUsers();
 
-    function openUserModal() {
+   function openUserModal() {
 
     let username = prompt("Kullanıcı adı:");
 
