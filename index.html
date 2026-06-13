@@ -3158,16 +3158,18 @@
 
     /* ===== KULLANICI YÖNETİMİ ===== */
 
-    const USERS = {
-      admin: {
+    let USERS = JSON.parse(
+    localStorage.getItem('tralvid_users')
+) || {
+    admin: {
         password: "1234",
         role: "admin"
-      },
-      personel: {
+    },
+    personel: {
         password: "1234",
         role: "user"
-      }
-    };
+    }
+};
 
     var currentUser = JSON.parse(
       localStorage.getItem('currentUser') || 'null'
@@ -3213,9 +3215,14 @@
 
     delete USERS[username];
 
-    renderUsers();
+localStorage.setItem(
+    'tralvid_users',
+    JSON.stringify(USERS)
+);
 
-    alert("Kullanıcı silindi.");
+renderUsers();
+
+alert("Kullanıcı silindi.");
 }
 
     
@@ -3226,7 +3233,6 @@
     }
     function login() {
 
-      alert("login çalıştı");
 
       var user = document.getElementById('loginUser').value.trim();
       var pass = document.getElementById('loginPass').value.trim();
@@ -3452,7 +3458,7 @@
       if (page === 'records') renderRecordsTable();
       if (page === 'accounting') renderAccounting();
       if (page === 'users') renderUsers();
-      
+
       }
 
       function openUserModal() {
@@ -3470,13 +3476,18 @@
         if (!role) role = "user";
 
         USERS[username] = {
-          password: password,
-          role: role
-        };
+    password: password,
+    role: role
+};
 
-        renderUsers();
+localStorage.setItem(
+    'tralvid_users',
+    JSON.stringify(USERS)
+);
 
-        alert("Kullanıcı oluşturuldu");
+renderUsers();
+
+alert("Kullanıcı oluşturuldu");
       }
       // ==================== MODAL TETİKLEYİCİLERİ ====================
       function openComplaintModal() {
