@@ -1337,7 +1337,10 @@
       }
 
       currentUser = { username: user, role: USERS[user].role };
-      sessionStorage.setItem(tringify(currentUser));
+      sessionStorage.setItem(
+    'currentUser',
+    JSON.stringify(currentUser)
+);
       document.getElementById('login-modal').style.display = 'none';
 
       applyPermissions();
