@@ -572,6 +572,7 @@
         <option value="TRY">TRY</option>
       </select>
     </div>
+    
 
     <!-- Fatura Takip Tablosu -->
     <div class="acc-section table-wrap" style="border-top:none; border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
@@ -603,6 +604,36 @@
     </div>
   </div>
 
+  
+<!-- KULLANICI YÖNETİMİ -->
+<div id="page-users" class="page">
+
+    <div class="table-wrap">
+        <div class="table-toolbar">
+            <button class="fab"
+                    onclick="openUserModal()">
+                ➕ Yeni Kullanıcı
+            </button>
+        </div>
+
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kullanıcı</th>
+                        <th>Yetki</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+
+                <tbody id="users-body">
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
 </div>
 
 <!-- ===== MODAL: YENİ MÜŞTERİ GERI BİLDİRİMİ (26 MADDENİN TÜMÜ DOĞRULANDI) ===== -->
