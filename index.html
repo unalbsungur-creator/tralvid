@@ -424,10 +424,26 @@
 <div class="topbar">
   <div class="logo">TRALVID <span>CRM</span></div>
   <nav class="nav">
-    <button class="nav-btn active" id="nav-dashboard" onclick="showPage('dashboard')">&#9635; Anasayfa</button>
-    <button class="nav-btn" id="nav-records" onclick="showPage('records')">&#9776; Müşteri Geri Bildirimleri (Complaints)</button>
-    <button class="nav-btn" id="nav-accounting" onclick="showPage('accounting')">&#9781; Muhasebe &amp; Fatura Takibi</button>
-  </nav>
+
+<button class="nav-btn active" id="nav-dashboard" onclick="showPage('dashboard')">
+🏠 Anasayfa
+</button>
+
+<button class="nav-btn" id="nav-records" onclick="showPage('records')">
+📄 Müşteri Geri Bildirimleri (Complaints)
+</button>
+
+<button class="nav-btn" id="nav-accounting" onclick="showPage('accounting')">
+🧾 Muhasebe & Fatura Takibi
+</button>
+
+<button class="nav-btn admin-only"
+        id="nav-users"
+        onclick="showPage('users')">
+👥 Kullanıcı Yönetimi
+</button>
+
+</nav>
   <<div class="topbar-actions">
 
     <button class="fab" onclick="openComplaintModal()">
