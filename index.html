@@ -1631,11 +1631,10 @@ var filtered = complaints.filter(function (r) {
           '<td style="font-family:monospace; font-weight:bold;">' + r.booking + '</td>' +
           '<td>' + truncate(r.veranstalter, 18) + '</td>' +
           '<td>' + r.region + '</td>' +
-          '<td><span class="badge badge-blue">' + r.servis + '</span></td>' +
           '<td>' + truncate(r.ptr, 22) + '</td>' +
-          '<td><span class="badge ' + (...) + '">' + r.result + '</span></td>' +
-          '<td style="font-weight:600;">' + (...) + '</td>' +
-
+          '<td><span class="badge badge-blue">' + r.servis + '</span></td>' +
+          '<td><span class="badge ' + (r.result === 'Haklı' ? 'badge-green' : 'badge-red') + '">' + r.result + '</span></td>' +
+          '<td style="font-weight:600;">' + (r.price > 0 ? fmt(r.price) + ' ' + r.currency : '-') + '</td>' +
           '<td>' + (r.isDeleted ? 'Silindi' : 'Aktif') + '</td>' +
           '<td>' + (r.deletedBy || '-') + '</td>' +
           '<td>' + (r.deletedAt ? r.deletedAt.substring(0,10) : '-') + '</td>' +
