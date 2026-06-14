@@ -1339,7 +1339,7 @@
 
     var complaints = JSON.parse(localStorage.getItem('tralvid_pages_complaints')) || [];
     var invoices = JSON.parse(localStorage.getItem('tralvid_pages_invoices')) || [];
-
+    var activityLogs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
     var USERS = JSON.parse(localStorage.getItem('tralvid_users')) || {
       admin: { password: "123", role: "admin" },
       personel: { password: "123", role: "user" }
@@ -1348,11 +1348,25 @@
     var currentUser = JSON.parse(sessionStorage.getItem('currentUser') || 'null');
 
     function syncStorage() {
-      localStorage.setItem('tralvid_pages_complaints', JSON.stringify(complaints));
-      localStorage.setItem('tralvid_pages_invoices', JSON.stringify(invoices));
-    }
+    localStorage.setItem('tralvid_pages_complaints', JSON.stringify(complaints));
+    localStorage.setItem('tralvid_pages_invoices', JSON.stringify(invoices));
+}
 
-    function applyPermissions() {
+function addLog(action) {
+
+    activityLogs.unshift({
+        user: currentUser ? currentUser.username : '-',
+        action: action,
+        date: new Date().toLocaleString('tr-TR')
+    });
+
+    localStorage.setItem(
+        'activityLogs',
+        JSON.stringify(activityLogs)
+    );
+}
+
+function applyPermissions() {
       if (!currentUser) return;
       var badge = document.getElementById('user-badge');
       if (badge) {
@@ -1679,6 +1693,8 @@ function requestDeleteComplaint(id) {
 
     renderRecordsTable();
 
+    addLog('Kayıt #' + id + ' için silme talebi gönderdi');
+
     showToast('Silme talebi gönderildi.');
 }
 
@@ -1737,6 +1753,8 @@ function approveDeleteComplaint(id) {
     renderRecordsTable();
     renderDashboard();
 
+    addLog('Kayıt #' + id + ' silindi');
+
     showToast('Kayıt pasif olarak silindi.');
 }
 
@@ -1755,6 +1773,8 @@ function rejectDeleteComplaint(id) {
     renderDeleteRequests();
     renderRecordsTable();
     renderDashboard();
+
+    addLog('Kayıt #' + id + ' silme talebi reddedildi');
 
     showToast('Silme talebi reddedildi.');
 }
@@ -1776,6 +1796,8 @@ function restoreComplaint(id) {
 
     renderRecordsTable();
     renderDashboard();
+
+    addLog('Kayıt #' + id + ' geri yüklendi');
 
     showToast('Kayıt geri yüklendi.');
 }
