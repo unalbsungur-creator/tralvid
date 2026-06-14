@@ -1407,6 +1407,11 @@ function applyPermissions() {
       renderDashboard();
       renderRecordsTable();
       renderAccounting();
+
+      showPage(
+        localStorage.getItem('activePage') || 'dashboard'
+);
+
       showToast('Giriş başarılı');
     }
 
@@ -1619,7 +1624,7 @@ if (
     });
 }
 
-var filtered = complaints.filter(function (r) {
+var filtered = visibleComplaints.filter(function (r) {
 
     if (r.isDeleted && !showDeleted) return false;
 
