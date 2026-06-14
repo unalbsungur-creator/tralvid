@@ -2206,10 +2206,30 @@ showPage(
     localStorage.getItem('activePage') || 'dashboard'
 );
 
-      } else {
-        document.getElementById('login-modal').style.display = 'flex';
-      }
-    });
+window.addEventListener('storage', function () {
+
+    complaints = JSON.parse(
+        localStorage.getItem('tralvid_pages_complaints')
+    ) || [];
+
+    invoices = JSON.parse(
+        localStorage.getItem('tralvid_pages_invoices')
+    ) || [];
+
+    renderDashboard();
+    renderRecordsTable();
+    renderAccounting();
+    renderDeleteRequests();
+
+});
+
+} else {
+
+    document.getElementById('login-modal').style.display = 'flex';
+
+}
+
+});
   </script>
 </body>
 
