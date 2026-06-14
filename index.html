@@ -503,14 +503,22 @@
     }
 
     .badge-red {
-      background: var(--red-bg);
-      color: var(--red-text);
-    }
+    background: var(--red-bg);
+    color: var(--red-text);
+}
 
-    .badge-blue {
-      background: var(--blue-bg);
-      color: var(--blue-text);
-    }
+.deleted-row td{
+    background:#ffe3e3 !important;
+}
+
+.deleted-row{
+    opacity:0.8;
+}
+
+.badge-blue {
+    background: var(--blue-bg);
+    color: var(--blue-text);
+}
 
     .badge-gray {
       background: var(--gray-bg);
@@ -1610,7 +1618,7 @@ var filtered = complaints.filter(function (r) {
       var html = '';
       for (var i = 0; i < filtered.length; i++) {
         var r = filtered[i];
-        html += '<tr>' +
+        html += '<tr class="' + (r.isDeleted ? 'deleted-row' : '') + '">' +
           '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
           '<td><span class="badge badge-purple">' + r.quarter + '</span></td>' +
           '<td>' + r.date + '</td>' +
