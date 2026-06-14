@@ -855,6 +855,12 @@
     <div id="page-records" class="page">
       <div class="table-wrap">
         <div class="table-toolbar">
+          <label style="display:flex;align-items:center;gap:6px;">
+    <input type="checkbox"
+           id="showDeleted"
+           onchange="renderRecordsTable()">
+    Silinenleri Göster
+</label>
           <input class="toolbar-input" type="text" id="rec-search" placeholder="Rezervasyon No veya Kelime Ara…" oninput="renderRecordsTable()">
           <select class="toolbar-select" id="rec-filter-sonuc" onchange="renderRecordsTable()">
             <option value="">Tüm Şikayet Sonuçları</option>
@@ -1567,6 +1573,9 @@ deletedAt: ''
     function renderRecordsTable() {
       var q = document.getElementById('rec-search').value.toLowerCase();
 var fs = document.getElementById('rec-filter-sonuc').value;
+var showDeleted =
+    document.getElementById('showDeleted') &&
+    document.getElementById('showDeleted').checked;
 var tbody = document.getElementById('rec-tbody');
 if (!tbody) return;
 
@@ -1583,7 +1592,7 @@ if (
 
 var filtered = complaints.filter(function (r) {
 
-    if (r.isDeleted) return false;
+    if (r.isDeleted && !showDeleted) return false;
 
     var haystack =
         (r.booking + r.user + r.ptr + r.veranstalter +
