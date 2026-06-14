@@ -1686,13 +1686,14 @@ function requestDeleteComplaint(id) {
     }
 
     if (!confirm('Bu kayıt için silme talebi göndermek istiyor musunuz?')) {
-        return;
-    }
+    return;
+}
+
+    localStorage.setItem('activePage', 'records');
 
     rec.deleteRequested = true;
 
     syncStorage();
-
     renderRecordsTable();
 
     addLog('Kayıt #' + id + ' için silme talebi gönderdi');
@@ -1770,6 +1771,8 @@ function rejectDeleteComplaint(id) {
 
     rec.deleteRequested = false;
 
+    localStorage.setItem('activePage', 'records');
+
     syncStorage();
 
     renderDeleteRequests();
@@ -1793,7 +1796,7 @@ function restoreComplaint(id) {
     rec.isDeleted = false;
     rec.deletedBy = '';
     rec.deletedAt = '';
-
+    localStorage.setItem('activePage', 'records');
     syncStorage();
 
     renderRecordsTable();
