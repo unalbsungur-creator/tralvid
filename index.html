@@ -1458,7 +1458,9 @@ function applyPermissions() {
     // ==================== NAVİGASYON MODÜLÜ ====================
     function showPage(page) {
 
-    var pages = ['dashboard', 'records', 'accounting', 'users'];
+    console.trace('SHOWPAGE =>', page);
+
+    var pages = ['dashboard','records','accounting','users'];
 
     localStorage.setItem('activePage', page);
 
