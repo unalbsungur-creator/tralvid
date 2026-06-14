@@ -891,6 +891,11 @@
                 <th style="width:200px;">Şikayet Konusu (TR)</th>
                 <th style="width:100px;">Sonuç</th>
                 <th style="width:100px;">Tazminat</th>
+
+                <th style="width:90px;">Durum</th>
+                <th style="width:120px;">Silen</th>
+                <th style="width:140px;">Silinme Tarihi</th>
+
                 <th style="width:90px;">İşlemler</th>
               </tr>
             </thead>
@@ -1628,8 +1633,13 @@ var filtered = complaints.filter(function (r) {
           '<td>' + r.region + '</td>' +
           '<td><span class="badge badge-blue">' + r.servis + '</span></td>' +
           '<td>' + truncate(r.ptr, 22) + '</td>' +
-          '<td><span class="badge ' + (r.result === 'Haklı' ? 'badge-green' : 'badge-red') + '">' + r.result + '</span></td>' +
-          '<td style="font-weight:600;">' + (r.price > 0 ? fmt(r.price) + ' ' + r.currency : '—') + '</td>' +
+          '<td><span class="badge ' + (...) + '">' + r.result + '</span></td>' +
+          '<td style="font-weight:600;">' + (...) + '</td>' +
+
+          '<td>' + (r.isDeleted ? 'Silindi' : 'Aktif') + '</td>' +
+          '<td>' + (r.deletedBy || '-') + '</td>' +
+          '<td>' + (r.deletedAt ? r.deletedAt.substring(0,10) : '-') + '</td>' +
+
           '<td>' +
           '<button class="icon-btn" onclick="openComplaintDetail(' + r.id + ')" title="Detay Gör">&#128065;</button>' +
           
