@@ -2020,13 +2020,23 @@ function deleteUser(username) {
 
     // ==================== DASHBOARD VE CSS GRAPHICS ====================
     function renderDashboard() {
-      var total = complaints.length;
-var hakliCount = complaints.filter(function (o) { return o.result === 'Haklı'; }).length;
-var activeInvs = invoices.length;
 
-var deleteRequests = complaints.filter(function(o){
-    return o.deleteRequested === true && !o.isDeleted;
-}).length;
+    var total = complaints.length;
+
+    var hakliCount = complaints.filter(function(o){
+        return o.result === 'Haklı';
+    }).length;
+
+    var activeInvs = invoices.length;
+
+    var deleteRequests = complaints.filter(function(o){
+        return o.deleteRequested === true && !o.isDeleted;
+    }).length;
+
+    var deletedCount = complaints.filter(function(r){
+        return r.isDeleted === true;
+    }).length;
+
 
       document.getElementById('dash-stats').innerHTML =
         '<div class="stat-card"><div class="s-lbl">Toplam Aktif Şikayet Kartı</div><div class="s-val">' + total + '</div></div>' +
@@ -2037,6 +2047,11 @@ var deleteRequests = complaints.filter(function(o){
 '<div class="stat-card">' +
 '<div class="s-lbl">Bekleyen Silme Talepleri</div>' +
 '<div class="s-val" style="color:#ff9800;">' + deleteRequests + '</div>' +
+'</div>' +
+
+'<div class="stat-card">' +
+'<div class="s-lbl">Silinen Kayıtlar</div>' +
+'<div class="s-val" style="color:#d32f2f;">' + deletedCount + '</div>' +
 '</div>';
 
       renderDonutChart('chart-servis', countBy(complaints, 'servis'), ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
