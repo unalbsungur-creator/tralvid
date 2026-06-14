@@ -1644,8 +1644,12 @@ var filtered = complaints.filter(function (r) {
           
 (
     r.deleteRequested
-    ? '<span title="Admin Onayı Bekleniyor" style="color:#ff9800;font-size:18px;"> ⏳ </span>'
-    : '<button class="icon-btn btn-delete" onclick="requestDeleteComplaint(' + r.id + ')" title="Silme Talebi">&#128465;</button>'
+    ? '<span title="Admin Onayı Bekleniyor" style="color:#ff9800;font-size:18px;">⌛</span>'
+    : (
+        r.isDeleted
+        ? '<button class="icon-btn" onclick="restoreComplaint(' + r.id + ')" title="Geri Yükle">&#8635;</button>'
+        : '<button class="icon-btn btn-delete" onclick="requestDeleteComplaint(' + r.id + ')" title="Silme Talebi">&#128465;</button>'
+      )
 ) +
           '</td>' +
           '</tr>';
@@ -1738,7 +1742,7 @@ function approveDeleteComplaint(id) {
 
 function rejectDeleteComplaint(id) {
 
-    var rec = complaints.find(function(r){
+     var rec = complaints.find(function(r){
         return r.id === id;
     });
 
@@ -1754,6 +1758,28 @@ function rejectDeleteComplaint(id) {
 
     showToast('Silme talebi reddedildi.');
 }
+
+
+function restoreComplaint(id) {
+
+    var rec = complaints.find(function(r){
+        return r.id === id;
+    });
+
+    if (!rec) return;
+
+    rec.isDeleted = false;
+    rec.deletedBy = '';
+    rec.deletedAt = '';
+
+    syncStorage();
+
+    renderRecordsTable();
+    renderDashboard();
+
+    showToast('Kayıt geri yüklendi.');
+}
+
 
 function renderAccounting() {
       var fPart = document.getElementById('acc-filter-partner').value;
