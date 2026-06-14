@@ -1672,12 +1672,13 @@ var filtered = visibleComplaints.filter(function (r) {
           '<button class="icon-btn" onclick="openComplaintDetail(' + r.id + ')" title="Detay Gör">&#128065;</button>' +
           
 (
-    r.deleteRequested
-    ? '<span title="Admin Onayı Bekleniyor" style="color:#ff9800;font-size:18px;">⌛</span>'
-    : (
-        r.isDeleted
-        ? '<button class="icon-btn" onclick="restoreComplaint(' + r.id + ')" title="Geri Yükle">&#8635;</button>'
-        : '<button class="icon-btn btn-delete" onclick="requestDeleteComplaint(' + r.id + ')" title="Silme Talebi">&#128465;</button>'
+    r.isDeleted
+? (
+    currentUser.role === 'admin'
+    ? '<button class="icon-btn" onclick="restoreComplaint(' + r.id + ')" title="Geri Yükle">&#8635;</button>'
+    : ''
+)
+: '<button class="icon-btn btn-delete" onclick="requestDeleteComplaint(' + r.id + ')" title="Silme Talebi">&#128465;</button>'
       )
 ) +
           '</td>' +
