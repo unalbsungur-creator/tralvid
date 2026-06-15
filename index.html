@@ -1033,6 +1033,12 @@
 
         </div>
 
+        <div id="data-manager-content"
+     style="margin-top:25px;">
+</div>
+
+</div>
+
     </div>
 
 </div>
@@ -2028,6 +2034,18 @@ function renderAccounting() {
 }
 
 function renderDataManager() {
+
+    var area =
+        document.getElementById(
+            'data-manager-content'
+        );
+
+    if (!area) return;
+
+    area.innerHTML =
+        '<div class="section-title">' +
+        'Bir kategori seçin' +
+        '</div>';
 
 }
 
