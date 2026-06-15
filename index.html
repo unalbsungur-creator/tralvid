@@ -1500,7 +1500,7 @@ function applyPermissions() {
 window.currentLanguage =
     currentUser.language;
 
-    
+
       document.getElementById('login-modal').style.display = 'none';
 
       applyPermissions();
@@ -2703,9 +2703,22 @@ function deleteUser(username) {
     // INITIALIZER
     document.addEventListener('DOMContentLoaded', function () {
       var savedUser = sessionStorage.getItem('currentUser');
-      if (savedUser) {
+
+if (savedUser) {
 
     currentUser = JSON.parse(savedUser);
+
+    if (!currentUser) {
+        sessionStorage.removeItem('currentUser');
+        location.reload();
+        return;
+    }
+
+    if (!currentUser.username) {
+        sessionStorage.removeItem('currentUser');
+        location.reload();
+        return;
+    }
 
     if (!USERS[currentUser.username]) {
 
