@@ -1829,14 +1829,20 @@ function renderDeleteRequests() {
 
         tbody.innerHTML +=
         '<tr>' +
-            '<td>' + r.id + '</td>' +
-            '<td>' + r.user + '</td>' +
-            '<td>' + r.date + '</td>' +
-            '<td>' +
-                '<button class="btn-primary" onclick="approveDeleteComplaint(' + r.id + ')">Kabul</button> ' +
-                '<button class="btn-secondary" onclick="rejectDeleteComplaint(' + r.id + ')">Reddet</button>' +
-            '</td>' +
-        '</tr>';
+'<td>' + (i+1) + '</td>' +
+'<td>' + hotels[i] + '</td>' +
+'<td>' +
+
+'<button class="btn-secondary" ' +
+'onclick="editHotel(' + i + ')">' +
+'✏️</button> ' +
+
+'<button class="btn-delete" ' +
+'onclick="deleteHotel(' + i + ')">' +
+'🗑️</button>' +
+
+'</td>' +
+'</tr>';
 
     });
 }
@@ -2121,20 +2127,34 @@ function openDataManager(type) {
             '<tr>' +
             '<th>#</th>' +
             '<th>Otel / Partner</th>' +
-            '</tr>' +
-            '</thead>' +
+            '<th>İşlem</th>' +
+'</tr>' +
+'</thead>' +
 
             '<tbody>';
 
         hotels.forEach(function(item,index){
 
-            html +=
-                '<tr>' +
-                '<td>' + (index+1) + '</td>' +
-                '<td>' + item + '</td>' +
-                '</tr>';
+    html +=
+        '<tr>' +
+        '<td>' + (index+1) + '</td>' +
+        '<td>' + item + '</td>' +
 
-        });
+        '<td>' +
+
+        '<button class="btn-secondary" ' +
+        'onclick="editHotel(' + index + ')">' +
+        '✏️</button> ' +
+
+        '<button class="btn-delete" ' +
+        'onclick="deleteHotel(' + index + ')">' +
+        '🗑️</button>' +
+
+        '</td>' +
+
+        '</tr>';
+
+});
 
         html +=
             '</tbody>' +
@@ -2148,28 +2168,30 @@ function openDataManager(type) {
 
 function addHotelPartner() {
 
-    var input =
-        document.getElementById(
-            'new-hotel-name'
-        );
+    ...
 
-    if (!input) return;
+    openDataManager('hotels');
 
-    var value = input.value.trim();
+}
 
-    if (!value) {
-        alert('Otel adı giriniz');
+
+function deleteHotel(index) {
+
+    let hotels =
+        JSON.parse(
+            localStorage.getItem('hotelPartners')
+        ) || [];
+
+    if (
+        !confirm(
+            hotels[index] +
+            '\n\nSilinsin mi?'
+        )
+    ) {
         return;
     }
 
-    var hotels =
-        JSON.parse(
-            localStorage.getItem(
-                'hotelPartners'
-            )
-        ) || [];
-
-    hotels.push(value);
+    hotels.splice(index, 1);
 
     localStorage.setItem(
         'hotelPartners',
@@ -2178,9 +2200,39 @@ function addHotelPartner() {
 
     openDataManager('hotels');
 
+    showToast('Kayıt silindi.');
 }
 
-    function openUserModal() {
+
+function editHotel(index) {
+
+    let hotels =
+        JSON.parse(
+            localStorage.getItem('hotelPartners')
+        ) || [];
+
+    let yeniDeger =
+        prompt(
+            'Yeni değer:',
+            hotels[index]
+        );
+
+    if (!yeniDeger) return;
+
+    hotels[index] = yeniDeger;
+
+    localStorage.setItem(
+        'hotelPartners',
+        JSON.stringify(hotels)
+    );
+
+    openDataManager('hotels');
+
+    showToast('Kayıt güncellendi.');
+}
+
+
+function openUserModal() {
     let username = prompt("Kullanıcı adı:");
     if (!username) return;
 
