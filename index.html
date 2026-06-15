@@ -2049,6 +2049,108 @@ function renderDataManager() {
 
 }
 
+function openDataManager(type) {
+
+    var area =
+        document.getElementById(
+            'data-manager-content'
+        );
+
+    if (!area) return;
+
+    if (type === 'hotels') {
+
+        var hotels =
+            JSON.parse(
+                localStorage.getItem(
+                    'hotelPartners'
+                )
+            ) || [];
+
+        var html =
+            '<div class="table-wrap">' +
+
+            '<div class="section-title">' +
+            '🏨 Otel / Partner Yönetimi' +
+            '</div>' +
+
+            '<div style="display:flex;gap:10px;margin-bottom:15px;">' +
+
+            '<input id="new-hotel-name" ' +
+            'style="flex:1;padding:10px;" ' +
+            'placeholder="Yeni otel / partner adı">' +
+
+            '<button class="fab" ' +
+            'onclick="addHotelPartner()">' +
+            'Ekle' +
+            '</button>' +
+
+            '</div>' +
+
+            '<table>' +
+            '<thead>' +
+            '<tr>' +
+            '<th>#</th>' +
+            '<th>Otel / Partner</th>' +
+            '</tr>' +
+            '</thead>' +
+
+            '<tbody>';
+
+        hotels.forEach(function(item,index){
+
+            html +=
+                '<tr>' +
+                '<td>' + (index+1) + '</td>' +
+                '<td>' + item + '</td>' +
+                '</tr>';
+
+        });
+
+        html +=
+            '</tbody>' +
+            '</table>' +
+            '</div>';
+
+        area.innerHTML = html;
+    }
+
+}
+
+function addHotelPartner() {
+
+    var input =
+        document.getElementById(
+            'new-hotel-name'
+        );
+
+    if (!input) return;
+
+    var value = input.value.trim();
+
+    if (!value) {
+        alert('Otel adı giriniz');
+        return;
+    }
+
+    var hotels =
+        JSON.parse(
+            localStorage.getItem(
+                'hotelPartners'
+            )
+        ) || [];
+
+    hotels.push(value);
+
+    localStorage.setItem(
+        'hotelPartners',
+        JSON.stringify(hotels)
+    );
+
+    openDataManager('hotels');
+
+}
+
     function openUserModal() {
     let username = prompt("Kullanıcı adı:");
     if (!username) return;
