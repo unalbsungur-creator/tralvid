@@ -1487,12 +1487,18 @@ function applyPermissions() {
         return;
       }
 
-      ccurrentUser = {
+      currentUser = {
     username: user,
     role: USERS[user].role,
     language: USERS[user].language || 'TR'
 };
-      sessionStorage.setItem(
+
+console.log(
+    'LOGIN USER:',
+    USERS[user]
+);
+
+sessionStorage.setItem(
     'currentUser',
     JSON.stringify(currentUser)
 );
