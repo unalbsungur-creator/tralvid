@@ -1009,15 +1009,15 @@
             </button>
 
           <input
-           type="file"
-            id="hotel-excel-file"
-            accept=".xlsx,.xls"
-            style="display:none"
-            onchange="importHotelExcel(event)">
+type="file"
+id="excel-import-file"
+accept=".xlsx,.xls"
+style="display:none"
+onchange="importSelectedExcel(event)">
 
-            <button class="fab"
-onclick="document.getElementById('hotel-excel-file').click()">
-📊 Excel Yükle
+<button class="fab"
+onclick="openExcelImportManager()">
+📁 Excel Veri Aktarımı
 </button>
 
             <button class="fab"
@@ -2342,7 +2342,45 @@ function importHotelExcel(event) {
     };
 
     reader.readAsArrayBuffer(file);
+function openExcelImportManager() {
 
+    var secim = prompt(
+        'Veri türünü seç:\n\n' +
+        '1 = Otel / Partner\n' +
+        '2 = Bölge\n' +
+        '3 = Havalimanı\n' +
+        '4 = Servis\n' +
+        '5 = Şikayet Konuları'
+    );
+
+    if (!secim) return;
+
+    localStorage.setItem(
+        'excelImportType',
+        secim
+    );
+
+    document
+        .getElementById('excel-import-file')
+        .click();
+}
+
+function importSelectedExcel(event) {
+
+    var secim =
+        localStorage.getItem(
+            'excelImportType'
+        );
+
+    if (secim === '1') {
+        importHotelExcel(event);
+        return;
+    }
+
+    alert(
+        'Bu bölüm henüz aktif değil.\n' +
+        'Önce Otel yükleme tamamlanacak.'
+    );
 }
 
 function deleteHotel(index) {
@@ -2373,7 +2411,6 @@ function deleteHotel(index) {
     showToast('Kayıt silindi.');
 }
 
-
 function editHotel(index) {
 
     let hotels =
@@ -2400,7 +2437,6 @@ function editHotel(index) {
 
     showToast('Kayıt güncellendi.');
 }
-
 
 function openUserModal() {
     let username = prompt("Kullanıcı adı:");
@@ -2430,6 +2466,7 @@ function openUserModal() {
     renderUsers();
     showToast("Kullanıcı oluşturuldu.");
 }
+
 function deleteUser(username) {
 
     if (username === 'admin') {
