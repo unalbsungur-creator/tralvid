@@ -885,7 +885,6 @@
             <thead>
               <tr>
                 <th style="width:80px;">Hafta No</th>
-                <th style="width:80px;">Çeyrek</th>
                 <th style="width:100px;">Tarih</th>
                 <th style="width:160px;">Kullanıcı</th>
                 <th style="width:130px;">Rezervasyon No</th>
@@ -895,10 +894,6 @@
                 <th style="width:200px;">Şikayet Konusu (TR)</th>
                 <th style="width:100px;">Sonuç</th>
                 <th style="width:100px;">Tazminat</th>
-
-                <th style="width:90px;">Durum</th>
-                <th style="width:120px;">Silen</th>
-                <th style="width:140px;">Silinme Tarihi</th>
 
                 <th style="width:90px;">İşlemler</th>
               </tr>
@@ -1767,7 +1762,6 @@ var filtered = visibleComplaints.filter(function (r) {
         var r = filtered[i];
         html += '<tr class="' + (r.isDeleted ? 'deleted-row' : '') + '">' +
           '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
-          '<td><span class="badge badge-purple">' + r.quarter + '</span></td>' +
           '<td>' + r.date + '</td>' +
           '<td>' + truncate(r.user, 14) + '</td>' +
           '<td style="font-family:monospace; font-weight:bold;">' + r.booking + '</td>' +
@@ -1777,10 +1771,6 @@ var filtered = visibleComplaints.filter(function (r) {
           '<td><span class="badge badge-blue">' + r.servis + '</span></td>' +
           '<td><span class="badge ' + (r.result === 'Haklı' ? 'badge-green' : 'badge-red') + '">' + r.result + '</span></td>' +
           '<td style="font-weight:600;">' + (r.price > 0 ? fmt(r.price) + ' ' + r.currency : '-') + '</td>' +
-          '<td>' + (r.isDeleted ? 'Silindi' : 'Aktif') + '</td>' +
-          '<td>' + (r.deletedBy || '-') + '</td>' +
-          '<td>' + (r.deletedAt ? r.deletedAt.substring(0,10) : '-') + '</td>' +
-
           '<td>' +
           '<button class="icon-btn" onclick="openComplaintDetail(' + r.id + ')" title="Detay Gör">&#128065;</button>' +
           
