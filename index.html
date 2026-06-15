@@ -790,6 +790,9 @@
       }
     }
   </style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 </head>
 
 <body>
@@ -1007,9 +1010,21 @@
                     margin-top:20px;">
 
             <button class="fab"
-                    onclick="openDataManager('hotels')">
-                🏨 Otel / Partner Yönetimi
+            onclick="openDataManager('hotels')">
+            🏨 Otel / Partner Yönetimi
             </button>
+
+          <input
+           type="file"
+            id="hotel-excel-file"
+            accept=".xlsx,.xls"
+            style="display:none"
+            onchange="importHotelExcel(event)">
+
+            <button class="fab"
+            onclick="document.getElementById('hotel-excel-file').click()">
+            📊 Excel Yükle
+            /button>
 
             <button class="fab"
                     onclick="openDataManager('regions')">
