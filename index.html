@@ -1194,11 +1194,7 @@
           </div>
           <div class="form-group span-2">
             <label class="form-label" for="c-hotel">İlgili Otel / Partner</label>
-            <select id="c-hotel">
-              <option value="ADALYA ELITE LARA">ADALYA ELITE LARA | ANTALYA | AYT</option>
-              <option value="AKRA HOTEL">AKRA HOTEL | ANTALYA | AYT</option>
-              <option value="BARUT GOIA">BARUT GOIA | SIDE | AYT</option>
-            </select>
+            <select id="c-hotel"></select>
           </div>
         </div>
 
@@ -1412,7 +1408,8 @@
     }
 
     var complaints = JSON.parse(localStorage.getItem('tralvid_pages_complaints')) || [];
-    var invoices = JSON.parse(localStorage.getItem('tralvid_pages_invoices')) || [];
+    var invoices =   JSON.parse(localStorage.getItem('tralvid_pages_invoices')) || [];
+    var hotelPartners = JSON.parse(localStorage.getItem('tralvid_hotels')) || [];
     var activityLogs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
     var USERS = JSON.parse(localStorage.getItem('tralvid_users')) || {
       admin: { password: "123", role: "admin" },
@@ -1581,7 +1578,10 @@ function applyPermissions() {
 
     // ==================== MODAL CONTROLS ====================
     function openComplaintModal() {
-      var today = new Date().toISOString().split('T')[0];
+
+    loadHotelDropdown();
+
+    var today = new Date().toISOString().split('T')[0];
 
     document.getElementById('c-date').value = today;
     document.getElementById('c-bdate').value = today;
@@ -2046,8 +2046,37 @@ function renderDataManager() {
         '<div class="section-title">' +
         'Bir kategori seçin' +
         '</div>';
+}
+
+
+function loadHotelDropdown() {
+
+    let select =
+        document.getElementById('c-hotel');
+
+    if (!select) return;
+
+    let hotels =
+        JSON.parse(
+            localStorage.getItem('hotelPartners')
+        ) || [];
+
+    select.innerHTML = '';
+
+    hotels.forEach(function(item) {
+
+        let option =
+            document.createElement('option');
+
+        option.value = item;
+        option.textContent = item;
+
+        select.appendChild(option);
+
+    });
 
 }
+
 
 function openDataManager(type) {
 
