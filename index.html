@@ -1011,9 +1011,12 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label" for="c-date">Kayıt Tarihi</label>
-            <input type="date" id="c-date" onchange="autoCalculateTimeFields()">
-          </div>
+    <label class="form-label" for="c-kw">KW (Hafta Numarası)</label>
+    <input type="text"
+           id="c-kw"
+           placeholder="Tarihten otomatik hesaplanır"
+           readonly>
+</div>
           <div class="form-group">
             <label class="form-label" for="c-kw">KW (Hafta Numarası)</label>
             <input type="text" id="c-kw" placeholder="Tarihten otomatik hesaplanır" readonly style="background:var(--bg-secondary);">
@@ -1430,10 +1433,30 @@ function applyPermissions() {
 
     // ==================== UTILITIES & FORMATTING ====================
     function getKW(dateStr) {
-      var d = new Date(dateStr); if (isNaN(d.getTime())) return 'KW24';
-      var jan1 = new Date(d.getFullYear(), 0, 1);
-      return 'KW' + Math.ceil((((d - jan1) / 86400000) + jan1.getDay() + 1) / 7);
-    }
+
+    var date = new Date(dateStr);
+
+    date.setHours(0, 0, 0, 0);
+
+    date.setDate(
+        date.getDate() + 3 - ((date.getDay() + 6) % 7)
+    );
+
+    var week1 = new Date(date.getFullYear(), 0, 4);
+
+    var weekNo = 1 + Math.round(
+        (
+            (
+                date.getTime() -
+                week1.getTime()
+            ) / 86400000
+            - 3
+            + ((week1.getDay() + 6) % 7)
+        ) / 7
+    );
+
+    return 'KW' + String(weekNo).padStart(2, '0');
+}
 
     function getQuarter(dateStr) {
       var d = new Date(dateStr); if (isNaN(d.getTime())) return 'Q2';
