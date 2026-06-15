@@ -1208,8 +1208,19 @@ onclick="document.getElementById('hotel-excel-file').click()">
             </select>
           </div>
           <div class="form-group span-2">
-            <label class="form-label" for="c-hotel">İlgili Otel / Partner</label>
-            <select id="c-hotel"></select>
+            <label class="form-label" for="c-hotel">
+İlgili Otel / Partner
+</label>
+
+<input
+    type="text"
+    id="hotel-search"
+    placeholder="Otel adı yazın..."
+    onkeyup="filterHotels()"
+    style="width:100%;margin-bottom:8px;padding:10px;"
+>
+
+<select id="c-hotel"></select>
           </div>
         </div>
 
@@ -2084,20 +2095,76 @@ function loadHotelDropdown() {
 
     select.innerHTML = '';
 
+    let firstOption =
+        document.createElement('option');
+
+    firstOption.value = '';
+    firstOption.textContent =
+        'Otel yazın veya seçin...';
+
+    select.appendChild(firstOption);
+
+    hotels
+        .sort()
+        .forEach(function(item) {
+
+            let option =
+                document.createElement('option');
+
+            option.value = item;
+            option.textContent = item;
+
+            select.appendChild(option);
+
+        });
+
+}
+
+function filterHotels() {
+
+    let text =
+        document.getElementById(
+            'hotel-search'
+        ).value.toLowerCase();
+
+    let select =
+        document.getElementById(
+            'c-hotel'
+        );
+
+    if (!select) return;
+
+    let hotels =
+        JSON.parse(
+            localStorage.getItem(
+                'hotelPartners'
+            )
+        ) || [];
+
+    select.innerHTML = '';
+
     hotels.forEach(function(item) {
 
-        let option =
-            document.createElement('option');
+        if (
+            item.toLowerCase()
+            .includes(text)
+        ) {
 
-        option.value = item;
-        option.textContent = item;
+            let option =
+                document.createElement(
+                    'option'
+                );
 
-        select.appendChild(option);
+            option.value = item;
+            option.textContent = item;
+
+            select.appendChild(option);
+
+        }
 
     });
 
 }
-
 
 function openDataManager(type) {
 
