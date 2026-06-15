@@ -2168,7 +2168,33 @@ function openDataManager(type) {
 
 function addHotelPartner() {
 
-    ...
+    var input =
+        document.getElementById(
+            'new-hotel-name'
+        );
+
+    if (!input) return;
+
+    var value = input.value.trim();
+
+    if (!value) {
+        alert('Otel adı giriniz');
+        return;
+    }
+
+    var hotels =
+        JSON.parse(
+            localStorage.getItem(
+                'hotelPartners'
+            )
+        ) || [];
+
+    hotels.push(value);
+
+    localStorage.setItem(
+        'hotelPartners',
+        JSON.stringify(hotels)
+    );
 
     openDataManager('hotels');
 
