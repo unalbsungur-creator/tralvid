@@ -1011,16 +1011,29 @@
             </select>
           </div>
           <div class="form-group">
-    <label class="form-label" for="c-kw">KW (Hafta Numarası)</label>
-    <input type="text"
-           id="c-kw"
-           placeholder="Tarihten otomatik hesaplanır"
-           readonly>
+            <label class="form-label" for="c-date">Kayıt Tarihi</label>
+            <input type="date"
+                  id="c-date"
+                  onchange="autoCalculateTimeFields()">
 </div>
+
           <div class="form-group">
-            <label class="form-label" for="c-kw">KW (Hafta Numarası)</label>
-            <input type="text" id="c-kw" placeholder="Tarihten otomatik hesaplanır" readonly style="background:var(--bg-secondary);">
-          </div>
+          <label class="form-label" for="c-kw">KW (Hafta Numarası)</label>
+          <input type="text"
+                id="c-kw"
+                placeholder="Tarihten otomatik hesaplanır"
+                readonly
+                style="background:var(--bg-secondary);">
+</div>
+
+          <div class="form-group">
+          <label class="form-label" for="c-quarter">QUARTER (Çeyrek Dönem)</label>
+          <input type="text"
+                id="c-quarter"
+                placeholder="Tarihten otomatik hesaplanır"
+                readonly
+                style="background:var(--bg-secondary);">
+</div>
           <div class="form-group">
             <label class="form-label" for="c-quarter">QUARTER (Çeyrek Dönem)</label>
             <input type="text" id="c-quarter" placeholder="Tarihten otomatik hesaplanır" readonly style="background:var(--bg-secondary);">
