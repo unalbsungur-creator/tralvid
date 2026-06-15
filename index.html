@@ -801,6 +801,7 @@
       <button class="nav-btn" id="nav-records" onclick="showPage('records')">📄 Müşteri Geri Bildirimleri (Complaints)</button>
       <button class="nav-btn" id="nav-accounting" onclick="showPage('accounting')">🧾 Muhasebe & Fatura Takibi</button>
       <button class="nav-btn admin-only" id="nav-users" onclick="showPage('users')">👥 Kullanıcı Yönetimi</button>
+      <button class="nav-btn admin-only" id="nav-data"  onclick="showPage('data')">📚 Veri Yönetimi</button>
     </nav>
     <div class="topbar-actions">
       <button class="fab" onclick="openComplaintModal()">+ Yeni Kayıt (Şikayet)</button>
@@ -992,6 +993,49 @@
       </div>
     </div>
   </div>
+  <div id="page-data" class="page">
+
+    <div class="table-wrap">
+
+        <div class="section-title">
+            📚 Veri Yönetimi
+        </div>
+
+        <div style="display:grid;
+                    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+                    gap:15px;
+                    margin-top:20px;">
+
+            <button class="fab"
+                    onclick="openDataManager('hotels')">
+                🏨 Otel / Partner Yönetimi
+            </button>
+
+            <button class="fab"
+                    onclick="openDataManager('regions')">
+                🌍 Bölge Yönetimi
+            </button>
+
+            <button class="fab"
+                    onclick="openDataManager('airports')">
+                ✈️ Havalimanı Yönetimi
+            </button>
+
+            <button class="fab"
+                    onclick="openDataManager('services')">
+                🚐 Servis Yönetimi
+            </button>
+
+            <button class="fab"
+                    onclick="openDataManager('reasons')">
+                📋 Şikayet Konuları
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
   <div class="modal-overlay" id="complaint-modal-overlay">
     <div class="modal">
@@ -1509,7 +1553,7 @@ function applyPermissions() {
 
     console.trace('SHOWPAGE =>', page);
 
-    var pages = ['dashboard','records','accounting','users'];
+    var pages = ['dashboard','records','accounting','users','data'];
 
     localStorage.setItem('activePage', page);
 
@@ -1526,6 +1570,7 @@ function applyPermissions() {
       if (page === 'records') renderRecordsTable();
       if (page === 'accounting') renderAccounting();
       if (page === 'users') renderUsers();
+      if (page === 'data') renderDataPage();
     }
 
     // ==================== MODAL CONTROLS ====================
@@ -1977,8 +2022,14 @@ function renderAccounting() {
     </td>
 </tr>`;
         tbody.innerHTML += row;
-      });
-    }
+
+    });
+
+}
+
+function renderDataManager() {
+
+}
 
     function openUserModal() {
     let username = prompt("Kullanıcı adı:");
