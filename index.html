@@ -2459,12 +2459,23 @@ function openUserModal() {
     if (!password) return;
 
     let role = prompt("Yetki (admin/user):", "user");
-    if (!role) role = "user";
+if (!role) role = "user";
 
-    USERS[username] = {
-        password: password,
-        role: role
-    };
+let language = prompt(
+    "Dil (TR/DE/EN):",
+    "TR"
+);
+
+if (!language) language = "TR";
+
+language =
+    language.toUpperCase();
+
+USERS[username] = {
+    password: password,
+    role: role,
+    language: language
+};
 
     localStorage.setItem(
     'tralvid_users',
