@@ -1487,11 +1487,20 @@ function applyPermissions() {
         return;
       }
 
-      currentUser = { username: user, role: USERS[user].role };
+      ccurrentUser = {
+    username: user,
+    role: USERS[user].role,
+    language: USERS[user].language || 'TR'
+};
       sessionStorage.setItem(
     'currentUser',
     JSON.stringify(currentUser)
 );
+
+window.currentLanguage =
+    currentUser.language;
+
+    
       document.getElementById('login-modal').style.display = 'none';
 
       applyPermissions();
