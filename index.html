@@ -2365,6 +2365,8 @@ function openExcelImportManager() {
         .click();
 }
 
+
+
 function importSelectedExcel(event) {
 
     var secim =
@@ -2382,6 +2384,7 @@ function importSelectedExcel(event) {
         'Önce Otel yükleme tamamlanacak.'
     );
 }
+
 
 function deleteHotel(index) {
 
@@ -2411,6 +2414,7 @@ function deleteHotel(index) {
     showToast('Kayıt silindi.');
 }
 
+
 function editHotel(index) {
 
     let hotels =
@@ -2437,6 +2441,7 @@ function editHotel(index) {
 
     showToast('Kayıt güncellendi.');
 }
+
 
 function openUserModal() {
     let username = prompt("Kullanıcı adı:");
@@ -2466,7 +2471,6 @@ function openUserModal() {
     renderUsers();
     showToast("Kullanıcı oluşturuldu.");
 }
-
 function deleteUser(username) {
 
     if (username === 'admin') {
