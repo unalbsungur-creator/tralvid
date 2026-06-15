@@ -2215,6 +2215,79 @@ function addHotelPartner() {
 
 }
 
+function importHotelExcel(event) {
+
+    var file = event.target.files[0];
+
+    if (!file) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+
+        var data = new Uint8Array(e.target.result);
+
+        var workbook =
+            XLSX.read(data, {
+                type: 'array'
+            });
+
+        var sheetName =
+            workbook.SheetNames[0];
+
+        var worksheet =
+            workbook.Sheets[sheetName];
+
+        var rows =
+            XLSX.utils.sheet_to_json(
+                worksheet,
+                { header: 1 }
+            );
+
+        var hotels = [];
+
+        for (var i = 1; i < rows.length; i++) {
+
+            if (!rows[i]) continue;
+
+            var hotel =
+                rows[i][0] || '';
+
+            var region =
+                rows[i][1] || '';
+
+            var airport =
+                rows[i][2] || '';
+
+            if (hotel === '') continue;
+
+            hotels.push(
+                hotel +
+                ' | ' +
+                region +
+                ' | ' +
+                airport
+            );
+
+        }
+
+        localStorage.setItem(
+            'hotelPartners',
+            JSON.stringify(hotels)
+        );
+
+        alert(
+            hotels.length +
+            ' kayıt yüklendi.'
+        );
+
+        openDataManager('hotels');
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+}
 
 function deleteHotel(index) {
 
