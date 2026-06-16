@@ -1230,10 +1230,23 @@ onclick="openExcelImportManager()">
 >
 
 <select id="c-hotel"></select>
-          </div>
-        </div>
 
-        <div class="section-title">Bölüm 4: Şikayet Konuları & Sonuç</div>
+<div style="margin-top:10px;">
+<label class="form-label" for="c-transfertype">
+Transfer Türü
+</label>
+
+<select id="c-transfertype">
+<option value="Shuttle">Shuttle</option>
+</select>
+</div>
+
+</div>
+</div>
+
+<div class="section-title">
+Bölüm 4: Şikayet Konuları & Sonuç
+</div>
         <div class="form-grid">
           <div class="form-group">
             <label class="form-label" for="c-ptr">Şikayet Konusu (TR)</label>
@@ -1629,9 +1642,10 @@ window.currentLanguage =
     // ==================== MODAL CONTROLS ====================
     function openComplaintModal() {
 
-    loadHotelDropdown();
+loadHotelDropdown();
+loadTransferTypeDropdown();
 
-    var today = new Date().toISOString().split('T')[0];
+var today = new Date().toISOString().split('T')[0];
 
     document.getElementById('c-date').value = today;
     document.getElementById('c-bdate').value = today;
@@ -1645,7 +1659,38 @@ window.currentLanguage =
     document.getElementById('complaint-modal-overlay')
         .classList.add('open');
 }
-    function closeComplaintModal() { document.getElementById('complaint-modal-overlay').classList.remove('open'); }
+
+function loadTransferTypeDropdown() {
+
+var select =
+document.getElementById('c-transfertype');
+
+if (!select) return;
+
+var types =
+JSON.parse(
+localStorage.getItem('transferTypes')
+) || [];
+
+select.innerHTML = '';
+
+types.forEach(function(type){
+
+var option =
+document.createElement('option');
+
+option.value = type;
+option.textContent = type;
+
+select.appendChild(option);
+
+});
+
+}
+
+function closeComplaintModal() {
+...
+}
 
     function openInvoiceModal() {
       var today = new Date().toISOString().split('T')[0];
@@ -1688,9 +1733,14 @@ window.currentLanguage =
           Verursacher: document.getElementById('c-verursacher').value,
           region: document.getElementById('c-region').value,
           airport: document.getElementById('c-airport').value,
-          servis: document.getElementById('c-servis').value,
+          service: document.getElementById('c-service').value,
           hotel: document.getElementById('c-hotel').value,
-          transfertype: 'Standart',
+
+          transfertype:
+          document.getElementById('c-transfertype')
+          ? document.getElementById('c-transfertype').value
+          : 'Shuttle',
+
           ptr: document.getElementById('c-ptr').value,
           pde: document.getElementById('c-pde').value,
           pen: document.getElementById('c-pen').value,
