@@ -2179,76 +2179,120 @@ function openDataManager(type) {
 
     if (!area) return;
 
-    if (type === 'hotels') {
+    var config = {
 
-        var hotels =
-            JSON.parse(
-                localStorage.getItem(
-                    'hotelPartners'
-                )
-            ) || [];
+        hotels: {
+            title: '🏨 Otel / Partner Yönetimi',
+            storage: 'hotelPartners',
+            placeholder: 'Yeni otel / partner adı'
+        },
 
-        var html =
-            '<div class="table-wrap">' +
+        regions: {
+            title: '🌍 Bölge Yönetimi',
+            storage: 'regions',
+            placeholder: 'Yeni bölge adı'
+        },
 
-            '<div class="section-title">' +
-            '🏨 Otel / Partner Yönetimi' +
-            '</div>' +
+        airports: {
+            title: '✈️ Havalimanı Yönetimi',
+            storage: 'airports',
+            placeholder: 'Yeni havalimanı'
+        },
 
-            '<div style="display:flex;gap:10px;margin-bottom:15px;">' +
+        services: {
+            title: '🚌 Servis Yönetimi',
+            storage: 'services',
+            placeholder: 'Yeni servis'
+        },
 
-            '<input id="new-hotel-name" ' +
-            'style="flex:1;padding:10px;" ' +
-            'placeholder="Yeni otel / partner adı">' +
+        reasons: {
+            title: '📋 Şikayet Konuları',
+            storage: 'reasons',
+            placeholder: 'Yeni konu'
+        }
 
-            '<button class="fab" ' +
-            'onclick="addHotelPartner()">' +
-            'Ekle' +
-            '</button>' +
+    };
 
-            '</div>' +
+    if (!config[type]) return;
 
-            '<table>' +
-            '<thead>' +
-            '<tr>' +
-            '<th>#</th>' +
-            '<th>Otel / Partner</th>' +
-            '<th>İşlem</th>' +
-'</tr>' +
-'</thead>' +
+    var items =
+        JSON.parse(
+            localStorage.getItem(
+                config[type].storage
+            )
+        ) || [];
 
-            '<tbody>';
+    var html =
+        '<div class="table-wrap">' +
 
-        hotels.forEach(function(item,index){
+        '<div class="section-title">' +
+        config[type].title +
+        '</div>' +
 
-    html +=
+        '<div style="display:flex;gap:10px;margin-bottom:15px;">' +
+
+        '<input id="new-item" ' +
+        'style="flex:1;padding:10px;" ' +
+        'placeholder="' + config[type].placeholder + '">' +
+
+        '<button class="fab" ' +
+        'onclick="addDataItem(\'' + type + '\')">' +
+        'Ekle' +
+        '</button>' +
+
+        '</div>' +
+
+        '<table>' +
+
+        '<thead>' +
         '<tr>' +
-        '<td>' + (index+1) + '</td>' +
-        '<td>' + item + '</td>' +
+        '<th>#</th>' +
+        '<th>Değer</th>' +
+        '<th>İşlem</th>' +
+        '</tr>' +
+        '</thead>' +
 
-        '<td>' +
+        '<tbody>';
 
-        '<button class="btn-secondary" ' +
-        'onclick="editHotel(' + index + ')">' +
-        '✏️</button> ' +
-
-        '<button class="btn-delete" ' +
-        'onclick="deleteHotel(' + index + ')">' +
-        '🗑️</button>' +
-
-        '</td>' +
-
-        '</tr>';
-
-});
+    items.forEach(function(item,index){
 
         html +=
-            '</tbody>' +
-            '</table>' +
-            '</div>';
 
-        area.innerHTML = html;
-    }
+            '<tr>' +
+
+            '<td>' +
+            (index+1) +
+            '</td>' +
+
+            '<td>' +
+            item +
+            '</td>' +
+
+            '<td>' +
+
+            '<button class="btn-secondary" ' +
+            'onclick="editDataItem(\'' + type + '\',' + index + ')">' +
+            '✏️' +
+            '</button> ' +
+
+            '<button class="btn-delete" ' +
+            'onclick="deleteDataItem(\'' + type + '\',' + index + ')">' +
+            '🗑️' +
+            '</button>' +
+
+            '</td>' +
+
+            '</tr>';
+
+    });
+
+    html +=
+        '</tbody>' +
+        '</table>' +
+        '</div>';
+
+    area.innerHTML = html;
+}
 
 }
 
