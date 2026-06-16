@@ -2300,11 +2300,15 @@ function openDataManager(type) {
 
     ?
 
-    '📅 ' + (item.date || '') +
-    ' | 🏢 ' + (item.operator || '') +
-    ' | 🌍 ' + (item.region || '') +
-    ' | 🏨 ' + (item.hotel || '') +
-    ' | 👥 ' + (item.pax || 0)
+    '🏢 ' + item.operator +
+' | 🌍 ' + item.region +
+' | ✈️ ' + item.airport +
+' | 🏨 ' + item.hotel +
+' | 🚐 ' + item.transferType +
+' | 👨 ' + item.adult +
+' | 🧒 ' + item.child +
+' | 👶 ' + item.infant +
+' | 👥 ' + item.totalPax
 
     :
 
@@ -2541,12 +2545,33 @@ function importPassengerExcel(event) {
             if (!rows[i]) continue;
 
             passengers.push({
-                date: rows[i][0] || '',
-                operator: rows[i][1] || '',
-                region: rows[i][2] || '',
-                hotel: rows[i][3] || '',
-                pax: Number(rows[i][4] || 0)
-            });
+
+    operator: row[0] || '',
+
+    region: row[1] || '',
+
+    airport: row[2] || '',
+
+    hotel: row[3] || '',
+
+    transferType: row[4] || '',
+
+    arrivalDate: row[5] || '',
+
+    departureDate: row[6] || '',
+
+    adult: Number(row[7] || 0),
+
+    child: Number(row[8] || 0),
+
+    infant: Number(row[9] || 0),
+
+    totalPax:
+        Number(row[7] || 0) +
+        Number(row[8] || 0) +
+        Number(row[9] || 0)
+
+});
 
         }
 
