@@ -1036,6 +1036,11 @@ onclick="openExcelImportManager()">
             </button>
 
             <button class="fab"
+                    onclick="openDataManager('transferTypes')">
+                🚐 Transfer Türleri
+            </button>
+
+            <button class="fab"
                     onclick="openDataManager('reasons')">
                 📋 Şikayet Konuları
             </button>
@@ -2209,12 +2214,19 @@ function openDataManager(type) {
             storage: 'services',
             placeholder: 'Yeni servis'
         },
+        
 
         reasons: {
-            title: '📋 Şikayet Konuları',
-            storage: 'reasons',
-            placeholder: 'Yeni konu'
+            title:'📋 Şikayet Konuları',
+            storage:'reasons',
+            placeholder:'Yeni konu'
         },
+
+        transferTypes: {
+            title:'🚐 Transfer Türleri',
+            storage:'transferTypes',
+            placeholder:'Yeni transfer türü'
+        }
 
         passengers: {
             title: '👥 Yolcu Verileri (PAX)',
@@ -2959,9 +2971,25 @@ function deleteUser(username) {
 
     // INITIALIZER
     document.addEventListener('DOMContentLoaded', function () {
-      var savedUser = sessionStorage.getItem('currentUser');
 
-if (savedUser) {
+    if (!localStorage.getItem('transferTypes')) {
+
+        localStorage.setItem(
+            'transferTypes',
+            JSON.stringify([
+                'Shuttle',
+                'Private Sedan',
+                'Private Minivan',
+                'Private Midibus',
+                'Private Bus'
+            ])
+        );
+
+    }
+
+    var savedUser = sessionStorage.getItem('currentUser');
+
+    if (savedUser) {
 
     currentUser = JSON.parse(savedUser);
 
