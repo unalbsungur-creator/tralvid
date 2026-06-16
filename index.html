@@ -1020,6 +1020,11 @@ onclick="openExcelImportManager()">
 📁 Excel Veri Aktarımı
 </button>
 
+<button class="fab"
+onclick="downloadPaxTemplate()">
+📥 PAX Şablonu İndir
+</button>
+
             <button class="fab"
                     onclick="openDataManager('regions')">
                 🌍 Bölge Yönetimi
@@ -2566,7 +2571,40 @@ function openExcelImportManager() {
         .getElementById('excel-import-file')
         .click();
 }
+function downloadPaxTemplate() {
 
+    var rows = [[
+        'Rezervasyon No',
+        'Alt Rezervasyon No',
+        'Tur Operatörü',
+        'Bölge',
+        'Otel',
+        'Havalimanı',
+        'Transfer Türü',
+        'Geliş Tarihi',
+        'Dönüş Tarihi',
+        'Yetişkin',
+        'Çocuk',
+        'Bebek'
+    ]];
+
+    var ws =
+        XLSX.utils.aoa_to_sheet(rows);
+
+    var wb =
+        XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        wb,
+        ws,
+        'PAX'
+    );
+
+    XLSX.writeFile(
+        wb,
+        'TRALVID_PAX_SABLON.xlsx'
+    );
+}
 
 
 function importSelectedExcel(event) {
