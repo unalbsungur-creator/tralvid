@@ -1041,6 +1041,11 @@ onclick="openExcelImportManager()">
             </button>
 
             <button class="fab"
+                    onclick="openDataManager('operators')">
+                🏢 Tur Operatörleri
+            </button>
+
+            <button class="fab"
                     onclick="openDataManager('reasons')">
                 📋 Şikayet Konuları
             </button>
@@ -2228,6 +2233,12 @@ function openDataManager(type) {
             placeholder:'Yeni transfer türü'
         },
 
+        operators: {
+            title:'🏢 Tur Operatörleri',
+            storage:'operators',
+            placeholder:'Yeni tur operatörü'
+        },
+
         passengers: {
             title: '👥 Yolcu Verileri (PAX)',
             storage: 'passengerStats',
@@ -3034,11 +3045,33 @@ function deleteUser(username) {
             'VIP Minibus',
             'VIP Midibus'
         ])
+        );
+
+}
+
+if (!localStorage.getItem('operators')) {
+
+    localStorage.setItem(
+        'operators',
+        JSON.stringify([
+            'TUI',
+            'JET2',
+            'ANEX',
+            'CORAL',
+            'ODEON',
+            'DERTOUR',
+            'SCHAUINSLAND',
+            'HOLIDAY CHECK',
+            'LOVEHOLIDAYS',
+            'ON THE BEACH',
+            'EASYJET HOLIDAYS',
+            'SUNEXPRESS HOLIDAYS'
+        ])
     );
 
 }
 
-    var savedUser = sessionStorage.getItem('currentUser');
+var savedUser = sessionStorage.getItem('currentUser');
 
     if (savedUser) {
 
