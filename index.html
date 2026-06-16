@@ -2519,12 +2519,12 @@ function importHotelExcel(event) {
             workbook.Sheets[sheetName];
 
         var rows =
-            XLSX.utils.sheet_to_json(
-                worksheet,
-                { header: 1 }
-            );
+XLSX.utils.sheet_to_json(
+    sheet,
+    { header: 1 }
+);
 
-          console.log(rows);  
+console.log(rows); 
 
         var hotels = [];
 
