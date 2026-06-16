@@ -2503,6 +2503,126 @@ function editHotel(index) {
 }
 
 
+function addDataItem(type) {
+
+    var config = {
+        hotels: 'hotelPartners',
+        regions: 'regions',
+        airports: 'airports',
+        services: 'services',
+        reasons: 'reasons'
+    };
+
+    var input =
+        document.getElementById('new-item');
+
+    if (!input) return;
+
+    var value = input.value.trim();
+
+    if (!value) {
+        alert('Değer giriniz');
+        return;
+    }
+
+    var items =
+        JSON.parse(
+            localStorage.getItem(
+                config[type]
+            )
+        ) || [];
+
+    items.push(value);
+
+    localStorage.setItem(
+        config[type],
+        JSON.stringify(items)
+    );
+
+    openDataManager(type);
+
+    showToast('Kayıt eklendi');
+}
+
+
+
+function editDataItem(type,index) {
+
+    var config = {
+        hotels: 'hotelPartners',
+        regions: 'regions',
+        airports: 'airports',
+        services: 'services',
+        reasons: 'reasons'
+    };
+
+    var items =
+        JSON.parse(
+            localStorage.getItem(
+                config[type]
+            )
+        ) || [];
+
+    var yeniDeger =
+        prompt(
+            'Yeni değer:',
+            items[index]
+        );
+
+    if (!yeniDeger) return;
+
+    items[index] = yeniDeger;
+
+    localStorage.setItem(
+        config[type],
+        JSON.stringify(items)
+    );
+
+    openDataManager(type);
+
+    showToast('Kayıt güncellendi');
+}
+
+
+
+function deleteDataItem(type,index) {
+
+    var config = {
+        hotels: 'hotelPartners',
+        regions: 'regions',
+        airports: 'airports',
+        services: 'services',
+        reasons: 'reasons'
+    };
+
+    var items =
+        JSON.parse(
+            localStorage.getItem(
+                config[type]
+            )
+        ) || [];
+
+    if (
+        !confirm(
+            items[index] +
+            '\n\nSilinsin mi?'
+        )
+    ) {
+        return;
+    }
+
+    items.splice(index,1);
+
+    localStorage.setItem(
+        config[type],
+        JSON.stringify(items)
+    );
+
+    openDataManager(type);
+
+    showToast('Kayıt silindi');
+}
+
 function openUserModal() {
     let username = prompt("Kullanıcı adı:");
     if (!username) return;
