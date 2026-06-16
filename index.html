@@ -1003,19 +1003,24 @@
                     gap:15px;
                     margin-top:20px;">        
 
-<button class="fab"
-onclick="openExcelImportManager()">
-📁 Excel Veri Aktarımı
-</button>
+            <button class="fab"
+                    onclick="openExcelImportManager()">
+                📁 Excel Veri Aktarımı
+            </button>
 
-<button class="fab"
-onclick="downloadPaxTemplate()">
-📥 PAX Şablonu İndir
-</button>
+            <button class="fab"
+                    onclick="downloadPaxTemplate()">
+                📥 PAX Şablonu İndir
+            </button>
 
-<button class="fab"
-            onclick="openDataManager('hotels')">
-            🏨 Otel / Partner Yönetimi
+            <button class="fab"
+                    onclick="openDataManager('passengers')">
+                👥 Yolcu Verileri (PAX)
+            </button>
+
+            <button class="fab"
+                    onclick="openDataManager('hotels')">
+                🏨 Otel / Partner Yönetimi
             </button>
 
           <input
@@ -1055,10 +1060,7 @@ onchange="importSelectedExcel(event)">
                 📋 Şikayet Konuları
             </button>
 
-            <button class="fab"
-                    onclick="openDataManager('passengers')">
-                👥 Yolcu Verileri (PAX)
-            </button>
+            
 
         </div>
 
