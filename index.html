@@ -189,18 +189,37 @@
 
     /* ===== STAT CARDS ===== */
     .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
 
-    .stat-card {
-      background: var(--bg-primary);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 14px 16px;
-    }
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: all .2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-card .s-lbl {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: .5px;
+}
+
+.stat-card .s-val {
+    margin-top: 8px;
+    font-size: 32px;
+    font-weight: 700;
+}
 
     .stat-card .s-lbl {
       font-size: 11px;
@@ -3077,10 +3096,27 @@ totalPassengers > 0
 : '0.00';
 
       document.getElementById('dash-stats').innerHTML =
-        '<div class="stat-card"><div class="s-lbl">Toplam Aktif Şikayet Kartı</div><div class="s-val">' + total + '</div></div>' +
-        '<div class="stat-card">' +
-'<div class="s-lbl">Toplam Yolcu</div>' +
-'<div class="s-val" style="color:#2196F3;">' +
+
+'<div class="stat-card">' +
+'<div class="s-lbl">TOPLAM YOLCU</div>' +
+'<div class="s-val" style="color:#2196F3;font-size:34px;">' +
+totalPassengers +
+'</div>' +
+'</div>' +
+
+'<div class="stat-card">' +
+'<div class="s-lbl">TOPLAM ŞİKAYET</div>' +
+'<div class="s-val" style="color:#e53935;font-size:34px;">' +
+total +
+'</div>' +
+'</div>' +
+
+'<div class="stat-card">' +
+'<div class="s-lbl">TOPLAM ŞİKAYET</div>' +
+'<div class="s-val" style="color:#e53935;font-size:34px;">' +
+total +
+'</div>' +
+'</div>' +
 totalPassengers +
 '</div>' +
 '</div>' +
