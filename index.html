@@ -1719,7 +1719,9 @@ function loadSimpleDropdown(selectId, storageKey) {
 }
 
 function closeComplaintModal() {
-
+    document.getElementById(
+        'complaint-modal-overlay'
+    ).classList.remove('open');
 }
 
     function openInvoiceModal() {
