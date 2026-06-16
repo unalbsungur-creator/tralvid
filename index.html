@@ -3017,18 +3017,26 @@ function deleteUser(username) {
 
     if (!localStorage.getItem('transferTypes')) {
 
-        localStorage.setItem(
-            'transferTypes',
-            JSON.stringify([
-                'Shuttle',
-                'Private Sedan',
-                'Private Minivan',
-                'Private Midibus',
-                'Private Bus'
-            ])
-        );
+    localStorage.setItem(
+        'transferTypes',
+        JSON.stringify([
+            'Shuttle',
 
-    }
+            'Private Sedan',
+            'Private Minivan',
+            'Private Vito',
+            'Private Sprinter',
+            'Private Midibus',
+            'Private Bus',
+
+            'VIP Sedan',
+            'VIP Vito',
+            'VIP Minibus',
+            'VIP Midibus'
+        ])
+    );
+
+}
 
     var savedUser = sessionStorage.getItem('currentUser');
 
