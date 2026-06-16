@@ -2239,11 +2239,17 @@ function openDataManager(type) {
     if (!config[type]) return;
 
     var items =
-        JSON.parse(
-            localStorage.getItem(
-                config[type].storage
-            )
-        ) || [];
+    JSON.parse(
+        localStorage.getItem(
+            config[type].storage
+        )
+    ) || [];
+
+console.log(
+    'TYPE=', type,
+    'STORAGE=', config[type].storage,
+    'ITEMS=', items
+);
 
     var html =
         '<div class="table-wrap">' +
