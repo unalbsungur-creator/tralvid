@@ -1140,12 +1140,7 @@ onclick="openExcelImportManager()">
           </div>
           <div class="form-group">
             <label class="form-label" for="c-veranstalter">Tur Operatörü</label>
-            <select id="c-veranstalter">
-              <option value="HOLIDAY CHECK TOURISTIC">HOLIDAY CHECK TOURISTIC</option>
-              <option value="PAXIMUM WEST MARKETS">PAXIMUM WEST MARKETS</option>
-              <option value="ONEX TOUR">ONEX TOUR</option>
-              <option value="TIMELESS TRAVEL">TIMELESS TRAVEL</option>
-            </select>
+            <select id="c-veranstalter"></select>
           </div>
           <div class="form-group">
             <label class="form-label" for="c-adult">Yetişkin</label>
@@ -1191,30 +1186,15 @@ onclick="openExcelImportManager()">
           </div>
           <div class="form-group">
             <label class="form-label" for="c-region">Region (Bölge)</label>
-            <select id="c-region">
-              <option value="AYT">AYT</option>
-              <option value="ANTALYA">ANTALYA</option>
-              <option value="SIDE">SIDE</option>
-              <option value="KEMER">KEMER</option>
-              <option value="BELEK">BELEK</option>
-            </select>
+            <select id="c-region"></select>
           </div>
           <div class="form-group">
             <label class="form-label" for="c-airport">Flughafen (Havalimanı)</label>
-            <select id="c-airport">
-              <option value="AYT">AYT</option>
-              <option value="ADB">ADB</option>
-              <option value="IST">IST</option>
-              <option value="SAW">SAW</option>
-            </select>
+            <select id="c-airport"></select>
           </div>
           <div class="form-group">
             <label class="form-label" for="c-servis">Servis (Hizmet)</label>
-            <select id="c-servis">
-              <option value="Transfer">Transfer</option>
-              <option value="Tur">Tur</option>
-              <option value="Konaklama">Konaklama</option>
-            </select>
+            <select id="c-service"></select>
           </div>
           <div class="form-group span-2">
             <label class="form-label" for="c-hotel">
@@ -1643,9 +1623,31 @@ window.currentLanguage =
     function openComplaintModal() {
 
 loadHotelDropdown();
+
 loadTransferTypeDropdown();
 
-var today = new Date().toISOString().split('T')[0];
+loadSimpleDropdown(
+'c-veranstalter',
+'tourOperators'
+);
+
+loadSimpleDropdown(
+'c-region',
+'regions'
+);
+
+loadSimpleDropdown(
+'c-airport',
+'airports'
+);
+
+loadSimpleDropdown(
+'c-service',
+'services'
+);
+
+var today =
+new Date().toISOString().split('T')[0];
 
     document.getElementById('c-date').value = today;
     document.getElementById('c-bdate').value = today;
