@@ -2295,13 +2295,25 @@ function openDataManager(type) {
 
     '<td>' +
 
+(
+    type === 'passengers'
+
+    ?
+
     '📅 ' + (item.date || '') +
     ' | 🏢 ' + (item.operator || '') +
     ' | 🌍 ' + (item.region || '') +
     ' | 🏨 ' + (item.hotel || '') +
-    ' | 👥 ' + (item.pax || 0) +
+    ' | 👥 ' + (item.pax || 0)
 
-    '</td>' +
+    :
+
+    item
+)
+
++
+
+'</td>' +
 
             '<button class="btn-secondary" ' +
             'onclick="editDataItem(\'' + type + '\',' + index + ')">' +
