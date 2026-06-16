@@ -1040,6 +1040,11 @@ onclick="openExcelImportManager()">
                 📋 Şikayet Konuları
             </button>
 
+            <button class="fab"
+                    onclick="openDataManager('passengers')">
+                👥 Yolcu Verileri (PAX)
+            </button>
+
         </div>
 
         <div id="data-manager-content"
@@ -2410,7 +2415,8 @@ function openExcelImportManager() {
         '2 = Bölge\n' +
         '3 = Havalimanı\n' +
         '4 = Servis\n' +
-        '5 = Şikayet Konuları'
+        '5 = Şikayet Konuları\n' +
+        '6 = Yolcu Verileri (PAX)'
     );
 
     if (!secim) return;
@@ -2435,16 +2441,77 @@ function importSelectedExcel(event) {
         );
 
     if (secim === '1') {
-        importHotelExcel(event);
-        return;
-    }
-
-    alert(
-        'Bu bölüm henüz aktif değil.\n' +
-        'Önce Otel yükleme tamamlanacak.'
-    );
+    importHotelExcel(event);
+    return;
 }
 
+    if (secim === '6') {
+    importPassengerExcel(event);
+    return;
+}
+
+alert(
+    'Bu veri türü henüz aktif değil.'
+);
+}
+
+function importPassengerExcel(event) {
+
+    var file = event.target.files[0];
+
+    if (!file) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+
+        var data = new Uint8Array(e.target.result);
+
+        var workbook = XLSX.read(data, {
+            type: 'array'
+        });
+
+        var sheet =
+            workbook.Sheets[
+                workbook.SheetNames[0]
+            ];
+
+        var rows =
+            XLSX.utils.sheet_to_json(
+                sheet,
+                { header: 1 }
+            );
+
+        var passengers = [];
+
+        for (var i = 1; i < rows.length; i++) {
+
+            if (!rows[i]) continue;
+
+            passengers.push({
+                date: rows[i][0] || '',
+                operator: rows[i][1] || '',
+                region: rows[i][2] || '',
+                hotel: rows[i][3] || '',
+                pax: Number(rows[i][4] || 0)
+            });
+
+        }
+
+        localStorage.setItem(
+            'passengerStats',
+            JSON.stringify(passengers)
+        );
+
+        alert(
+            passengers.length +
+            ' satır yolcu verisi yüklendi.'
+        );
+
+    };
+
+    reader.readAsArrayBuffer(file);
+}
 
 function deleteHotel(index) {
 
