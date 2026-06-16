@@ -3047,9 +3047,71 @@ function deleteUser(username) {
         return r.isDeleted === true;
     }).length;
 
+    var paxData =
+      JSON.parse(
+      localStorage.getItem('passengerStats')
+) || [];
+
+var totalAdult = 0;
+var totalChild = 0;
+var totalInfant = 0;
+
+paxData.forEach(function(p){
+
+    totalAdult += parseInt(p.adult || 0);
+
+    totalChild += parseInt(p.child || 0);
+
+    totalInfant += parseInt(p.infant || 0);
+
+});
+
+var totalPassengers =
+totalAdult +
+totalChild +
+totalInfant;
+
+var complaintRatio =
+totalPassengers > 0
+? ((total / totalPassengers) * 100).toFixed(2)
+: '0.00';
 
       document.getElementById('dash-stats').innerHTML =
         '<div class="stat-card"><div class="s-lbl">Toplam Aktif Şikayet Kartı</div><div class="s-val">' + total + '</div></div>' +
+        '<div class="stat-card">' +
+'<div class="s-lbl">Toplam Yolcu</div>' +
+'<div class="s-val" style="color:#2196F3;">' +
+totalPassengers +
+'</div>' +
+'</div>' +
+
+'<div class="stat-card">' +
+'<div class="s-lbl">Şikayet Oranı %</div>' +
+'<div class="s-val" style="color:#FF9800;">' +
+complaintRatio +
+'%</div>' +
+'</div>' +
+
+'<div class="stat-card">' +
+'<div class="s-lbl">Yetişkin</div>' +
+'<div class="s-val" style="color:#4CAF50;">' +
+totalAdult +
+'</div>' +
+'</div>' +
+
+'<div class="stat-card">' +
+'<div class="s-lbl">Çocuk</div>' +
+'<div class="s-val" style="color:#9C27B0;">' +
+totalChild +
+'</div>' +
+'</div>' +
+
+'<div class="stat-card">' +
+'<div class="s-lbl">Bebek</div>' +
+'<div class="s-val" style="color:#03A9F4;">' +
+totalInfant +
+'</div>' +
+'</div>' +
         '<div class="stat-card"><div class="s-lbl">Haklı Bulunan Dosyalar</div><div class="s-val" style="color:#3B6D11;">' + hakliCount + '</div><div class="s-sub">%' + (total ? Math.round((hakliCount / total) * 100) : 0) + ' Mutabakat Oranı</div></div>' +
         '<div class="stat-card"><div class="s-lbl">Muhasebe Fatura Takip Sayısı</div><div class="s-val" style="color:#185FA5;">' + activeInvs + '</div></div>' +
         '<div class="stat-card"><div class="s-lbl">Cevap Süresi Aşalan Dosyalar</div><div class="s-val" style="color:#A32D2D;">' + complaints.filter(function (o) { return o.timeout === 'Evet'; }).length + '</div></div>' +
