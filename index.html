@@ -1690,6 +1690,34 @@ select.appendChild(option);
 
 }
 
+function loadSimpleDropdown(selectId, storageKey) {
+
+    var select =
+    document.getElementById(selectId);
+
+    if (!select) return;
+
+    var items =
+    JSON.parse(
+        localStorage.getItem(storageKey)
+    ) || [];
+
+    select.innerHTML = '';
+
+    items.forEach(function(item){
+
+        var option =
+        document.createElement('option');
+
+        option.value = item;
+        option.textContent = item;
+
+        select.appendChild(option);
+
+    });
+
+}
+
 function closeComplaintModal() {
 
 }
