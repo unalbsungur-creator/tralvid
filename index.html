@@ -1624,30 +1624,29 @@ window.currentLanguage =
 
 loadHotelDropdown();
 
+loadSimpleDropdown(
+    'c-veranstalter',
+    'operators'
+);
+
+loadSimpleDropdown(
+    'c-region',
+    'regions'
+);
+
+loadSimpleDropdown(
+    'c-airport',
+    'airports'
+);
+
+loadSimpleDropdown(
+    'c-service',
+    'services'
+);
+
 loadTransferTypeDropdown();
 
-loadSimpleDropdown(
-'c-veranstalter',
-'operators'
-);
-
-loadSimpleDropdown(
-'c-region',
-'regions'
-);
-
-loadSimpleDropdown(
-'c-airport',
-'airports'
-);
-
-loadSimpleDropdown(
-'c-service',
-'services'
-);
-
-var today =
-new Date().toISOString().split('T')[0];
+var today = new Date().toISOString().split('T')[0];
 
     document.getElementById('c-date').value = today;
     document.getElementById('c-bdate').value = today;
