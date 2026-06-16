@@ -1001,19 +1001,7 @@
         <div style="display:grid;
                     grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
                     gap:15px;
-                    margin-top:20px;">
-
-            <button class="fab"
-            onclick="openDataManager('hotels')">
-            🏨 Otel / Partner Yönetimi
-            </button>
-
-          <input
-type="file"
-id="excel-import-file"
-accept=".xlsx,.xls"
-style="display:none"
-onchange="importSelectedExcel(event)">
+                    margin-top:20px;">        
 
 <button class="fab"
 onclick="openExcelImportManager()">
@@ -1024,6 +1012,18 @@ onclick="openExcelImportManager()">
 onclick="downloadPaxTemplate()">
 📥 PAX Şablonu İndir
 </button>
+
+<button class="fab"
+            onclick="openDataManager('hotels')">
+            🏨 Otel / Partner Yönetimi
+            </button>
+
+          <input
+type="file"
+id="excel-import-file"
+accept=".xlsx,.xls"
+style="display:none"
+onchange="importSelectedExcel(event)">
 
             <button class="fab"
                     onclick="openDataManager('regions')">
