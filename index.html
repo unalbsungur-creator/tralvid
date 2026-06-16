@@ -2723,34 +2723,7 @@ function importPassengerExcel(event) {
 
 }
 
-    operator: row[0] || '',
-
-    region: row[1] || '',
-
-    airport: row[2] || '',
-
-    hotel: row[3] || '',
-
-    transferType: row[4] || '',
-
-    arrivalDate: row[5] || '',
-
-    departureDate: row[6] || '',
-
-    adult: Number(row[7] || 0),
-
-    child: Number(row[8] || 0),
-
-    infant: Number(row[9] || 0),
-
-    totalPax:
-        Number(row[7] || 0) +
-        Number(row[8] || 0) +
-        Number(row[9] || 0)
-
-});
-
-        }
+           }
 
         localStorage.setItem(
             'passengerStats',
