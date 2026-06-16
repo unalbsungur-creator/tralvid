@@ -2269,17 +2269,21 @@ function openDataManager(type) {
 
         html +=
 
-            '<tr>' +
+    '<tr>' +
 
-            '<td>' +
-            (index+1) +
-            '</td>' +
+    '<td>' +
+    (index+1) +
+    '</td>' +
 
-            '<td>' +
-            item +
-            '</td>' +
+    '<td>' +
 
-            '<td>' +
+    '📅 ' + (item.date || '') +
+    ' | 🏢 ' + (item.operator || '') +
+    ' | 🌍 ' + (item.region || '') +
+    ' | 🏨 ' + (item.hotel || '') +
+    ' | 👥 ' + (item.pax || 0) +
+
+    '</td>' +
 
             '<button class="btn-secondary" ' +
             'onclick="editDataItem(\'' + type + '\',' + index + ')">' +
