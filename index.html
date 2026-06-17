@@ -627,23 +627,47 @@
     }
 
     .chart-card {
-      flex: 1;
-      min-width: 0;
-      min-height: 220px;
-      background: #fff;
-      border: 1px solid #dcdcdc;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
-    }
+    flex: 1;
+    min-width: 0;
+    min-height: 220px;
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+}
 
-    .kw-chart-box {
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      height: 180px;
-      gap: 12px;
-    }
+.operator-bar{
+    margin:10px 0;
+}
+
+.operator-name{
+    font-size:12px;
+    margin-bottom:4px;
+    font-weight:600;
+}
+
+.operator-track{
+    background:#ececec;
+    border-radius:6px;
+    overflow:hidden;
+    height:20px;
+}
+
+.operator-fill{
+    background:#d32f2f;
+    color:white;
+    height:20px;
+    line-height:20px;
+    padding-left:8px;
+    font-size:11px;
+    white-space:nowrap;
+}
+
+.kw-chart-box {
+    display:flex;
+    ...
+}
 
     .kw-col {
       display: flex;
@@ -883,6 +907,7 @@
         <div class="chart-card">
           <h3>Operatör Bazlı Şikayet Oranı</h3>
           <div id="operator-ratio"></div>
+          <div id="operator-chart"></div>
 </div>
       </div>
     </div>
@@ -3325,7 +3350,27 @@ rows.forEach(function(r){
 html += '</tbody></table>';
 
 document.getElementById('operator-ratio').innerHTML = html;
+
+var maxComplaint = 0;
+
+rows.forEach(function(r){
+
+    if(r.complaints > maxComplaint){
+        maxComplaint = r.complaints;
+    }
+
+});
+
+var chartHtml = '';
+
+...
+...
+
+document.getElementById('operator-chart').innerHTML =
+    chartHtml;
+
 }
+
 
     function resetDatabase() {
       if (!confirm('Tüm şikayet ve fatura kayıtları silinsin mi?')) return;
