@@ -3259,11 +3259,39 @@ function renderOperatorRatios() {
     });
 
     rows.sort(function(a,b){
-        return b.ratio - a.ratio;
-    });
+    return b.ratio - a.ratio;
+});
 
-    console.table(rows);
+console.table(rows);
+
+var html =
+'<table class="table">' +
+'<thead>' +
+'<tr>' +
+'<th>Operatör</th>' +
+'<th>PAX</th>' +
+'<th>Şikayet</th>' +
+'<th>Oran %</th>' +
+'</tr>' +
+'</thead><tbody>';
+
+rows.forEach(function(r){
+
+    html +=
+    '<tr>' +
+    '<td>' + r.operator + '</td>' +
+    '<td>' + r.pax + '</td>' +
+    '<td>' + r.complaints + '</td>' +
+    '<td>' + r.ratio + '%</td>' +
+    '</tr>';
+
+});
+
+html += '</tbody></table>';
+
+document.getElementById('operator-ratio').innerHTML = html;
 }
+
     function resetDatabase() {
       if (!confirm('Tüm şikayet ve fatura kayıtları silinsin mi?')) return;
       localStorage.removeItem('tralvid_pages_complaints');
