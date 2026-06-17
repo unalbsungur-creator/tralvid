@@ -3152,9 +3152,13 @@ totalInfant +
 '<div class="s-val" style="color:#d32f2f;">' + deletedCount + '</div>' +
 '</div>';
 
-      renderDonutChart('chart-servis', countBy(complaints, 'servis'), ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
-      renderDonutChart('chart-sonuc', countBy(complaints, 'result'), ['#A32D2D', '#3B6D11']);
-      renderTrendChart('chart-kw', countBy(complaints, 'kw'));
+      renderOperatorRatios();
+
+renderDonutChart('chart-servis', countBy(complaints, 'servis'), ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
+
+renderDonutChart('chart-sonuc', countBy(complaints, 'result'), ['#A32D2D', '#3B6D11']);
+
+renderTrendChart('chart-kw', countBy(complaints, 'kw'));
     }
 
     function renderDonutChart(containerId, data, colors) {
@@ -3189,7 +3193,73 @@ totalInfant +
       }
       el.innerHTML = html;
     }
+function renderOperatorRatios() {
 
+    var paxData =
+        JSON.parse(
+            localStorage.getItem('passengerStats')
+        ) || [];
+
+    var stats = {};
+
+    paxData.forEach(function(p){
+
+        var op = p.operator || 'Bilinmiyor';
+
+        if(!stats[op]){
+            stats[op] = {
+                pax: 0,
+                complaints: 0
+            };
+        }
+
+        stats[op].pax += Number(p.totalPax || 0);
+
+    });
+
+    complaints.forEach(function(c){
+
+        var op = c.veranstalter || 'Bilinmiyor';
+
+        if(!stats[op]){
+            stats[op] = {
+                pax: 0,
+                complaints: 0
+            };
+        }
+
+        stats[op].complaints++;
+
+    });
+
+    var rows = [];
+
+    Object.keys(stats).forEach(function(op){
+
+        var pax = stats[op].pax;
+
+        var comp = stats[op].complaints;
+
+        var ratio =
+            pax > 0
+            ? ((comp / pax) * 100).toFixed(2)
+            : 0;
+
+        rows.push({
+            operator: op,
+            pax: pax,
+            complaints: comp,
+            ratio: Number(ratio)
+        });
+
+    });
+
+    rows.sort(function(a,b){
+        return b.ratio - a.ratio;
+    });
+
+    console.table(rows);
+}
     function resetDatabase() {
       if (!confirm('Tüm şikayet ve fatura kayıtları silinsin mi?')) return;
       localStorage.removeItem('tralvid_pages_complaints');
