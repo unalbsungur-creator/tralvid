@@ -634,7 +634,12 @@
     border: 1px solid #dcdcdc;
     border-radius: 12px;
     padding: 16px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+
+.compact-chart {
+    min-height: auto;
+    height: auto;
 }
 
 .operator-bar{
@@ -892,15 +897,15 @@
 </div>
 
 <div class="charts-grid-pure">
-        <div class="chart-card">
+        <div class="chart-card compact-chart">
           <h3>Hizmet Dağılımı</h3>
           <div id="chart-servis" class="donut-wrap"></div>
         </div>
-        <div class="chart-card">
+        <div class="chart-card compact-chart">
           <h3>Şikayet Sonuç Analizi</h3>
           <div id="chart-sonuc" class="donut-wrap"></div>
         </div>
-        <div class="chart-card">
+        <div class="chart-card compact-chart">
           <h3>Haftalık Şikayet Dağılımı (KW Trend)</h3>
           <div id="chart-kw" class="kw-chart-box"></div>
         </div>
@@ -3391,7 +3396,7 @@ rows.forEach(function(r){
 
 document.getElementById('operator-chart').innerHTML =
     chartHtml;
-    
+
     var regionStats = {};
 
 complaints.forEach(function(c){
