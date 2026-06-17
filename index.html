@@ -907,7 +907,10 @@
         <div class="chart-card">
           <h3>Operatör Bazlı Şikayet Oranı</h3>
           <div id="operator-ratio"></div>
-          <div id="operator-chart"></div>
+        <div id="operator-chart"></div>
+
+          <h3 style="margin-top:20px;">Bölge Bazlı Şikayet</h3>
+          <div id="region-chart"></div>
 </div>
       </div>
     </div>
@@ -3388,6 +3391,53 @@ rows.forEach(function(r){
 
 document.getElementById('operator-chart').innerHTML =
     chartHtml;
+    
+    var regionStats = {};
+
+complaints.forEach(function(c){
+
+    var region = c.region || 'Bilinmiyor';
+
+    regionStats[region] =
+        (regionStats[region] || 0) + 1;
+
+});
+
+var maxRegion = 0;
+
+Object.keys(regionStats).forEach(function(r){
+
+    if(regionStats[r] > maxRegion){
+        maxRegion = regionStats[r];
+    }
+
+});
+
+var regionHtml = '';
+
+Object.keys(regionStats).forEach(function(r){
+
+    var width =
+        (regionStats[r] / maxRegion) * 100;
+
+    regionHtml +=
+        '<div class="operator-bar">' +
+        '<div class="operator-name">' +
+        r +
+        '</div>' +
+        '<div class="operator-track">' +
+        '<div class="operator-fill" style="width:' +
+        width +
+        '%;">' +
+        regionStats[r] +
+        ' şikayet</div>' +
+        '</div>' +
+        '</div>';
+
+});
+
+document.getElementById('region-chart').innerHTML =
+    regionHtml;
 
 }
 
