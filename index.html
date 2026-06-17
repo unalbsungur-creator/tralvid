@@ -3363,6 +3363,28 @@ rows.forEach(function(r){
 
 var chartHtml = '';
 
+rows.forEach(function(r){
+
+    var width =
+        maxComplaint > 0
+        ? (r.complaints / maxComplaint) * 100
+        : 0;
+
+    chartHtml +=
+        '<div class="operator-bar">' +
+        '<div class="operator-name">' +
+        r.operator +
+        '</div>' +
+        '<div class="operator-track">' +
+        '<div class="operator-fill" style="width:' +
+        width +
+        '%;">' +
+        r.complaints +
+        ' şikayet</div>' +
+        '</div>' +
+        '</div>';
+
+});
 
 document.getElementById('operator-chart').innerHTML =
     chartHtml;
