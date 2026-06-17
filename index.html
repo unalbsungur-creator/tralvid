@@ -3117,7 +3117,9 @@ complaintRatio +
 '%</div>' +
 '</div>' +
 
-'<div class="stat-card">' +
+
+        '<div class="stat-card"><div class="s-lbl">Haklı Bulunan Dosyalar</div><div class="s-val" style="color:#3B6D11;">' + hakliCount + '</div><div class="s-sub">%' + (total ? Math.round((hakliCount / total) * 100) : 0) + ' Mutabakat Oranı</div></div>' +
+        '<div class="stat-card">' +
 '<div class="s-lbl">Yetişkin</div>' +
 '<div class="s-val" style="color:#4CAF50;">' +
 totalAdult +
@@ -3137,7 +3139,6 @@ totalChild +
 totalInfant +
 '</div>' +
 '</div>' +
-        '<div class="stat-card"><div class="s-lbl">Haklı Bulunan Dosyalar</div><div class="s-val" style="color:#3B6D11;">' + hakliCount + '</div><div class="s-sub">%' + (total ? Math.round((hakliCount / total) * 100) : 0) + ' Mutabakat Oranı</div></div>' +
         '<div class="stat-card"><div class="s-lbl">Muhasebe Fatura Takip Sayısı</div><div class="s-val" style="color:#185FA5;">' + activeInvs + '</div></div>' +
         '<div class="stat-card"><div class="s-lbl">Cevap Süresi Aşalan Dosyalar</div><div class="s-val" style="color:#A32D2D;">' + complaints.filter(function (o) { return o.timeout === 'Evet'; }).length + '</div></div>' +
 
