@@ -3371,12 +3371,20 @@ function deleteUser(username) {
     r.attachments.map(function(file){
 
         return (
-            '📎 ' +
-            file.name +
-            ' (' +
-            Math.round(file.size / 1024) +
-            ' KB)'
-        );
+    '📎 ' +
+    file.name +
+    ' (' +
+    Math.round(file.size / 1024) +
+    ' KB)' +
+
+    ' <button onclick="viewAttachment(\'' +
+    file.id +
+    '\')">👁 Görüntüle</button>' +
+
+    ' <button onclick="downloadAttachment(\'' +
+    file.id +
+    '\')">⬇ İndir</button>'
+);
 
     }).join('<br>')
 
@@ -3393,6 +3401,39 @@ function deleteUser(username) {
       document.getElementById('detail-modal-overlay').classList.add('open');
     }
 
+    function viewAttachment(id) {
+
+    getAttachment(id).then(function(file){
+
+        window.open(
+            file.content,
+            '_blank'
+        );
+
+    });
+
+}
+
+function downloadAttachment(id) {
+
+    getAttachment(id).then(function(file){
+
+        var a =
+            document.createElement('a');
+
+        a.href = file.content;
+
+        a.download = file.name;
+
+        document.body.appendChild(a);
+
+        a.click();
+
+        document.body.removeChild(a);
+
+    });
+
+}
     function openInvoiceDetail(id) {
       var r = invoices.find(function (o) { return o.id === id; }); if (!r) return;
       document.getElementById('detail-modal-title').textContent = 'Fatura Finans Kart Detayı: ' + r.faturaNo;
