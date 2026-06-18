@@ -1915,6 +1915,20 @@ function closeComplaintModal() {
           currency: document.getElementById('c-currency').value,
           notes: document.getElementById('c-notes').value.trim(),
 
+attachments:
+
+Array.from(
+document.getElementById('c-defense-files').files
+).map(function(file){
+
+    return {
+        name:file.name,
+        type:file.type,
+        size:file.size
+    };
+
+}),
+
 isDeleted: false,
 deleteRequested: false,
 deletedBy: '',
