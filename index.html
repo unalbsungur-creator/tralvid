@@ -3716,30 +3716,28 @@ function exportMasterData() {
     });
 
     // INITIALIZER
-    document.addEventListener('DOMContentLoaded', function () { 
+    document.addEventListener('DOMContentLoaded', function () {
 
     if (!localStorage.getItem('transferTypes')) {
 
-    localStorage.setItem(
-        'transferTypes',
-        JSON.stringify([
-            'Shuttle',
-
-            'Private Sedan',
-            'Private Minivan',
-            'Private Vito',
-            'Private Sprinter',
-            'Private Midibus',
-            'Private Bus',
-
-            'VIP Sedan',
-            'VIP Vito',
-            'VIP Minibus',
-            'VIP Midibus'
-        ])
+        localStorage.setItem(
+            'transferTypes',
+            JSON.stringify([
+                'Shuttle',
+                'Private Sedan',
+                'Private Minivan',
+                'Private Vito',
+                'Private Sprinter',
+                'Private Midibus',
+                'Private Bus',
+                'VIP Sedan',
+                'VIP Vito',
+                'VIP Minibus',
+                'VIP Midibus'
+            ])
         );
 
-}
+    }
 
 if (!localStorage.getItem('operators')) {
 
