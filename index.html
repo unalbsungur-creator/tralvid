@@ -2392,10 +2392,12 @@ function openDataManager(type) {
         
 
         reasons: {
-            title:'📋 Şikayet Konuları',
-            storage:'reasons',
-            placeholder:'Yeni konu'
-        },
+    title:'📋 Şikayet Konuları',
+    storageTR:'reasonsTR',
+    storageDE:'reasonsDE',
+    storageEN:'reasonsEN',
+    placeholder:'Yeni konu'
+},
 
         transferTypes: {
             title:'🚐 Transfer Türleri',
@@ -2419,12 +2421,55 @@ function openDataManager(type) {
 
     if (!config[type]) return;
 
-    var items =
+   var items;
+
+if(type === 'reasons'){
+
+    var trItems =
+    JSON.parse(
+        localStorage.getItem(
+            config[type].storageTR
+        )
+    ) || [];
+
+    var deItems =
+    JSON.parse(
+        localStorage.getItem(
+            config[type].storageDE
+        )
+    ) || [];
+
+    var enItems =
+    JSON.parse(
+        localStorage.getItem(
+            config[type].storageEN
+        )
+    ) || [];
+
+    items = [];
+
+    for(
+        var i = 0;
+        i < trItems.length;
+        i++
+    ){
+        items.push({
+            tr: trItems[i] || '',
+            de: deItems[i] || '',
+            en: enItems[i] || ''
+        });
+    }
+
+} else {
+
+    items =
     JSON.parse(
         localStorage.getItem(
             config[type].storage
         )
     ) || [];
+
+}
 
         console.log(
         'TYPE=', type,
@@ -2479,28 +2524,52 @@ function openDataManager(type) {
     '<td>' +
 
 (
+    type === 'reasons'
+    ? item.tr
+    :
+    (
     type === 'passengers'
 
     ?
 
     '🏢 ' + item.operator +
-' | 🌍 ' + item.region +
-' | ✈️ ' + item.airport +
-' | 🏨 ' + item.hotel +
-' | 🚐 ' + item.transferType +
-' | 👨 ' + item.adult +
-' | 🧒 ' + item.child +
-' | 👶 ' + item.infant +
-' | 👥 ' + item.totalPax
+    ' | 🌍 ' + item.region +
+    ' | ✈️ ' + item.airport +
+    ' | 🏨 ' + item.hotel +
+    ' | 🚐 ' + item.transferType +
+    ' | 👨 ' + item.adult +
+    ' | 🧒 ' + item.child +
+    ' | 👶 ' + item.infant +
+    ' | 👥 ' + item.totalPax
+
+    :
+
+    type === 'reasons'
+
+    ?
+
+    item.tr
 
     :
 
     item
 )
+)
 
 +
 
 '</td>' +
+
+(
+    type === 'reasons'
+    ?
+    '<td>' + item.de + '</td>' +
+    '<td>' + item.en + '</td>'
+    :
+    ''
+)
+
++
 
 '<td>' +
 
