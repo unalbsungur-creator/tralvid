@@ -3564,20 +3564,51 @@ document.getElementById('region-chart').innerHTML =
             JSON.stringify(readSheet('Servisler'))
         );
 
-        localStorage.setItem(
-    'reasonsTR',
-    JSON.stringify(readSheet('SikayetKonulariTR'))
-);
+        var complaintSheet =
+workbook.Sheets['SikayetKonulari'];
 
-localStorage.setItem(
-    'reasonsDE',
-    JSON.stringify(readSheet('SikayetKonulariDE'))
-);
+if (complaintSheet) {
 
-localStorage.setItem(
-    'reasonsEN',
-    JSON.stringify(readSheet('SikayetKonulariEN'))
-);
+    var rows =
+    XLSX.utils.sheet_to_json(
+        complaintSheet,
+        { header: 1 }
+    );
+
+    var reasonsTR = [];
+    var reasonsDE = [];
+    var reasonsEN = [];
+
+    for (var i = 1; i < rows.length; i++) {
+
+        if (rows[i][0]) {
+            reasonsTR.push(rows[i][0]);
+        }
+
+        if (rows[i][1]) {
+            reasonsDE.push(rows[i][1]);
+        }
+
+        if (rows[i][2]) {
+            reasonsEN.push(rows[i][2]);
+        }
+    }
+
+    localStorage.setItem(
+        'reasonsTR',
+        JSON.stringify(reasonsTR)
+    );
+
+    localStorage.setItem(
+        'reasonsDE',
+        JSON.stringify(reasonsDE)
+    );
+
+    localStorage.setItem(
+        'reasonsEN',
+        JSON.stringify(reasonsEN)
+    );
+}
 
         localStorage.setItem(
             'transferTypes',
