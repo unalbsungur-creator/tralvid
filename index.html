@@ -2554,9 +2554,9 @@ function addHotelPartner() {
     hotels.push(value);
 
     localStorage.setItem(
-        'renderHotels',
-        JSON.stringify(hotels)
-    );
+    'hotelPartners',
+    JSON.stringify(hotels)
+);
 
     openDataManager('hotels');
 
@@ -3822,6 +3822,7 @@ window.addEventListener('storage', function () {
 
 });
 
+});
 </script>
 </body>
 </html>
