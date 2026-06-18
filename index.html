@@ -1276,18 +1276,19 @@ Bölüm 4: Şikayet Konuları & Sonuç
 </div>
         <div class="form-grid">
           <div class="form-group">
+    <div class="form-group">
     <label class="form-label" for="c-ptr">Şikayet Konusu (TR)</label>
-    <select id="c-ptr"></select>
+    <select class="form-control" id="c-ptr"></select>
 </div>
 
 <div class="form-group">
     <label class="form-label" for="c-pde">Şikayet Konusu (DE)</label>
-    <select id="c-pde"></select>
+    <select class="form-control" id="c-pde"></select>
 </div>
 
 <div class="form-group">
     <label class="form-label" for="c-pen">Şikayet Konusu (EN)</label>
-    <select id="c-pen"></select>
+    <select class="form-control" id="c-pen"></select>
 </div>
           <div class="form-group">
             <label class="form-label" for="c-result">Şikayet Sonucu</label>
@@ -1710,6 +1711,8 @@ var today = new Date().toISOString().split('T')[0];
 
     document.getElementById('complaint-modal-overlay')
         .classList.add('open');
+
+        
 
 function loadTransferTypeDropdown() {
 
