@@ -3403,20 +3403,19 @@ function deleteUser(username) {
 
     function viewAttachment(id) {
 
-    console.log('ID=', id);
-
     getAttachment(id).then(function(file){
-
-        console.log('FILE=', file);
 
         if(!file){
             alert('Dosya bulunamadı');
             return;
         }
 
-        window.open(
-            file.content,
-            '_blank'
+        var win = window.open();
+
+        win.document.write(
+            '<html><body style="margin:0">' +
+            '<img src="' + file.content + '" style="max-width:100%">' +
+            '</body></html>'
         );
 
     });
