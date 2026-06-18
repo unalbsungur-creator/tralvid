@@ -3207,7 +3207,33 @@ function deleteUser(username) {
         '<div class="detail-item full"><span class="detail-lbl">Şikayet Konusu DE</span><span class="detail-val">' + (r.pde || '—') + '</span></div>' +
         '<div class="detail-item full"><span class="detail-lbl">Şikayet Konusu EN</span><span class="detail-val">' + (r.pen || '—') + '</span></div>' +
         '<div class="detail-item full"><span class="detail-lbl">Notiz (Not)</span><div class="note-box">' + (r.notes || 'Açıklama girilmedi.') + '</div></div>' +
-        '</div>';
+        '</div>'
+        '<br><br>' +
+
+'<b>Ek Dosyalar</b><br>' +
+
+(
+    rec.attachments &&
+    rec.attachments.length > 0
+
+    ?
+
+    rec.attachments.map(function(file){
+
+        return (
+            '📎 ' +
+            file.name +
+            ' (' +
+            Math.round(file.size/1024) +
+            ' KB)'
+        );
+
+    }).join('<br>')
+
+    :
+
+    'Dosya bulunmuyor'
+);
       document.getElementById('detail-modal-overlay').classList.add('open');
     }
 
