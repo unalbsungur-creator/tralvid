@@ -1705,10 +1705,20 @@ window.currentLanguage =
     
     function loadComplaintSubjects() {
 
-    var reasons =
-        JSON.parse(
-            localStorage.getItem('reasons') || '[]'
-        );
+    var reasonsTR =
+JSON.parse(
+localStorage.getItem('reasonsTR') || '[]'
+);
+
+var reasonsDE =
+JSON.parse(
+localStorage.getItem('reasonsDE') || '[]'
+);
+
+var reasonsEN =
+JSON.parse(
+localStorage.getItem('reasonsEN') || '[]'
+);
 
     var tr = document.getElementById('c-ptr');
     var de = document.getElementById('c-pde');
@@ -1720,22 +1730,22 @@ window.currentLanguage =
     de.innerHTML = '';
     en.innerHTML = '';
 
-    reasons.forEach(function(item){
+    for(var i=0; i<reasonsTR.length; i++){
 
         tr.innerHTML +=
-            '<option value="' + item + '">' +
-            item +
-            '</option>';
+'<option value="' + reasonsTR[i] + '">' +
+reasonsTR[i] +
+'</option>';
 
-        de.innerHTML +=
-            '<option value="' + item + '">' +
-            item +
-            '</option>';
+de.innerHTML +=
+'<option value="' + reasonsDE[i] + '">' +
+reasonsDE[i] +
+'</option>';
 
-        en.innerHTML +=
-            '<option value="' + item + '">' +
-            item +
-            '</option>';
+en.innerHTML +=
+'<option value="' + reasonsEN[i] + '">' +
+reasonsEN[i] +
+'</option>';
 
     });
 }
@@ -3555,9 +3565,19 @@ document.getElementById('region-chart').innerHTML =
         );
 
         localStorage.setItem(
-            'reasons',
-            JSON.stringify(readSheet('SikayetKonulari'))
-        );
+    'reasonsTR',
+    JSON.stringify(readSheet('SikayetKonulariTR'))
+);
+
+localStorage.setItem(
+    'reasonsDE',
+    JSON.stringify(readSheet('SikayetKonulariDE'))
+);
+
+localStorage.setItem(
+    'reasonsEN',
+    JSON.stringify(readSheet('SikayetKonulariEN'))
+);
 
         localStorage.setItem(
             'transferTypes',
