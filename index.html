@@ -860,6 +860,14 @@
       <button class="fab admin-only" style="background:#1565c0" onclick="backupDatabase()">💾 Yedek Al</button>
       <button class="fab admin-only" style="background:#6a1b9a" onclick="document.getElementById('restoreFile').click()">📁 Geri Yükle</button>
       <button class="fab admin-only" style="background:#c62828" onclick="resetDatabase()">🗑 Veritabanını Temizle</button>
+      <button class="fab admin-only" style="background:#16a34a" onclick="document.getElementById('masterExcelFile').click()">📥 Master Veri Yükle</button>
+
+<input
+type="file"
+id="masterExcelFile"
+accept=".xlsx,.xls"
+style="display:none"
+onchange="importMasterData(event)">
       <span id="user-badge" style="padding:8px 14px; background:#455a64; color:white; border-radius:8px; font-size:13px; font-weight:600;"></span>
       <button class="fab" style="background:#455a64" onclick="logout()">🚪 Çıkış</button>
       <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreDatabase(event)">
@@ -3458,6 +3466,83 @@ document.getElementById('region-chart').innerHTML =
       };
       reader.readAsText(file);
     }
+    
+    function importMasterData(event) {
+
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+
+        var data = new Uint8Array(e.target.result);
+
+        var workbook = XLSX.read(data, {
+            type: 'array'
+        });
+
+        function readSheet(sheetName) {
+
+            if (!workbook.Sheets[sheetName]) {
+                return [];
+            }
+
+            var rows = XLSX.utils.sheet_to_json(
+                workbook.Sheets[sheetName],
+                { header: 1 }
+            );
+
+            return rows
+                .slice(1)
+                .map(r => r[0])
+                .filter(Boolean);
+
+        }
+
+        localStorage.setItem(
+            'operators',
+            JSON.stringify(readSheet('Operatörler'))
+        );
+
+        localStorage.setItem(
+            'regions',
+            JSON.stringify(readSheet('Bolgeler'))
+        );
+
+        localStorage.setItem(
+            'airports',
+            JSON.stringify(readSheet('Havalimanlari'))
+        );
+
+        localStorage.setItem(
+            'services',
+            JSON.stringify(readSheet('Servisler'))
+        );
+
+        localStorage.setItem(
+            'reasons',
+            JSON.stringify(readSheet('SikayetKonulari'))
+        );
+
+        localStorage.setItem(
+            'transferTypes',
+            JSON.stringify(readSheet('TransferTurleri'))
+        );
+
+        localStorage.setItem(
+            'hotelPartners',
+            JSON.stringify(readSheet('Oteller'))
+        );
+
+        showToast('Master veri başarıyla yüklendi.');
+
+        renderDashboard();
+
+    };
+
+    reader.readAsArrayBuffer(file);
+}
 
     // Overlay Kapatıcı Kuralı
     document.addEventListener('click', function (e) {
