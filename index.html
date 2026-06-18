@@ -1874,10 +1874,130 @@ function closeComplaintModal() {
       document.getElementById('c-infant').value = '0';
       document.getElementById('c-price').value = '0';
       document.getElementById('c-notes').value = '';
+}
+
+
+// ================= FILE STORAGE (IndexedDB) =================
+
+var fileDB = null;
+
+var request = indexedDB.open('TRALVID_FILES', 1);
+
+request.onupgradeneeded = function(event) {
+
+    fileDB = event.target.result;
+
+    if (!fileDB.objectStoreNames.contains('attachments')) {
+
+        fileDB.createObjectStore(
+            'attachments',
+            { keyPath: 'id' }
+        );
+
     }
 
-    // ==================== DATA ACTIONS ====================
-    function saveComplaint() {
+};
+
+request.onsuccess = function(event) {
+
+    fileDB = event.target.result;
+
+    console.log('IndexedDB hazır');
+
+};
+
+request.onerror = function(event) {
+
+    console.error(
+        'IndexedDB hatası:',
+        event.target.error
+    );
+
+};
+
+function saveAttachment(id, file) {
+
+    return new Promise(function(resolve, reject) {
+
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+
+            var tx =
+                fileDB.transaction(
+                    ['attachments'],
+                    'readwrite'
+                );
+
+            var store =
+                tx.objectStore('attachments');
+
+            store.put({
+
+                id: id,
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                content: e.target.result
+
+            });
+
+            tx.oncomplete = function() {
+
+                resolve();
+
+            };
+
+            tx.onerror = function() {
+
+                reject();
+
+            };
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
+
+function getAttachment(id) {
+
+    return new Promise(function(resolve, reject) {
+
+        var tx =
+            fileDB.transaction(
+                ['attachments'],
+                'readonly'
+            );
+
+        var store =
+            tx.objectStore('attachments');
+
+        var req =
+            store.get(id);
+
+        req.onsuccess = function() {
+
+            resolve(req.result);
+
+        };
+
+        req.onerror = function() {
+
+            reject();
+
+        };
+
+    });
+
+}
+
+
+// ================= DATA ACTIONS =================
+
+function saveComplaint() {
       try {
         var rec = {
           id: complaints.length > 0 ? Math.max.apply(Math, complaints.map(function (o) { return o.id; })) + 1 : 1,
