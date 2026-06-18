@@ -2449,7 +2449,9 @@ function openDataManager(type) {
 
 '</td>' +
 
-            '<button class="btn-secondary" ' +
+'<td>' +
+
+'<button class="btn-secondary" ' +
             'onclick="editDataItem(\'' + type + '\',' + index + ')">' +
             '✏️' +
             '</button> ' +
@@ -2499,7 +2501,7 @@ function addHotelPartner() {
     hotels.push(value);
 
     localStorage.setItem(
-        'hotelPartners',
+        'renderHotels',
         JSON.stringify(hotels)
     );
 
