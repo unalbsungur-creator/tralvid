@@ -1739,40 +1739,6 @@ window.currentLanguage =
 
     });
 }
-
-    var reasons =
-        JSON.parse(
-            localStorage.getItem('reasons') || '[]'
-        );
-
-    var tr = document.getElementById('c-ptr');
-    var de = document.getElementById('c-pde');
-    var en = document.getElementById('c-pen');
-
-    if(!tr || !de || !en) return;
-
-    tr.innerHTML = '';
-    de.innerHTML = '';
-    en.innerHTML = '';
-
-    reasons.forEach(function(item){
-
-        tr.innerHTML +=
-            '<option value="' + item + '">' +
-            item +
-            '</option>';
-
-        de.innerHTML +=
-            '<option value="' + item + '">' +
-            item +
-            '</option>';
-
-        en.innerHTML +=
-            '<option value="' + item + '">' +
-            item +
-            '</option>';
-
-    });
       
 
 function loadTransferTypeDropdown() {
