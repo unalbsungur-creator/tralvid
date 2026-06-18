@@ -1277,28 +1277,12 @@ Bölüm 4: Şikayet Konuları & Sonuç
         <div class="form-grid">
           <div class="form-group">
             <label class="form-label" for="c-ptr">Şikayet Konusu (TR)</label>
-            <select id="c-ptr">
-              <option value="Transfer ( yok )">Transfer ( yok )</option>
-              <option value="Oda durumu">Oda durumu</option>
-              <option value="Temizlik">Temizlik</option>
-              <option value="Yemek">Yemek</option>
-              <option value="Diğer">Diğer</option>
-            </select>
           </div>
           <div class="form-group">
             <label class="form-label" for="c-pde">Şikayet Konusu (DE)</label>
-            <select id="c-pde">
-              <option value="Transfer ( kein Transfer gebucht )">Transfer ( kein Transfer gebucht )</option>
-              <option value="Zimmerzustand">Zimmerzustand</option>
-              <option value="Sauberkeit">Sauberkeit</option>
-            </select>
           </div>
           <div class="form-group">
             <label class="form-label" for="c-pen">Şikayet Konusu (EN)</label>
-            <select id="c-pen">
-              <option value="Transfer (no transfer booked)">Transfer (no transfer booked)</option>
-              <option value="Room condition">Room condition</option>
-            </select>
           </div>
           <div class="form-group">
             <label class="form-label" for="c-result">Şikayet Sonucu</label>
@@ -1667,14 +1651,53 @@ window.currentLanguage =
     }
 
     // ==================== MODAL CONTROLS ====================
+    function loadComplaintSubjects() {
+
+    var reasons =
+        JSON.parse(
+            localStorage.getItem('reasons') || '[]'
+        );
+
+    var tr = document.getElementById('c-ptr');
+    var de = document.getElementById('c-pde');
+    var en = document.getElementById('c-pen');
+
+    if(!tr || !de || !en) return;
+
+    tr.innerHTML = '';
+    de.innerHTML = '';
+    en.innerHTML = '';
+
+    reasons.forEach(function(item){
+
+        tr.innerHTML +=
+            '<option value="' + item + '">' +
+            item +
+            '</option>';
+
+        de.innerHTML +=
+            '<option value="' + item + '">' +
+            item +
+            '</option>';
+
+        en.innerHTML +=
+            '<option value="' + item + '">' +
+            item +
+            '</option>';
+
+    });
+}
+
     function openComplaintModal() {
 
-loadHotelDropdown();
+    loadComplaintSubjects();
 
-loadSimpleDropdown(
-    'c-veranstalter',
-    'operators'
-);
+    loadHotelDropdown();
+
+    loadSimpleDropdown(
+        'c-veranstalter',
+        'operators'
+    );
 
 loadSimpleDropdown(
     'c-region',
