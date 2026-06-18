@@ -1172,6 +1172,52 @@ onchange="importSelectedExcel(event)">
               <option value="Hayır">Hayır</option>
               <option value="Evet">Evet</option>
             </select>
+            <div
+                id="defense-file-area"
+                style="display:none;margin-top:10px;"
+>
+
+                <label class="form-label">
+                    Savunma Yazısı Ekleri
+                </label>
+
+                <input
+                    type="file"
+                    id="c-defense-files"
+                    multiple
+
+                    accept="
+                    .pdf,
+                    .doc,
+                    .docx,
+                    .xls,
+                    .xlsx,
+                    .csv,
+                    .txt,
+                    .rtf,
+                    .jpg,
+                    .jpeg,
+                    .png,
+                    .gif,
+                    .bmp,
+                    .webp,
+                    .tif,
+                    .tiff,
+                    .heic,
+                    .eml,
+                    .msg,
+                    .zip,
+                    .rar,
+                    .7z
+                    "
+    >
+
+    <div
+        id="defense-file-list"
+        style="margin-top:8px;font-size:12px;"
+    ></div>
+
+</div>
           </div>
         </div>
 
@@ -3873,6 +3919,46 @@ renderDeleteRequests();
 showPage(
     localStorage.getItem('activePage') || 'dashboard'
 );
+
+/* SAVUNMA DOSYALARI */
+
+document
+.getElementById('c-sn')
+.addEventListener('change', function(){
+
+    document
+    .getElementById('defense-file-area')
+    .style.display =
+
+    this.value === 'Evet'
+
+    ? 'block'
+    : 'none';
+
+});
+
+document
+.getElementById('c-defense-files')
+.addEventListener('change', function(){
+
+    var html = '';
+
+    Array
+    .from(this.files)
+    .forEach(function(file){
+
+        html +=
+        '📎 ' +
+        file.name +
+        '<br>';
+
+    });
+
+    document
+    .getElementById('defense-file-list')
+    .innerHTML = html;
+
+});
 
 window.addEventListener('storage', function () {
 
