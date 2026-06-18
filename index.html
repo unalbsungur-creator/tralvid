@@ -1660,11 +1660,35 @@ window.currentLanguage =
     }
 
     // ==================== MODAL CONTROLS ====================
-    function loadComplaintSubjects() {
+    function openComplaintModal() {
+
+    loadComplaintSubjects();
+
+    loadHotelDropdown();
+
+    loadSimpleDropdown(
+        'c-veranstalter',
+        'operators'
+    );
+
+    loadSimpleDropdown(
+        'c-region',
+        'regions'
+    );
+
+    loadSimpleDropdown(
+        'c-airport',
+        'airports'
+    );
+
+    loadSimpleDropdown(
+        'c-service',
+        'services'
+    );
 
     loadTransferTypeDropdown();
 
-var today = new Date().toISOString().split('T')[0];
+    var today = new Date().toISOString().split('T')[0];
 
     document.getElementById('c-date').value = today;
     document.getElementById('c-bdate').value = today;
@@ -1677,6 +1701,9 @@ var today = new Date().toISOString().split('T')[0];
 
     document.getElementById('complaint-modal-overlay')
         .classList.add('open');
+}
+    
+    function loadComplaintSubjects() {
 
     var reasons =
         JSON.parse(
@@ -1712,6 +1739,42 @@ var today = new Date().toISOString().split('T')[0];
 
     });
 }
+
+    
+
+    var reasons =
+        JSON.parse(
+            localStorage.getItem('reasons') || '[]'
+        );
+
+    var tr = document.getElementById('c-ptr');
+    var de = document.getElementById('c-pde');
+    var en = document.getElementById('c-pen');
+
+    if(!tr || !de || !en) return;
+
+    tr.innerHTML = '';
+    de.innerHTML = '';
+    en.innerHTML = '';
+
+    reasons.forEach(function(item){
+
+        tr.innerHTML +=
+            '<option value="' + item + '">' +
+            item +
+            '</option>';
+
+        de.innerHTML +=
+            '<option value="' + item + '">' +
+            item +
+            '</option>';
+
+        en.innerHTML +=
+            '<option value="' + item + '">' +
+            item +
+            '</option>';
+
+    });
       
 
 function loadTransferTypeDropdown() {
