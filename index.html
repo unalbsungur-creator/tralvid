@@ -2035,19 +2035,7 @@ function saveComplaint() {
           currency: document.getElementById('c-currency').value,
           notes: document.getElementById('c-notes').value.trim(),
 
-attachments:
-
-Array.from(
-document.getElementById('c-defense-files').files
-).map(function(file){
-
-    return {
-        name:file.name,
-        type:file.type,
-        size:file.size
-    };
-
-}),
+attachments: [],
 
 isDeleted: false,
 deleteRequested: false,
@@ -2055,13 +2043,56 @@ deletedBy: '',
 deletedAt: ''
         };
 
-        complaints.unshift(rec);
-        syncStorage();
-        clearComplaintForm();
-        closeComplaintModal();
-        showToast('Şikayet kartı veritabanına işlendi.');
-        renderRecordsTable();
-        renderDashboard();
+        var files =
+Array.from(
+    document.getElementById('c-defense-files').files
+);
+
+Promise.all(
+
+    files.map(function(file,index){
+
+        var fileId =
+            'CMP_' +
+            rec.id +
+            '_' +
+            index;
+
+        rec.attachments.push({
+
+            id:fileId,
+            name:file.name,
+            type:file.type,
+            size:file.size
+
+        });
+
+        return saveAttachment(
+            fileId,
+            file
+        );
+
+    })
+
+).then(function(){
+
+    complaints.unshift(rec);
+
+    syncStorage();
+
+    clearComplaintForm();
+
+    closeComplaintModal();
+
+    showToast(
+        'Şikayet kartı veritabanına işlendi.'
+    );
+
+    renderRecordsTable();
+
+    renderDashboard();
+
+});
       } catch (err) {
         console.error(err);
         alert("Kayıt sırasında hata oluştu:\n\n" + err.message);
