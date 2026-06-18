@@ -1276,14 +1276,19 @@ Bölüm 4: Şikayet Konuları & Sonuç
 </div>
         <div class="form-grid">
           <div class="form-group">
-            <label class="form-label" for="c-ptr">Şikayet Konusu (TR)</label>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="c-pde">Şikayet Konusu (DE)</label>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="c-pen">Şikayet Konusu (EN)</label>
-          </div>
+    <label class="form-label" for="c-ptr">Şikayet Konusu (TR)</label>
+    <select id="c-ptr"></select>
+</div>
+
+<div class="form-group">
+    <label class="form-label" for="c-pde">Şikayet Konusu (DE)</label>
+    <select id="c-pde"></select>
+</div>
+
+<div class="form-group">
+    <label class="form-label" for="c-pen">Şikayet Konusu (EN)</label>
+    <select id="c-pen"></select>
+</div>
           <div class="form-group">
             <label class="form-label" for="c-result">Şikayet Sonucu</label>
             <select id="c-result">
@@ -1688,31 +1693,7 @@ window.currentLanguage =
     });
 }
 
-    function openComplaintModal() {
-
-    loadComplaintSubjects();
-
-    loadHotelDropdown();
-
-    loadSimpleDropdown(
-        'c-veranstalter',
-        'operators'
-    );
-
-loadSimpleDropdown(
-    'c-region',
-    'regions'
-);
-
-loadSimpleDropdown(
-    'c-airport',
-    'airports'
-);
-
-loadSimpleDropdown(
-    'c-service',
-    'services'
-);
+    
 
 loadTransferTypeDropdown();
 
