@@ -3403,7 +3403,16 @@ function deleteUser(username) {
 
     function viewAttachment(id) {
 
+    console.log('ID=', id);
+
     getAttachment(id).then(function(file){
+
+        console.log('FILE=', file);
+
+        if(!file){
+            alert('Dosya bulunamadı');
+            return;
+        }
 
         window.open(
             file.content,
@@ -3416,19 +3425,24 @@ function deleteUser(username) {
 
 function downloadAttachment(id) {
 
+    console.log('DOWNLOAD ID=', id);
+
     getAttachment(id).then(function(file){
 
-        var a =
-            document.createElement('a');
+        console.log('DOWNLOAD FILE=', file);
+
+        if(!file){
+            alert('Dosya bulunamadı');
+            return;
+        }
+
+        var a = document.createElement('a');
 
         a.href = file.content;
-
         a.download = file.name;
 
         document.body.appendChild(a);
-
         a.click();
-
         document.body.removeChild(a);
 
     });
