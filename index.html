@@ -1604,9 +1604,12 @@ window.currentLanguage =
       document.getElementById('login-modal').style.display = 'none';
 
       applyPermissions();
-      renderDashboard();
-      renderRecordsTable();
-      renderAccounting();
+
+initSessionTimeout();
+
+renderDashboard();
+renderRecordsTable();
+renderAccounting();
 
       showPage(
         localStorage.getItem('activePage') || 'dashboard'
@@ -1994,6 +1997,61 @@ function getAttachment(id) {
 
 }
 
+// ================= SESSION TIMEOUT =================
+
+var SESSION_TIMEOUT = 20000;
+var SESSION_WARNING = 10000;
+
+var sessionTimer;
+var warningTimer;
+
+function resetSessionTimer() {
+
+    clearTimeout(sessionTimer);
+    clearTimeout(warningTimer);
+
+    warningTimer = setTimeout(function () {
+
+        if (confirm(
+            'Oturumunuz 2 dakika içinde sonlanacak.\n\nDevam etmek istiyor musunuz?'
+        )) {
+
+            resetSessionTimer();
+
+        }
+
+    }, SESSION_WARNING);
+
+    sessionTimer = setTimeout(function () {
+
+        alert('Oturum süresi doldu. Güvenlik nedeniyle çıkış yapılıyor.');
+
+        sessionStorage.removeItem('currentUser');
+
+        location.reload();
+
+    }, SESSION_TIMEOUT);
+}
+
+function initSessionTimeout() {
+
+    [
+        'mousemove',
+        'click',
+        'keydown',
+        'scroll',
+        'touchstart'
+    ].forEach(function (eventName) {
+
+        document.addEventListener(
+            eventName,
+            resetSessionTimer
+        );
+
+    });
+
+    resetSessionTimer();
+}
 
 // ================= DATA ACTIONS =================
 
@@ -4271,6 +4329,8 @@ var savedUser = sessionStorage.getItem('currentUser');
         .style.display = 'none';
 
     applyPermissions();
+
+initSessionTimeout();
 
 renderDashboard();
 renderRecordsTable();
