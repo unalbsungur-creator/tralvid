@@ -2708,19 +2708,37 @@ if(type === 'reasons'){
 
         '</div>' +
 
-        '<table>' +
+        if (type === 'passengers') {
 
-        '<thead>' +
-        '<tr>' +
+html +=
+
+'<table>' +
+'<thead>' +
+'<tr>' +
+'<th>#</th>' +
+'<th>Yolcu Verisi</th>' +
+'<th>İşlem</th>' +
+'</tr>' +
+'</thead>' +
+'<tbody>';
+
+} else {
+
+html +=
+
+'<table>' +
+'<thead>' +
+'<tr>' +
 '<th>#</th>' +
 '<th>TR</th>' +
 '<th>DE</th>' +
 '<th>EN</th>' +
 '<th>İşlem</th>' +
-'</tr>'
-        '</thead>' +
+'</tr>' +
+'</thead>' +
+'<tbody>';
 
-        '<tbody>';
+}
 
     items.forEach(function(item,index){
 
