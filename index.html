@@ -2104,7 +2104,7 @@ function fillPassengerData() {
     }
 
     document.getElementById('c-subbooking').value =
-    (pax.subBooking || '').trim();
+    String(pax.subBooking || '').trim();
 
     var op =
     (pax.operator || '').trim();
@@ -2114,8 +2114,13 @@ console.log(
     JSON.stringify(op)
 );
 
+loadSimpleDropdown(
+    'c-veranstalter',
+    'operators'
+);
+
 document.getElementById('c-veranstalter').value =
-    op;
+    String(op || '').trim();
 
 console.log(
     'SELECT VALUE:',
@@ -2159,7 +2164,7 @@ document.getElementById('c-transfertype').value =
     transferValue;
 
 document.getElementById('c-subbooking').value =
-    (pax.subBooking || '').trim();
+    String(pax.subBooking || '').trim();
 
     document.getElementById('c-child').value =
         pax.child || 0;
