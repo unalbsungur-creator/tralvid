@@ -2102,7 +2102,14 @@ function fillPassengerData() {
 
         return;
     }
+loadSimpleDropdown(
+    'c-veranstalter',
+    'operators'
+);
 
+loadHotelDropdown();
+
+loadTransferTypeDropdown();
     document.getElementById('c-subbooking').value =
     String(pax.subBooking || '').trim();
 
