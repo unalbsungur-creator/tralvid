@@ -3048,25 +3048,28 @@ function importPassengerExcel(event) {
 
     passengers.push({
 
-        operator: row[0] || '',
-        region: row[1] || '',
-        airport: row[2] || '',
-        hotel: row[3] || '',
-        transferType: row[4] || '',
+    booking: row[0] || '',
+    subBooking: row[1] || '',
 
-        arrivalDate: row[5] || '',
-        departureDate: row[6] || '',
+    operator: row[2] || '',
+    region: row[3] || '',
+    hotel: row[4] || '',
+    airport: row[5] || '',
+    transferType: row[6] || '',
 
-        adult: Number(row[7] || 0),
-        child: Number(row[8] || 0),
-        infant: Number(row[9] || 0),
+    arrivalDate: row[7] || '',
+    departureDate: row[8] || '',
 
-        totalPax:
-            Number(row[7] || 0) +
-            Number(row[8] || 0) +
-            Number(row[9] || 0)
+    adult: Number(row[9] || 0),
+    child: Number(row[10] || 0),
+    infant: Number(row[11] || 0),
 
-    });
+    totalPax:
+        Number(row[9] || 0) +
+        Number(row[10] || 0) +
+        Number(row[11] || 0)
+
+});
 
            }
 
