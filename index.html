@@ -2090,16 +2090,16 @@ function fillPassengerData() {
     }
 
     document.getElementById('c-veranstalter').value =
-        pax.operator || '';
+    (pax.operator || '').trim();
 
     document.getElementById('c-region').value =
-        pax.region || '';
+        (pax.region || '').trim()
 
     document.getElementById('c-airport').value =
-        pax.airport || '';
+        (pax.airport || '').trim()
 
     document.getElementById('c-transfertype').value =
-        pax.transferType || '';
+        (pax.transferType || '').trim()
 
     document.getElementById('c-adult').value =
         pax.adult || 0;
@@ -2111,7 +2111,7 @@ function fillPassengerData() {
         pax.infant || 0;
 
     document.getElementById('c-hotel').value =
-        pax.hotel || '';
+        (pax.hotel || '').trim()
 
     console.log(
         'PAX bilgileri yüklendi:',
