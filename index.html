@@ -1255,6 +1255,10 @@ onchange="importSelectedExcel(event)">
             <label class="form-label" for="c-adate">Geliş Tarihi</label>
             <input type="date" id="c-adate">
           </div>
+          <div class="form-group">
+            <label class="form-label" for="c-ddate">Dönüş Tarihi</label>
+            <input type="date" id="c-ddate">
+          </div>
         </div>
 
         <div class="section-title">Bölüm 3: Operasyonel Bilgiler</div>
@@ -2102,6 +2106,9 @@ function fillPassengerData() {
         return;
     }
 
+    document.getElementById('c-subbooking').value =
+    (pax.subBooking || '').trim();
+
     document.getElementById('c-veranstalter').value =
     (pax.operator || '').trim();
 
@@ -2110,11 +2117,32 @@ function fillPassengerData() {
 
     document.getElementById('c-airport').value =
         (pax.airport || '').trim()
+    
+    document.getElementById('c-adate').value =
+excelDateToInputDate(
+    pax.arrivalDate
+);
 
-    document.getElementById('c-transfertype').value =
-        (pax.transferType || '').trim()
+var transferValue =
+    (pax.transferType || '').trim();
 
-    document.getElementById('c-subbooking').value =
+Array.from(
+    document.getElementById('c-transfertype').options
+).forEach(function(opt){
+
+    if(
+        opt.value.toUpperCase() ===
+        transferValue.toUpperCase()
+    ){
+        transferValue = opt.value;
+    }
+
+});
+
+document.getElementById('c-transfertype').value =
+    transferValue;
+
+document.getElementById('c-subbooking').value =
     (pax.subBooking || '').trim();
 
     document.getElementById('c-child').value =
