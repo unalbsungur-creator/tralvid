@@ -2123,6 +2123,11 @@ excelDateToInputDate(
     pax.arrivalDate
 );
 
+document.getElementById('c-ddate').value =
+excelDateToInputDate(
+    pax.departureDate
+);
+
 var transferValue =
     (pax.transferType || '').trim();
 
@@ -2177,6 +2182,7 @@ function saveComplaint() {
           infant: parseInt(document.getElementById('c-infant').value) || 0,
           bdate: document.getElementById('c-bdate').value,
           adate: document.getElementById('c-adate').value,
+          ddate: document.getElementById('c-ddate').value,
           veranstalter: document.getElementById('c-veranstalter').value,
           partner: document.getElementById('c-partner').value,
           Verursacher: document.getElementById('c-verursacher').value,
