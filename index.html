@@ -3371,19 +3371,54 @@ function deleteUser(username) {
     r.attachments.map(function(file){
 
         return (
-    '📎 ' +
+
+    (
+        file.type.indexOf('image/') === 0
+        ? '🖼️ '
+
+        : file.type === 'application/pdf'
+        ? '📄 '
+
+        : file.name.match(/\.(doc|docx)$/i)
+        ? '📝 '
+
+        : file.name.match(/\.(xls|xlsx)$/i)
+        ? '📊 '
+
+        : file.name.match(/\.(ppt|pptx)$/i)
+        ? '📈 '
+
+        : file.name.match(/\.(zip|rar|7z)$/i)
+        ? '📦 '
+
+        : file.name.match(/\.(eml|msg)$/i)
+        ? '📧 '
+
+        : '📎 '
+    )
+
+    +
+
     file.name +
+
     ' (' +
+
     Math.round(file.size / 1024) +
+
     ' KB)' +
 
     ' <button onclick="viewAttachment(\'' +
+
     file.id +
+
     '\')">👁 Görüntüle</button>' +
 
     ' <button onclick="downloadAttachment(\'' +
+
     file.id +
+
     '\')">⬇ İndir</button>'
+
 );
 
     }).join('<br>')
