@@ -1715,13 +1715,10 @@ renderAccounting();
 
     loadComplaintSubjects();
 
-    loadHotelDropdown();
-loadOperatorDropdown();
-
-    loadSimpleDropdown(
-        'c-veranstalter',
-        'operators'
-    );
+loadSimpleDropdown(
+    'c-veranstalter',
+    'operators'
+);
 
     loadSimpleDropdown(
         'c-region',
@@ -1745,6 +1742,7 @@ loadOperatorDropdown();
     document.getElementById('c-date').value = today;
     document.getElementById('c-bdate').value = today;
     document.getElementById('c-adate').value = today;
+    document.getElementById('c-ddate').value = today;
 
     document.getElementById('c-user').value =
         currentUser.username;
