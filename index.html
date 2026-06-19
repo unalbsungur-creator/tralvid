@@ -1225,7 +1225,7 @@ onchange="importSelectedExcel(event)">
         <div class="form-grid">
           <div class="form-group">
             <label class="form-label" for="c-booking">Rezervasyon Numarası</label>
-            <input type="text" id="c-booking" placeholder="Örn: 1283842">
+            <input type="text" id="c-booking" placeholder="Örn: 1283842" onchange="fillPassengerData()">
           </div>
           <div class="form-group">
             <label class="form-label" for="c-subbooking">Alt Rezervasyon No</label>
@@ -2054,6 +2054,69 @@ function initSessionTimeout() {
 }
 
 // ================= DATA ACTIONS =================
+
+function fillPassengerData() {
+
+    var bookingNo =
+        document.getElementById('c-booking')
+        .value
+        .trim();
+
+    if (!bookingNo) return;
+
+    var passengers =
+        JSON.parse(
+            localStorage.getItem('passengerStats') || '[]'
+        );
+
+    var pax =
+        passengers.find(function(item){
+
+            return (
+                String(item.booking).trim() === bookingNo
+            );
+
+        });
+
+    if (!pax) {
+
+        console.log(
+            'Rezervasyon bulunamadı:',
+            bookingNo
+        );
+
+        return;
+    }
+
+    document.getElementById('c-veranstalter').value =
+        pax.operator || '';
+
+    document.getElementById('c-region').value =
+        pax.region || '';
+
+    document.getElementById('c-airport').value =
+        pax.airport || '';
+
+    document.getElementById('c-transfertype').value =
+        pax.transferType || '';
+
+    document.getElementById('c-adult').value =
+        pax.adult || 0;
+
+    document.getElementById('c-child').value =
+        pax.child || 0;
+
+    document.getElementById('c-infant').value =
+        pax.infant || 0;
+
+    document.getElementById('c-hotel').value =
+        pax.hotel || '';
+
+    console.log(
+        'PAX bilgileri yüklendi:',
+        pax
+    );
+}
 
 function saveComplaint() {
       try {
