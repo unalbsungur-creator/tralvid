@@ -2708,17 +2708,39 @@ if(type === 'reasons'){
 
         '</div>' +
 
-        '<table>' +
+        (type === 'passengers'
 
-        '<thead>' +
-        '<tr>' +
+?
+
+'<table>' +
+
+'<thead>' +
+'<tr>' +
+'<th>#</th>' +
+'<th>Yolcu Verisi</th>' +
+'<th>İşlem</th>' +
+'</tr>' +
+'</thead>' +
+
+'<tbody>'
+
+:
+
+'<table>' +
+
+'<thead>' +
+'<tr>' +
 '<th>#</th>' +
 '<th>TR</th>' +
 '<th>DE</th>' +
 '<th>EN</th>' +
 '<th>İşlem</th>' +
-'</tr>'
-        '</thead>' +
+'</tr>' +
+'</thead>' +
+
+'<tbody>'
+
+);
 
         '<tbody>';
 
