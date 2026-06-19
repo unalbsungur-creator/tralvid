@@ -3410,12 +3410,33 @@ function deleteUser(username) {
             return;
         }
 
-        var win = window.open();
+        if(file.type.indexOf('image/') === 0){
 
-        win.document.write(
-            '<html><body style="margin:0">' +
-            '<img src="' + file.content + '" style="max-width:100%">' +
-            '</body></html>'
+            var win = window.open();
+
+            win.document.write(
+                '<html><body style="margin:0">' +
+                '<img src="' +
+                file.content +
+                '" style="max-width:100%">' +
+                '</body></html>'
+            );
+
+            return;
+        }
+
+        if(file.type === 'application/pdf'){
+
+            window.open(
+                file.content,
+                '_blank'
+            );
+
+            return;
+        }
+
+        alert(
+            'Bu dosya türü tarayıcıda önizlenemiyor. İndir butonunu kullanın.'
         );
 
     });
