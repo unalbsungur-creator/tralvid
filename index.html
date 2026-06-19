@@ -2125,8 +2125,12 @@ loadSimpleDropdown(
     'operators'
 );
 
-document.getElementById('c-veranstalter').value =
-    String(op || '').trim();
+setTimeout(function(){
+
+    document.getElementById('c-veranstalter').value =
+        String(op || '').trim();
+
+}, 200);
 
 console.log(
     'SELECT VALUE:',
