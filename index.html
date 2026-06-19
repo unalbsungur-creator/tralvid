@@ -2109,8 +2109,22 @@ function fillPassengerData() {
     document.getElementById('c-subbooking').value =
     (pax.subBooking || '').trim();
 
-    document.getElementById('c-veranstalter').value =
+    var op =
     (pax.operator || '').trim();
+
+console.log(
+    'PAX OPERATOR:',
+    JSON.stringify(op)
+);
+
+document.getElementById('c-veranstalter').value =
+    op;
+
+console.log(
+    'SELECT VALUE:',
+    document.getElementById('c-veranstalter').value
+);
+    
 
     document.getElementById('c-region').value =
         (pax.region || '').trim()
