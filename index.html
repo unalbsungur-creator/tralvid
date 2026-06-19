@@ -1294,9 +1294,7 @@ onchange="importSelectedExcel(event)">
             <select id="c-service"></select>
           </div>
           <div class="form-group span-2">
-            <label class="form-label" for="c-hotel">
-İlgili Otel / Partner
-</label>
+            <label class="form-label" for="c-hotel">İlgili Otel / Partner</label>
 
 <input
     type="text"
@@ -1718,6 +1716,7 @@ renderAccounting();
     loadComplaintSubjects();
 
     loadHotelDropdown();
+    loadOperatorDropdown();
 
     loadSimpleDropdown(
         'c-veranstalter',
@@ -2664,16 +2663,16 @@ function renderDataManager() {
 }
 
 
-function loadHotelDropdown() {
+function loadOperatorDropdown() {
 
     let select =
-        document.getElementById('c-hotel');
+        document.getElementById('c-veranstalter');
 
     if (!select) return;
 
-    let hotels =
+    let operators =
         JSON.parse(
-            localStorage.getItem('hotelPartners')
+            localStorage.getItem('operators')
         ) || [];
 
     select.innerHTML = '';
@@ -2683,19 +2682,22 @@ function loadHotelDropdown() {
 
     firstOption.value = '';
     firstOption.textContent =
-        'Otel yazın veya seçin...';
+        'Operatör seçiniz...';
 
     select.appendChild(firstOption);
 
-    hotels
+    operators
         .sort()
         .forEach(function(item) {
 
             let option =
                 document.createElement('option');
 
-            option.value = item;
-            option.textContent = item;
+            option.value =
+                String(item).trim();
+
+            option.textContent =
+                String(item).trim();
 
             select.appendChild(option);
 
