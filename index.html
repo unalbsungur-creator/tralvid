@@ -3427,13 +3427,44 @@ function deleteUser(username) {
 
         if(file.type === 'application/pdf'){
 
-            window.open(
-                file.content,
-                '_blank'
-            );
+    var byteString =
+        atob(
+            file.content.split(',')[1]
+        );
 
-            return;
-        }
+    var arrayBuffer =
+        new ArrayBuffer(byteString.length);
+
+    var uintArray =
+        new Uint8Array(arrayBuffer);
+
+    for(
+        var i = 0;
+        i < byteString.length;
+        i++
+    ){
+        uintArray[i] =
+            byteString.charCodeAt(i);
+    }
+
+    var blob =
+        new Blob(
+            [uintArray],
+            {
+                type:'application/pdf'
+            }
+        );
+
+    var url =
+        URL.createObjectURL(blob);
+
+    window.open(
+        url,
+        '_blank'
+    );
+
+    return;
+}
 
         alert(
             'Bu dosya türü tarayıcıda önizlenemiyor. İndir butonunu kullanın.'
