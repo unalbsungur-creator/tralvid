@@ -2073,8 +2073,9 @@ function fillPassengerData() {
         passengers.find(function(item){
 
             return (
-                String(item.booking).trim() === bookingNo
-            );
+    String(item.booking).trim() ===
+    String(bookingNo).trim()
+);
 
         });
 
