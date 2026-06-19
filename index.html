@@ -2057,7 +2057,20 @@ function initSessionTimeout() {
 
 function fillPassengerData() {
 
-    var bookingNo =
+    function excelDateToInputDate(excelDate){
+
+    if(!excelDate) return '';
+
+    var date =
+        new Date(
+            (excelDate - 25569) *
+            86400 * 1000
+        );
+
+    return date
+        .toISOString()
+        .split('T')[0];
+}var bookingNo =
         document.getElementById('c-booking')
         .value
         .trim();
@@ -2101,8 +2114,8 @@ function fillPassengerData() {
     document.getElementById('c-transfertype').value =
         (pax.transferType || '').trim()
 
-    document.getElementById('c-adult').value =
-        pax.adult || 0;
+    document.getElementById('c-subbooking').value =
+    (pax.subBooking || '').trim();
 
     document.getElementById('c-child').value =
         pax.child || 0;
