@@ -2157,6 +2157,7 @@
             document.getElementById('c-infant').value =
                 pax.infant || 0;
 
+            loadHotelDropdown();
 
             setTimeout(function () {
 
@@ -2698,6 +2699,38 @@
 
         }
 
+        function loadHotelDropdown() {
+
+            let select =
+                document.getElementById('c-hotel');
+
+            if (!select) return;
+
+            let hotels =
+                JSON.parse(
+                    localStorage.getItem(
+                        'hotelPartners'
+                    )
+                ) || [];
+
+            select.innerHTML = '';
+
+            hotels.forEach(function (item) {
+
+                let option =
+                    document.createElement('option');
+
+                option.value =
+                    String(item).trim();
+
+                option.textContent =
+                    String(item).trim();
+
+                select.appendChild(option);
+
+            });
+
+        }
         function filterHotels() {
 
             let text =
