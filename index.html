@@ -2157,7 +2157,37 @@
         }
 
         function saveComplaint() {
+
             try {
+
+                var booking =
+                    document.getElementById('c-booking')
+                        .value
+                        .trim();
+
+                var veranstalter =
+                    document.getElementById('c-veranstalter')
+                        .value
+                        .trim();
+
+                if (!booking) {
+
+                    alert(
+                        'Rezervasyon numarası zorunludur.'
+                    );
+
+                    return;
+                }
+
+                if (!veranstalter) {
+
+                    alert(
+                        'Tur operatörü seçiniz.'
+                    );
+
+                    return;
+                }
+
                 var rec = {
                     id: complaints.length > 0 ? Math.max.apply(Math, complaints.map(function (o) { return o.id; })) + 1 : 1,
                     kw: document.getElementById('c-kw').value,
