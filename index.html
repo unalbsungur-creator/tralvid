@@ -2138,6 +2138,9 @@
             document.getElementById('c-subbooking').value =
                 String(pax.subBooking || '').trim();
 
+            document.getElementById('c-adult').value =
+                pax.adult || 0;
+
             document.getElementById('c-child').value =
                 pax.child || 0;
 
