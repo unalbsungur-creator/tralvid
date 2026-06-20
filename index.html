@@ -3592,7 +3592,7 @@
         // ==================== DETAY ANALİZ MODALLARI ====================
         function openComplaintDetail(id) {
             var r = complaints.find(function (o) { return o.id === id; }); if (!r) return;
-            document.getElementById('detail-modal-title').textContent = 'Şikayet Kartı Detay: ' + r.booking;
+            document.getElementById('detail-modal-title').textContent = 'Müşteri Kartı : ' + r.booking;
 
             document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
                 '<div class="detail-item"><span class="detail-lbl">Hafta No (KW) / Quarter (Çeyrek)</span><span class="detail-val">' + r.kw + ' / ' + r.quarter + '</span></div>' +
