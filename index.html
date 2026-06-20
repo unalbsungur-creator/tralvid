@@ -918,6 +918,7 @@
                         placeholder="Rezervasyon No veya Kelime Ara…" oninput="renderRecordsTable()">
                     <select class="toolbar-select" id="rec-filter-sonuc" onchange="renderRecordsTable()">
                         <option value="">Tüm Şikayet Sonuçları</option>
+                        <option value="">Sonuç seçiniz...</option>
                         <option value="Haklı">Haklı</option>
                         <option value="Haksız">Haksız</option>
                     </select>
@@ -962,6 +963,7 @@
                 </select>
                 <select class="toolbar-select" id="acc-filter-doviz" onchange="renderAccounting()">
                     <option value="">Tüm Dövizler</option>
+                    <option value="">Döviz seçiniz...</option>
                     <option value="EUR">EUR</option>
                     <option value="USD">USD</option>
                     <option value="GBP">GBP</option>
@@ -1237,6 +1239,7 @@
                     <div class="form-group">
                         <label class="form-label" for="c-partner">Partner (İş Ortağı)</label>
                         <select id="c-partner">
+                            <option value="">Partner seçiniz...</option>
                             <option value="IC">Inter Company</option>
                             <option value="PP">Prefer Part</option>
                             <option value="DİĞER">DİĞER</option>
@@ -1245,6 +1248,7 @@
                     <div class="form-group">
                         <label class="form-label" for="c-verursacher">Sorumlu taraf</label>
                         <select id="c-verursacher">
+                            <option value="">Sorumlu taraf seçiniz...</option>
                             <option value="Otel">Konaklama</option>
                             <option value="Rehber">Rehberlik hizmeti</option>
                             <option value="Transfer Sürücüsü">Transfer</option>
@@ -1724,7 +1728,8 @@
 
             if (!tr) return;
 
-            tr.innerHTML = '';
+            tr.innerHTML =
+                '<option value="">Şikayet konusu seçiniz...</option>';
 
 
             for (var i = 0; i < reasonsTR.length; i++) {
