@@ -1253,15 +1253,15 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="c-region">Region (Bölge)</label>
+                        <label class="form-label" for="c-region">Bölge</label>
                         <select id="c-region"></select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="c-airport">Flughafen (Havalimanı)</label>
+                        <label class="form-label" for="c-airport">Havalimanı</label>
                         <select id="c-airport"></select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="c-servis">Servis (Hizmet)</label>
+                        <label class="form-label" for="c-servis">Hizmet</label>
                         <select id="c-service"></select>
                     </div>
                     <div class="form-group span-2">
@@ -1293,16 +1293,6 @@
                     <div class="form-group">
                         <label class="form-label" for="c-ptr">Şikayet Konusu (TR)</label>
                         <select class="form-control" id="c-ptr"></select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="c-pde">Şikayet Konusu (DE)</label>
-                        <select class="form-control" id="c-pde"></select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="c-pen">Şikayet Konusu (EN)</label>
-                        <select class="form-control" id="c-pen"></select>
                     </div>
 
                     <div class="form-group">
@@ -3564,28 +3554,27 @@
         // ==================== DETAY ANALİZ MODALLARI ====================
         function openComplaintDetail(id) {
             var r = complaints.find(function (o) { return o.id === id; }); if (!r) return;
-            document.getElementById('detail-modal-title').textContent = 'Şikayet Kartı Detay Analiz İzleyicisi: ' + r.booking;
+            document.getElementById('detail-modal-title').textContent = 'Şikayet Kartı Detay: ' + r.booking;
 
             document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
                 '<div class="detail-item"><span class="detail-lbl">Hafta No (KW) / Quarter (Çeyrek)</span><span class="detail-val">' + r.kw + ' / ' + r.quarter + '</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Benutzer (Kullanıcı)</span><span class="detail-val">' + r.user + '</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Datum (Tarih)</span><span class="detail-val">' + r.date + '</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Cevap için süre aşımı / SN erhalten</span><span class="detail-val">' + r.timeout + ' / ' + r.sn + '</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Buchungsnummer (Rezervasyon No)</span><span class="detail-val">' + r.booking + '</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Sub-Buchungsnummer</span><span class="detail-val">' + (r.subbooking || '—') + '</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Pax (Erwachsene/Kind/Infant)</span><span class="detail-val">' + r.adult + ' Y / ' + r.child + ' Ç / ' + r.infant + ' B</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Beschwerdedatum (Şikayet Tarihi)</span><span class="detail-val">' + r.bdate + '</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Ankunftsdatum (Varış Tarihi)</span><span class="detail-val">' + r.adate + '</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Veranstalter (Tur Operatörü) / Partner</span><span class="detail-val">' + r.veranstalter + ' [' + r.partner + ']</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Beschwerdeverursacher (Şikayete Sebep Olan)</span><span class="detail-val">' + r.Verursacher + '</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Region / Flughafen</span><span class="detail-val">' + r.region + ' / ' + r.airport + '</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Servis (Hizmet) / Transfer Type</span><span class="detail-val">' + r.servis + ' — ' + (r.transfertype || 'Standart') + '</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Kullanıcı</span><span class="detail-val">' + r.user + '</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Tarih</span><span class="detail-val">' + r.date + '</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Cevap Süresi / Savunma Yazısı</span><span class="detail-val">' + r.timeout + ' / ' + r.sn + '</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Rezervasyon No</span><span class="detail-val">' + r.booking + '</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Alt Rezervasyon No</span><span class="detail-val">' + (r.subbooking || '—') + '</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Pax (Yetişkin / Çocuk / Bebek)</span><span class="detail-val">' + r.adult + ' Y / ' + r.child + ' Ç / ' + r.infant + ' B</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Şikayet Tarihi</span><span class="detail-val">' + r.bdate + '</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Geliş Tarihi</span><span class="detail-val">' + r.adate + '</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Dönüş Tarihi</span><span class="detail-val">' + r.adate + '</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Tur Operatörü/ Partner</span><span class="detail-val">' + r.veranstalter + ' [' + r.partner + ']</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Sorumlu taraf</span><span class="detail-val">' + r.Verursacher + '</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Bölge / Havalimanı</span><span class="detail-val">' + r.region + ' / ' + r.airport + '</span></div>' +
+                '<div class="detail-item"><span class="detail-lbl">Hizmet / Transfer Türü</span><span class="detail-val">' + r.servis + ' — ' + (r.transfertype || 'Standart') + '</span></div>' +
                 '<div class="detail-item"><span class="detail-lbl">İlgili Otel</span><span class="detail-val">' + (r.hotel || '—') + '</span></div>' +
                 '<div class="detail-item"><span class="detail-lbl">Şikayet Sonucu / Tazminat</span><span class="detail-val">' + r.result + ' — ' + fmt(r.price) + ' ' + r.currency + '</span></div>' +
                 '<div class="detail-item full"><span class="detail-lbl">Şikayet Konusu TR</span><span class="detail-val" style="color:var(--blue); font-weight:600;">' + r.ptr + '</span></div>' +
-                '<div class="detail-item full"><span class="detail-lbl">Şikayet Konusu DE</span><span class="detail-val">' + (r.pde || '—') + '</span></div>' +
-                '<div class="detail-item full"><span class="detail-lbl">Şikayet Konusu EN</span><span class="detail-val">' + (r.pen || '—') + '</span></div>' +
-                '<div class="detail-item full"><span class="detail-lbl">Notiz (Not)</span><div class="note-box">' + (r.notes || 'Açıklama girilmedi.') + '</div></div>' +
+                '<div class="detail-item full"><span class="detail-lbl">Not</span><div class="note-box">' + (r.notes || 'Açıklama girilmedi.') + '</div></div>' +
                 '<div class="detail-item full">' +
                 '<div class="detail-item full">' +
                 '<span class="detail-lbl">Ek Dosyalar</span>' +
