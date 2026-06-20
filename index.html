@@ -1798,6 +1798,14 @@
 
             select.innerHTML = '';
 
+            var firstOption =
+                document.createElement('option');
+
+            firstOption.value = '';
+            firstOption.textContent = 'Seçiniz...';
+
+            select.appendChild(firstOption);
+
             items.forEach(function (item) {
 
                 var option =
@@ -2696,6 +2704,14 @@
                 ) || [];
 
             select.innerHTML = '';
+
+            let firstOption =
+                document.createElement('option');
+
+            firstOption.value = '';
+            firstOption.textContent = 'Otel seçiniz...';
+
+            select.appendChild(firstOption);
 
             hotels.forEach(function (item) {
 
