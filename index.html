@@ -1673,22 +1673,26 @@
 
             loadSimpleDropdown(
                 'c-veranstalter',
-                'operators'
+                'operators',
+                'Operatör seçiniz...'
             );
 
             loadSimpleDropdown(
                 'c-region',
-                'regions'
+                'regions',
+                'Bölge seçiniz...'
             );
 
             loadSimpleDropdown(
                 'c-airport',
-                'airports'
+                'airports',
+                'Havalimanı seçiniz...'
             );
 
             loadSimpleDropdown(
                 'c-service',
-                'services'
+                'services',
+                'Hizmet seçiniz...'
             );
 
             loadTransferTypeDropdown();
@@ -1716,41 +1720,18 @@
                     localStorage.getItem('reasonsTR') || '[]'
                 );
 
-            var reasonsDE =
-                JSON.parse(
-                    localStorage.getItem('reasonsDE') || '[]'
-                );
-
-            var reasonsEN =
-                JSON.parse(
-                    localStorage.getItem('reasonsEN') || '[]'
-                );
-
             var tr = document.getElementById('c-ptr');
-            var de = document.getElementById('c-pde');
-            var en = document.getElementById('c-pen');
 
-            if (!tr || !de || !en) return;
+            if (!tr) return;
 
             tr.innerHTML = '';
-            de.innerHTML = '';
-            en.innerHTML = '';
+
 
             for (var i = 0; i < reasonsTR.length; i++) {
 
                 tr.innerHTML +=
                     '<option value="' + reasonsTR[i] + '">' +
                     reasonsTR[i] +
-                    '</option>';
-
-                de.innerHTML +=
-                    '<option value="' + reasonsDE[i] + '">' +
-                    reasonsDE[i] +
-                    '</option>';
-
-                en.innerHTML +=
-                    '<option value="' + reasonsEN[i] + '">' +
-                    reasonsEN[i] +
                     '</option>';
 
             }
@@ -1770,6 +1751,15 @@
 
             select.innerHTML = '';
 
+            var firstOption =
+                document.createElement('option');
+
+            firstOption.value = '';
+            firstOption.textContent =
+                'Transfer türü seçiniz...';
+
+            select.appendChild(firstOption);
+
             types.forEach(function (type) {
 
                 var option =
@@ -1784,7 +1774,7 @@
 
         }
 
-        function loadSimpleDropdown(selectId, storageKey) {
+        function loadSimpleDropdown(selectId, storageKey, placeholder) {
 
             var select =
                 document.getElementById(selectId);
@@ -1798,24 +1788,22 @@
 
             select.innerHTML = '';
 
-            var firstOption =
+            var first =
                 document.createElement('option');
 
-            firstOption.value = '';
-            firstOption.textContent = 'Seçiniz...';
+            first.value = '';
+            first.textContent =
+                placeholder || 'Seçiniz...';
 
-            select.appendChild(firstOption);
+            select.appendChild(first);
 
             items.forEach(function (item) {
 
                 var option =
                     document.createElement('option');
 
-                option.value =
-                    String(item).trim();
-
-                option.textContent =
-                    String(item).trim();
+                option.value = item;
+                option.textContent = item;
 
                 select.appendChild(option);
 
