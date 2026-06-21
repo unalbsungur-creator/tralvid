@@ -3717,7 +3717,7 @@
 
                         ?
 
-                        r.attachments.map(function (file) {
+                        r.attachments.map(function (file, index) {
 
                             return (
 
@@ -3747,6 +3747,8 @@
                                 )
 
                                 +
+
+                                (index + 1) + '. ' +
 
                                 file.name +
 
