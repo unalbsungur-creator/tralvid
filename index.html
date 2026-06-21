@@ -2247,6 +2247,17 @@
                             : 'Shuttle',
 
                     ptr: document.getElementById('c-ptr').value,
+
+                    ptr2:
+                        document.getElementById('c-ptr2')
+                            ? document.getElementById('c-ptr2').value
+                            : '',
+
+                    ptr3:
+                        document.getElementById('c-ptr3')
+                            ? document.getElementById('c-ptr3').value
+                            : '',
+
                     result: document.getElementById('c-result').value,
                     price: parseFloat(document.getElementById('c-price').value) || 0,
                     currency: document.getElementById('c-currency').value,
