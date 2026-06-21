@@ -1167,7 +1167,7 @@
                                 Savunma Yazısı Ekleri
                             </label>
 
-                            <input type="file" id="c-defense-files" multiple accept="
+                            <input type="file" id="c-defense-files" multiple accept=">
                     .pdf,
                     .doc,
                     .docx,
@@ -1494,6 +1494,8 @@
     <div class="toast" id="toast"><span>&#10003; &nbsp;</span><span id="toast-msg"></span></div>
 
     <script>
+
+        var pendingAttachments = [];
         // ==================== HAFIZA ENTEGRASYONU ====================
         var initialComplaints = [
             { id: 1, kw: 'KW17', quarter: 'Q2', user: 'ÜNAL BÜYÜKSUNGUR', date: '2025-04-25', timeout: 'Hayır', sn: 'Hayır', booking: '1283842', subbooking: '1283945', adult: 1, child: 0, infant: 0, bdate: '2025-04-25', adate: '2025-04-16', veranstalter: 'HOLIDAY CHECK TOURISTIC', partner: 'IC', Verursacher: 'Acente Operasyon', region: 'ANTALYA', airport: 'AYT', servis: 'Transfer', hotel: 'ADALYA ELITE LARA', transfertype: 'VIP', ptr: 'Transfer ( yok )', pde: 'Transfer ( kein Transfer gebucht )', pen: 'Transfer (no transfer booked)', result: 'Haksız', price: 0, currency: 'EUR', notes: '' },
@@ -2220,6 +2222,29 @@
             );
         }
 
+        function removePendingFile(index) {
+
+            pendingAttachments.splice(index, 1);
+
+            var html = '';
+
+            pendingAttachments.forEach(function (file, i) {
+
+                html +=
+                    (i + 1) +
+                    '. 📎 ' +
+                    file.name +
+                    ' <button type="button" onclick="removePendingFile(' +
+                    i +
+                    ')">❌</button><br>';
+
+            });
+
+            document
+                .getElementById('defense-file-list')
+                .innerHTML = html;
+
+        }
         function saveComplaint() {
 
             try {
@@ -2315,10 +2340,7 @@
                     deletedAt: ''
                 };
 
-                var files =
-                    Array.from(
-                        document.getElementById('c-defense-files').files
-                    );
+                var files = pendingAttachments;
 
                 Promise.all(
 
@@ -2355,6 +2377,10 @@
                     clearComplaintForm();
 
                     closeComplaintModal();
+
+                    pendingAttachments = [];
+
+                    document.getElementById('defense-file-list').innerHTML = '';
 
                     showToast(
                         'Şikayet kartı veritabanına işlendi.'
@@ -4631,22 +4657,33 @@
                     .getElementById('c-defense-files')
                     .addEventListener('change', function () {
 
-                        var html = '';
-
                         Array
                             .from(this.files)
                             .forEach(function (file) {
 
-                                html +=
-                                    '📎 ' +
-                                    file.name +
-                                    '<br>';
+                                pendingAttachments.push(file);
 
                             });
+
+                        var html = '';
+
+                        pendingAttachments.forEach(function (file, index) {
+
+                            html +=
+                                (index + 1) +
+                                '. 📎 ' +
+                                file.name +
+                                ' <button type="button" onclick="removePendingFile(' +
+                                index +
+                                ')">❌</button><br>';
+
+                        });
 
                         document
                             .getElementById('defense-file-list')
                             .innerHTML = html;
+
+                        this.value = '';
 
                     });
 
