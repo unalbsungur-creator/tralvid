@@ -4460,264 +4460,263 @@
 
                 renderDashboard();
 
-            };
 
-            reader.readAsArrayBuffer(file);
-        }
-
-        function exportMasterData() {
-
-            var workbook = XLSX.utils.book_new();
-
-            function addSheet(sheetName, storageKey, columnName) {
-
-                var data =
-                    JSON.parse(
-                        localStorage.getItem(storageKey)
-                    ) || [];
-
-                var rows = [[columnName]];
-
-                data.forEach(function (item) {
-                    rows.push([item]);
-                });
-
-                var worksheet =
-                    XLSX.utils.aoa_to_sheet(rows);
-
-                XLSX.utils.book_append_sheet(
-                    workbook,
-                    worksheet,
-                    sheetName
-                );
+                reader.readAsArrayBuffer(file);
             }
 
-            addSheet(
-                'Operatörler',
-                'operators',
-                'Operatör'
-            );
+            function exportMasterData() {
 
-            addSheet(
-                'Bolgeler',
-                'regions',
-                'Bölge'
-            );
+                var workbook = XLSX.utils.book_new();
 
-            addSheet(
-                'Havalimanlari',
-                'airports',
-                'Havalimanı'
-            );
+                function addSheet(sheetName, storageKey, columnName) {
 
-            addSheet(
-                'Servisler',
-                'services',
-                'Servis'
-            );
+                    var data =
+                        JSON.parse(
+                            localStorage.getItem(storageKey)
+                        ) || [];
 
-            addSheet(
-                'SikayetKonulari',
-                'reasons',
-                'Konu'
-            );
+                    var rows = [[columnName]];
 
-            addSheet(
-                'TransferTurleri',
-                'transferTypes',
-                'Transfer Türü'
-            );
+                    data.forEach(function (item) {
+                        rows.push([item]);
+                    });
 
-            addSheet(
-                'Oteller',
-                'hotelPartners',
-                'Otel'
-            );
+                    var worksheet =
+                        XLSX.utils.aoa_to_sheet(rows);
 
-            XLSX.writeFile(
-                workbook,
-                'TRALVID_MasterData.xlsx'
-            );
+                    XLSX.utils.book_append_sheet(
+                        workbook,
+                        worksheet,
+                        sheetName
+                    );
+                }
 
-            showToast(
-                'Master veri Excel dosyası oluşturuldu.'
-            );
-        }
-
-        // Overlay Kapatıcı Kuralı
-        document.addEventListener('click', function (e) {
-            if (e.target.id === 'complaint-modal-overlay') closeComplaintModal();
-            if (e.target.id === 'invoice-modal-overlay') closeInvoiceModal();
-            if (e.target.id === 'detail-modal-overlay') closeDetailModal();
-        });
-
-        // INITIALIZER
-        document.addEventListener('DOMContentLoaded', function () {
-
-            if (!localStorage.getItem('transferTypes')) {
-
-                localStorage.setItem(
-                    'transferTypes',
-                    JSON.stringify([
-                        'Shuttle',
-                        'Private Sedan',
-                        'Private Minivan',
-                        'Private Vito',
-                        'Private Sprinter',
-                        'Private Midibus',
-                        'Private Bus',
-                        'VIP Sedan',
-                        'VIP Vito',
-                        'VIP Minibus',
-                        'VIP Midibus'
-                    ])
-                );
-
-            }
-
-            if (!localStorage.getItem('operators')) {
-
-                localStorage.setItem(
+                addSheet(
+                    'Operatörler',
                     'operators',
-                    JSON.stringify([
-                        'TUI',
-                        'JET2',
-                        'ANEX',
-                        'CORAL',
-                        'ODEON',
-                        'DERTOUR',
-                        'SCHAUINSLAND',
-                        'HOLIDAY CHECK',
-                        'LOVEHOLIDAYS',
-                        'ON THE BEACH',
-                        'EASYJET HOLIDAYS',
-                        'SUNEXPRESS HOLIDAYS'
-                    ])
+                    'Operatör'
                 );
 
+                addSheet(
+                    'Bolgeler',
+                    'regions',
+                    'Bölge'
+                );
+
+                addSheet(
+                    'Havalimanlari',
+                    'airports',
+                    'Havalimanı'
+                );
+
+                addSheet(
+                    'Servisler',
+                    'services',
+                    'Servis'
+                );
+
+                addSheet(
+                    'SikayetKonulari',
+                    'reasons',
+                    'Konu'
+                );
+
+                addSheet(
+                    'TransferTurleri',
+                    'transferTypes',
+                    'Transfer Türü'
+                );
+
+                addSheet(
+                    'Oteller',
+                    'hotelPartners',
+                    'Otel'
+                );
+
+                XLSX.writeFile(
+                    workbook,
+                    'TRALVID_MasterData.xlsx'
+                );
+
+                showToast(
+                    'Master veri Excel dosyası oluşturuldu.'
+                );
             }
 
-            var savedUser = sessionStorage.getItem('currentUser');
+            // Overlay Kapatıcı Kuralı
+            document.addEventListener('click', function (e) {
+                if (e.target.id === 'complaint-modal-overlay') closeComplaintModal();
+                if (e.target.id === 'invoice-modal-overlay') closeInvoiceModal();
+                if (e.target.id === 'detail-modal-overlay') closeDetailModal();
+            });
 
-            if (savedUser) {
+            // INITIALIZER
+            document.addEventListener('DOMContentLoaded', function () {
 
-                currentUser = JSON.parse(savedUser);
+                if (!localStorage.getItem('transferTypes')) {
 
-                if (!currentUser) {
-                    sessionStorage.removeItem('currentUser');
-                    location.reload();
-                    return;
+                    localStorage.setItem(
+                        'transferTypes',
+                        JSON.stringify([
+                            'Shuttle',
+                            'Private Sedan',
+                            'Private Minivan',
+                            'Private Vito',
+                            'Private Sprinter',
+                            'Private Midibus',
+                            'Private Bus',
+                            'VIP Sedan',
+                            'VIP Vito',
+                            'VIP Minibus',
+                            'VIP Midibus'
+                        ])
+                    );
+
                 }
 
-                if (!currentUser.username) {
-                    sessionStorage.removeItem('currentUser');
-                    location.reload();
-                    return;
+                if (!localStorage.getItem('operators')) {
+
+                    localStorage.setItem(
+                        'operators',
+                        JSON.stringify([
+                            'TUI',
+                            'JET2',
+                            'ANEX',
+                            'CORAL',
+                            'ODEON',
+                            'DERTOUR',
+                            'SCHAUINSLAND',
+                            'HOLIDAY CHECK',
+                            'LOVEHOLIDAYS',
+                            'ON THE BEACH',
+                            'EASYJET HOLIDAYS',
+                            'SUNEXPRESS HOLIDAYS'
+                        ])
+                    );
+
                 }
 
-                if (!USERS[currentUser.username]) {
+                var savedUser = sessionStorage.getItem('currentUser');
 
-                    localStorage.removeItem('currentUser');
+                if (savedUser) {
+
+                    currentUser = JSON.parse(savedUser);
+
+                    if (!currentUser) {
+                        sessionStorage.removeItem('currentUser');
+                        location.reload();
+                        return;
+                    }
+
+                    if (!currentUser.username) {
+                        sessionStorage.removeItem('currentUser');
+                        location.reload();
+                        return;
+                    }
+
+                    if (!USERS[currentUser.username]) {
+
+                        localStorage.removeItem('currentUser');
+
+                        document.getElementById('login-modal')
+                            .style.display = 'flex';
+
+                        return;
+                    }
 
                     document.getElementById('login-modal')
-                        .style.display = 'flex';
+                        .style.display = 'none';
 
-                    return;
-                }
+                    applyPermissions();
 
-                document.getElementById('login-modal')
-                    .style.display = 'none';
-
-                applyPermissions();
-
-                initSessionTimeout();
-
-                renderDashboard();
-                renderRecordsTable();
-                renderAccounting();
-                renderUsers();
-                renderDeleteRequests();
-
-                showPage(
-                    localStorage.getItem('activePage') || 'dashboard'
-                );
-
-                /* SAVUNMA DOSYALARI */
-
-                document
-                    .getElementById('c-sn')
-                    .addEventListener('change', function () {
-
-                        document
-                            .getElementById('defense-file-area')
-                            .style.display =
-
-                            this.value === 'Evet'
-
-                                ? 'block'
-                                : 'none';
-
-                    });
-
-                document
-                    .getElementById('c-defense-files')
-                    .addEventListener('change', function () {
-
-                        Array
-                            .from(this.files)
-                            .forEach(function (file) {
-
-                                pendingAttachments.push(file);
-
-                            });
-
-                        var html = '';
-
-                        pendingAttachments.forEach(function (file, index) {
-
-                            html +=
-                                (index + 1) +
-                                '. 📎 ' +
-                                file.name +
-                                ' <button type="button" onclick="removePendingFile(' +
-                                index +
-                                ')">❌</button><br>';
-
-                        });
-
-                        document
-                            .getElementById('defense-file-list')
-                            .innerHTML = html;
-
-                        this.value = '';
-
-                    });
-
-                window.addEventListener('storage', function () {
-
-                    complaints = JSON.parse(
-                        localStorage.getItem('tralvid_pages_complaints')
-                    ) || [];
-
-                    invoices = JSON.parse(
-                        localStorage.getItem('tralvid_pages_invoices')
-                    ) || [];
+                    initSessionTimeout();
 
                     renderDashboard();
                     renderRecordsTable();
                     renderAccounting();
+                    renderUsers();
                     renderDeleteRequests();
 
-                });
+                    showPage(
+                        localStorage.getItem('activePage') || 'dashboard'
+                    );
 
-            } else {
+                    /* SAVUNMA DOSYALARI */
 
-                document.getElementById('login-modal')
-                    .style.display = 'flex';
+                    document
+                        .getElementById('c-sn')
+                        .addEventListener('change', function () {
 
-            }
+                            document
+                                .getElementById('defense-file-area')
+                                .style.display =
 
-        });
+                                this.value === 'Evet'
+
+                                    ? 'block'
+                                    : 'none';
+
+                        });
+
+                    document
+                        .getElementById('c-defense-files')
+                        .addEventListener('change', function () {
+
+                            Array
+                                .from(this.files)
+                                .forEach(function (file) {
+
+                                    pendingAttachments.push(file);
+
+                                });
+
+                            var html = '';
+
+                            pendingAttachments.forEach(function (file, index) {
+
+                                html +=
+                                    (index + 1) +
+                                    '. 📎 ' +
+                                    file.name +
+                                    ' <button type="button" onclick="removePendingFile(' +
+                                    index +
+                                    ')">❌</button><br>';
+
+                            });
+
+                            document
+                                .getElementById('defense-file-list')
+                                .innerHTML = html;
+
+                            this.value = '';
+
+                        });
+
+                    window.addEventListener('storage', function () {
+
+                        complaints = JSON.parse(
+                            localStorage.getItem('tralvid_pages_complaints')
+                        ) || [];
+
+                        invoices = JSON.parse(
+                            localStorage.getItem('tralvid_pages_invoices')
+                        ) || [];
+
+                        renderDashboard();
+                        renderRecordsTable();
+                        renderAccounting();
+                        renderDeleteRequests();
+
+                    });
+
+                } else {
+
+                    document.getElementById('login-modal')
+                        .style.display = 'flex';
+
+                }
+
+            });
 
     </script>
 </body>
