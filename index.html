@@ -2480,6 +2480,12 @@
                     '<td><span class="badge ' + (r.result === 'Haklı' ? 'badge-green' : 'badge-red') + '">' + r.result + '</span></td>' +
                     '<td style="font-weight:600;">' + (r.price > 0 ? fmt(r.price) + ' ' + r.currency : '-') + '</td>' +
                     '<td>' +
+                    (
+                        r.attachments && r.attachments.length > 0
+                            ? '<span title="Ek Dosyalar">📎(' + r.attachments.length + ')</span> '
+                            : ''
+                    ) +
+
                     '<button class="icon-btn" onclick="openComplaintDetail(' + r.id + ')" title="Detay Gör">&#128065;</button>' +
 
                     (
