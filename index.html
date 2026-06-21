@@ -1701,6 +1701,9 @@
             // ==================== MODAL CONTROLS ====================
             function openComplaintModal() {
 
+                closeInvoiceModal();
+                closeDetailModal();
+
                 loadComplaintSubjects();
 
                 loadSimpleDropdown(
@@ -1878,8 +1881,14 @@
             }
 
             function openInvoiceModal() {
+
+                closeComplaintModal();
+                closeDetailModal();
+
                 var today = new Date().toISOString().split('T')[0];
+
                 document.getElementById('inv-date').value = today;
+
                 document.getElementById('invoice-modal-overlay').classList.add('open');
             }
             function closeInvoiceModal() { document.getElementById('invoice-modal-overlay').classList.remove('open'); }
