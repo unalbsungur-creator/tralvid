@@ -1754,22 +1754,49 @@
                     localStorage.getItem('reasonsTR') || '[]'
                 );
 
-            var tr = document.getElementById('c-ptr');
+            var tr =
+                document.getElementById('c-ptr');
+
+            var tr2 =
+                document.getElementById('c-ptr2');
+
+            var tr3 =
+                document.getElementById('c-ptr3');
 
             if (!tr) return;
 
             tr.innerHTML =
                 '<option value="">Şikayet konusu seçiniz...</option>';
 
+            if (tr2) {
+                tr2.innerHTML =
+                    '<option value="">Şikayet konusu seçiniz...</option>';
+            }
+
+            if (tr3) {
+                tr3.innerHTML =
+                    '<option value="">Şikayet konusu seçiniz...</option>';
+            }
 
             for (var i = 0; i < reasonsTR.length; i++) {
 
-                tr.innerHTML +=
+                var option =
                     '<option value="' + reasonsTR[i] + '">' +
                     reasonsTR[i] +
                     '</option>';
 
+                tr.innerHTML += option;
+
+                if (tr2) {
+                    tr2.innerHTML += option;
+                }
+
+                if (tr3) {
+                    tr3.innerHTML += option;
+                }
+
             }
+
         }
 
         function loadTransferTypeDropdown() {
