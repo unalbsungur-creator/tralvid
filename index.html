@@ -1353,6 +1353,38 @@
                         </div>
                     </div>
 
+                    <div class="section-title">Savunma Süreci</div>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Savunma Talep Edildi mi?
+                            </label>
+
+                            <select id="c-defense-required">
+                                <option value="Hayır">Hayır</option>
+                                <option value="Evet">Evet</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                İlgili Birim
+                            </label>
+
+                            <select id="c-defense-unit">
+                                <option value="">Seçiniz...</option>
+                                <option value="Otel">Otel</option>
+                                <option value="Tur">Tur</option>
+                                <option value="Transfer">Transfer</option>
+                                <option value="Rehberlik">Rehberlik</option>
+                                <option value="Uçak">Uçak</option>
+                            </select>
+                        </div>
+
+                    </div>
+
                     <div class="section-title">Açıklama Katmanı</div>
                     <div class="form-grid">
                         <div class="form-group full">
@@ -2331,6 +2363,22 @@
                     price: parseFloat(document.getElementById('c-price').value) || 0,
                     currency: document.getElementById('c-currency').value,
                     notes: document.getElementById('c-notes').value.trim(),
+
+                    defenseRequired:
+                        document.getElementById('c-defense-required').value,
+
+                    defenseUnit:
+                        document.getElementById('c-defense-unit').value,
+
+                    defenseRequestedAt:
+                        document.getElementById('c-defense-required').value === 'Evet'
+                            ? new Date().toISOString()
+                            : '',
+
+                    defenseStatus:
+                        document.getElementById('c-defense-required').value === 'Evet'
+                            ? 'Bekleniyor'
+                            : 'Yok',
 
                     attachments: [],
 
@@ -3743,6 +3791,23 @@
                 '<div class="detail-item full">' +
                 '<span class="detail-lbl">Ek Dosyalar</span>' +
                 '<div class="note-box">' +
+                '<div class="detail-item">' +
+                '<span class="detail-lbl">Savunma Gerekli</span>' +
+                '<span class="detail-val">' +
+                (r.defenseRequired || 'Hayır') +
+                '</span></div>' +
+
+                '<div class="detail-item">' +
+                '<span class="detail-lbl">İlgili Birim</span>' +
+                '<span class="detail-val">' +
+                (r.defenseUnit || '-') +
+                '</span></div>' +
+
+                '<div class="detail-item">' +
+                '<span class="detail-lbl">Savunma Durumu</span>' +
+                '<span class="detail-val">' +
+                (r.defenseStatus || '-') +
+                '</span></div>' +
 
                 (
                     r.attachments && r.attachments.length > 0
