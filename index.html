@@ -4273,6 +4273,33 @@
         // ==================== DASHBOARD VE CSS GRAPHICS ====================
         function getDefenseInfo(record) {
 
+            if (record.defenseStatus === 'Tamamlandı') {
+
+                return {
+                    status: 'Tamamlandı',
+                    color: '#4caf50',
+                    remaining: ''
+                };
+            }
+
+            if (record.defenseStatus === 'Eksik Dosya') {
+
+                return {
+                    status: 'Eksik Dosya',
+                    color: '#e74c3c',
+                    remaining: ''
+                };
+            }
+
+            if (record.defenseStatus === 'Savunma Geldi') {
+
+                return {
+                    status: 'Savunma Geldi',
+                    color: '#2196f3',
+                    remaining: ''
+                };
+            }
+
             if (record.defenseRequired !== 'Evet') {
 
                 return {
