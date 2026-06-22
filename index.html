@@ -1783,6 +1783,8 @@
 
             autoCalculateTimeFields();
 
+            toggleDefenseUnit();
+
             document.getElementById('complaint-modal-overlay')
                 .classList.add('open');
         }
@@ -1961,7 +1963,17 @@
             }
         }
 
+        function clearComplaintForm() {
+
+            document.getElementById('c-defense-required').value = 'Hayır';
+
+            document.getElementById('c-defense-unit').value = '';
+
+            toggleDefenseUnit();
+        }
+
         function closeDetailModal() {
+
             document.getElementById('detail-modal-overlay')
                 .classList.remove('open');
         }
