@@ -2565,10 +2565,18 @@
                     '<td>' + truncate(r.user, 14) + '</td>' +
                     '<td style="font-family:monospace; font-weight:bold;">' + r.booking + '</td>' +
                     '<td>' + truncate(r.veranstalter, 18) + '</td>' +
-                    '<td>' + r.region + '</td>' +
+
+                    '<td>' + (r.region || '-') + '</td>' +
+
+                    '<td><span class="badge badge-blue">' +
+                    (r.service || '-') +
+                    '</span></td>' +
+
                     '<td>' + truncate(r.ptr || '-', 22) + '</td>' +
-                    '<td><span class="badge badge-blue">' + r.servis + '</span></td>' +
-                    '<td><span class="badge ' + (r.result === 'Haklı' ? 'badge-green' : 'badge-red') + '">' + r.result + '</span></td>' +
+
+                    '<td><span class="badge ' +
+                    (r.result === 'Haklı' ? 'badge-green' : 'badge-red') +
+                    '">' + (r.result || '-') + '</span></td>' +
                     '<td style="font-weight:600;">' + (r.price > 0 ? fmt(r.price) + ' ' + r.currency : '-') + '</td>' +
                     '<td>' +
                     (
@@ -2591,8 +2599,8 @@
                                     )
                                     : '<button class="icon-btn btn-delete" onclick="requestDeleteComplaint(' + r.id + ')" title="Silme Talebi">&#128465;</button>'
                             )
-                    )
-                '</td>' +
+                    ) +
+                    '</td>' +
                     '</tr>';
             }
             tbody.innerHTML = html;
