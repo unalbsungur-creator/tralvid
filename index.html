@@ -4408,6 +4408,22 @@
                 return r.isDeleted === true;
             }).length;
 
+            var defenseWaiting = complaints.filter(function (r) {
+                return r.defenseStatus === 'Bekleniyor';
+            }).length;
+
+            var defenseReceived = complaints.filter(function (r) {
+                return r.defenseStatus === 'Savunma Geldi';
+            }).length;
+
+            var defenseMissing = complaints.filter(function (r) {
+                return r.defenseStatus === 'Eksik Dosya';
+            }).length;
+
+            var defenseCompleted = complaints.filter(function (r) {
+                return r.defenseStatus === 'Tamamlandı';
+            }).length;
+
             var defenseWaiting = 0;
             var defenseExpired = 0;
 
@@ -4550,7 +4566,37 @@
                 '<div class="stat-card">' +
                 '<div class="s-lbl">Silinen Kayıtlar</div>' +
                 '<div class="s-val" style="color:#d32f2f;">' +
-                deletedCount +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">🟡 Bekleyen Savunma</div>' +
+                '<div class="s-val" style="color:#f1c40f;">' +
+                defenseWaiting +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">🔵 Savunma Geldi</div>' +
+                '<div class="s-val" style="color:#2196f3;">' +
+                defenseReceived +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">🔴 Eksik Dosya</div>' +
+                '<div class="s-val" style="color:#e74c3c;">' +
+                defenseMissing +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">🟢 Tamamlanan</div>' +
+                '<div class="s-val" style="color:#4caf50;">' +
+                defenseCompleted +
+                '</div>' +
+                '</div>'
+
+
+            deletedCount +
                 '</div>' +
                 '</div>' +
 
