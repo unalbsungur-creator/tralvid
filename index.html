@@ -2559,6 +2559,36 @@
             );
         }
 
+        function updateDefenseStatus(id, status) {
+
+            var rec = complaints.find(function (r) {
+                return r.id == id;
+            });
+
+            if (!rec) return;
+
+            rec.defenseStatus = status;
+
+            if (
+                status === 'Savunma Geldi' &&
+                !rec.defenseCompletedAt
+            ) {
+                rec.defenseCompletedAt =
+                    new Date().toISOString();
+            }
+
+            syncStorage();
+
+            renderDashboard();
+            renderRecordsTable();
+
+            openComplaintDetail(id);
+
+            showToast(
+                'Savunma durumu güncellendi.'
+            );
+        }
+
         function renderRecordsTable() {
             var q = document.getElementById('rec-search').value.toLowerCase();
             var fs = document.getElementById('rec-filter-sonuc').value;
@@ -3942,9 +3972,28 @@
 
                 '<div class="detail-item">' +
                 '<span class="detail-lbl">Savunma Durumu</span>' +
-                '<span class="detail-val">' +
-                (r.defenseStatus || '-') +
-                '</span></div>' +
+
+                '<select id="defense-status-select" ' +
+                'onchange="updateDefenseStatus(' + r.id + ', this.value)">' +
+
+                '<option value="Bekleniyor" ' +
+                ((r.defenseStatus === 'Bekleniyor') ? 'selected' : '') +
+                '>Bekleniyor</option>' +
+
+                '<option value="Savunma Geldi" ' +
+                ((r.defenseStatus === 'Savunma Geldi') ? 'selected' : '') +
+                '>Savunma Geldi</option>' +
+
+                '<option value="Eksik Dosya" ' +
+                ((r.defenseStatus === 'Eksik Dosya') ? 'selected' : '') +
+                '>Eksik Dosya</option>' +
+
+                '<option value="Tamamlandı" ' +
+                ((r.defenseStatus === 'Tamamlandı') ? 'selected' : '') +
+                '>Tamamlandı</option>' +
+
+                '</select>' +
+                '</div>' +
 
                 '<div class="detail-item">' +
                 '<span class="detail-lbl">Talep Tarihi</span>' +
