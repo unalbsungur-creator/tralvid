@@ -2654,14 +2654,23 @@
 
                 var icon = '⚪';
 
-                if (defenseInfo.status === 'Normal')
-                    icon = '🟢';
+                if (defenseInfo.status === 'Bekleniyor')
+                    icon = '🟡';
 
                 if (defenseInfo.status === 'Yaklaşıyor')
-                    icon = '🟡';
+                    icon = '🟠';
 
                 if (defenseInfo.status === 'Süre Aşıldı')
                     icon = '🔴';
+
+                if (defenseInfo.status === 'Savunma Geldi')
+                    icon = '🔵';
+
+                if (defenseInfo.status === 'Tamamlandı')
+                    icon = '🟢';
+
+                if (defenseInfo.status === 'Yok')
+                    icon = '⚪';
 
                 var defenseBadge =
                     '<span style="color:' +
@@ -4350,8 +4359,8 @@
             }
 
             return {
-                status: 'Normal',
-                color: '#27ae60',
+                status: 'Bekleniyor',
+                color: '#f1c40f',
                 remaining:
                     Math.floor(remaining) +
                     ' saat'
