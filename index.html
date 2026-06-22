@@ -2570,7 +2570,9 @@
             rec.defenseStatus = status;
 
             if (
-                status === 'Savunma Geldi' &&
+                (status === 'Savunma Geldi' ||
+                    status === 'Tamamlandı')
+                &&
                 !rec.defenseCompletedAt
             ) {
                 rec.defenseCompletedAt =
@@ -2584,9 +2586,7 @@
 
             openComplaintDetail(id);
 
-            showToast(
-                'Savunma durumu güncellendi.'
-            );
+            showToast('Savunma durumu güncellendi.');
         }
 
         function renderRecordsTable() {
@@ -3973,26 +3973,31 @@
                 '<div class="detail-item">' +
                 '<span class="detail-lbl">Savunma Durumu</span>' +
 
+                '<span class="detail-val">' +
+
                 '<select id="defense-status-select" ' +
+                'style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;" ' +
                 'onchange="updateDefenseStatus(' + r.id + ', this.value)">' +
 
                 '<option value="Bekleniyor" ' +
                 ((r.defenseStatus === 'Bekleniyor') ? 'selected' : '') +
-                '>Bekleniyor</option>' +
+                '>🟡 Bekleniyor</option>' +
 
                 '<option value="Savunma Geldi" ' +
                 ((r.defenseStatus === 'Savunma Geldi') ? 'selected' : '') +
-                '>Savunma Geldi</option>' +
+                '>🔵 Savunma Geldi</option>' +
 
                 '<option value="Eksik Dosya" ' +
                 ((r.defenseStatus === 'Eksik Dosya') ? 'selected' : '') +
-                '>Eksik Dosya</option>' +
+                '>🔴 Eksik Dosya</option>' +
 
                 '<option value="Tamamlandı" ' +
                 ((r.defenseStatus === 'Tamamlandı') ? 'selected' : '') +
-                '>Tamamlandı</option>' +
+                '>🟢 Tamamlandı</option>' +
 
                 '</select>' +
+
+                '</span>' +
                 '</div>' +
 
                 '<div class="detail-item">' +
