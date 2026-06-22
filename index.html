@@ -1779,8 +1779,11 @@
 
             autoCalculateTimeFields();
 
-            document.getElementById('complaint-modal-overlay')
-                .classList.add('open');
+            toggleDefenseUnit();
+
+            document.getElementById(
+                'complaint-modal-overlay'
+            ).classList.add('open');
         }
 
         function loadComplaintSubjects() {
