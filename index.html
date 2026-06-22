@@ -2432,6 +2432,8 @@
                             ? 'Bekleniyor'
                             : 'Yok',
 
+                    defenseCompletedAt: '',
+
                     attachments: [],
 
                     isDeleted: false,
@@ -2532,6 +2534,31 @@
         }
 
         // ==================== RENDERING ENGINE ====================
+        function completeDefense(id) {
+
+            var rec = complaints.find(function (r) {
+                return r.id == id;
+            });
+
+            if (!rec) return;
+
+            rec.defenseStatus = 'Tamamlandı';
+
+            rec.defenseCompletedAt =
+                new Date().toISOString();
+
+            syncStorage();
+
+            renderDashboard();
+            renderRecordsTable();
+
+            openComplaintDetail(id);
+
+            showToast(
+                'Savunma tamamlandı olarak işaretlendi.'
+            );
+        }
+
         function renderRecordsTable() {
             var q = document.getElementById('rec-search').value.toLowerCase();
             var fs = document.getElementById('rec-filter-sonuc').value;
@@ -3918,6 +3945,43 @@
                 '<span class="detail-val">' +
                 (r.defenseStatus || '-') +
                 '</span></div>' +
+
+                '<div class="detail-item">' +
+                '<span class="detail-lbl">Talep Tarihi</span>' +
+                '<span class="detail-val">' +
+                (r.defenseRequestedAt
+                    ? new Date(r.defenseRequestedAt)
+                        .toLocaleString("tr-TR")
+                    : '-') +
+                '</span></div>' +
+
+                '<div class="detail-item">' +
+                '<span class="detail-lbl">Tamamlanma Tarihi</span>' +
+                '<span class="detail-val">' +
+                (r.defenseCompletedAt
+                    ? new Date(r.defenseCompletedAt)
+                        .toLocaleString("tr-TR")
+                    : '-') +
+                '</span></div>' +
+
+                (
+                    r.defenseRequired === 'Evet' &&
+                        r.defenseStatus === 'Bekleniyor'
+
+                        ?
+
+                        '<div class="detail-item full">' +
+                        '<button class="btn btn-success" ' +
+                        'onclick="completeDefense(' + r.id + ')">' +
+                        '✅ Savunma Geldi' +
+                        '</button>' +
+                        '</div>'
+
+                        :
+
+                        ''
+                )
+                +
 
                 (
                     r.attachments && r.attachments.length > 0
