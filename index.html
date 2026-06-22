@@ -2660,8 +2660,11 @@
                 if (defenseInfo.status === 'Yaklaşıyor')
                     icon = '🟠';
 
-                if (defenseInfo.status === 'Süre Aşıldı')
+                if (defenseInfo.status === 'Kritik')
                     icon = '🔴';
+
+                if (defenseInfo.status === 'Süre Aşıldı')
+                    icon = '🚨';
 
                 if (defenseInfo.status === 'Savunma Geldi')
                     icon = '🔵';
@@ -4347,11 +4350,31 @@
                 };
             }
 
-            if (diffHours >= 24) {
+            if (diffHours >= 48) {
+
+                return {
+                    status: 'Süre Aşıldı',
+                    color: '#e74c3c',
+                    remaining: '0 saat'
+                };
+            }
+
+            if (remaining <= 12) {
+
+                return {
+                    status: 'Kritik',
+                    color: '#c62828',
+                    remaining:
+                        Math.floor(remaining) +
+                        ' saat'
+                };
+            }
+
+            if (remaining <= 24) {
 
                 return {
                     status: 'Yaklaşıyor',
-                    color: '#f1c40f',
+                    color: '#ef6c00',
                     remaining:
                         Math.floor(remaining) +
                         ' saat'
