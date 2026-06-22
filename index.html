@@ -2690,8 +2690,8 @@
                     rowClass = 'completed-row';
                 }
 
-                html += '<tr class="' + rowClass + '">';
-                '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
+                html += '<tr class="' + rowClass + '">' +
+                    '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
                     '<td>' + r.date + '</td>' +
                     '<td>' + truncate(r.user, 14) + '</td>' +
                     '<td style="font-family:monospace; font-weight:bold;">' + r.booking + '</td>' +
