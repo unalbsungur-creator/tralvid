@@ -938,6 +938,7 @@
                                 <th style="width:140px;">Tur Operatörü</th>
                                 <th style="width:80px;">Bölge</th>
                                 <th style="width:140px;">Şikayet Konusu (TR)</th>
+                                <th style="width:140px;">Savunma</th>
                                 <th style="width:80px;">Sonuç</th>
                                 <th style="width:80px;">Tazminat</th>
                                 <th style="width:120px;">İşlemler</th>
@@ -2571,6 +2572,20 @@
             var html = '';
             for (var i = 0; i < filtered.length; i++) {
                 var r = filtered[i];
+
+                var defenseInfo = getDefenseInfo(r);
+
+                var defenseBadge =
+                    '<span style="color:' +
+                    defenseInfo.color +
+                    ';font-weight:700;">' +
+                    defenseInfo.status +
+                    (
+                        defenseInfo.remaining
+                            ? ' (' + defenseInfo.remaining + ')'
+                            : ''
+                    ) +
+                    '</span>';
                 html += '<tr class="' + (r.isDeleted ? 'deleted-row' : '') + '">' +
                     '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
                     '<td>' + r.date + '</td>' +
@@ -2580,6 +2595,10 @@
 
                     '<td>' + r.region + '</td>' +
                     '<td>' + truncate(r.ptr || '-', 22) + '</td>' +
+
+                    '<td>' +
+                    defenseBadge +
+                    '</td>' +
 
                     '<td><span class="badge ' +
                     (r.result === 'Haklı' ? 'badge-green' : 'badge-red') +
