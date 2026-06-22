@@ -914,9 +914,14 @@
         <div id="page-records" class="page">
             <div class="table-wrap">
                 <div class="table-toolbar">
-                    <label style="display:flex;align-items:center;gap:6px;">
-                        <input type="checkbox" id="showDeleted" onchange="renderRecordsTable()">
+                    <label>
+                        <input type="checkbox" id="showDeleted">
                         Silinenleri Göster
+                    </label>
+
+                    <label style="margin-left:15px;">
+                        <input type="checkbox" id="showCompletedDefense" onchange="renderRecordsTable()">
+                        Tamamlananları Göster
                     </label>
                     <input class="toolbar-input" type="text" id="rec-search"
                         placeholder="Rezervasyon No veya Kelime Ara…" oninput="renderRecordsTable()">
@@ -2595,6 +2600,9 @@
             var showDeleted =
                 document.getElementById('showDeleted') &&
                 document.getElementById('showDeleted').checked;
+            var showCompletedDefense =
+                document.getElementById('showCompletedDefense') &&
+                document.getElementById('showCompletedDefense').checked;
             var tbody = document.getElementById('rec-tbody');
             if (!tbody) return;
 
@@ -2611,7 +2619,11 @@
 
             var filtered = visibleComplaints.filter(function (r) {
 
-                if (r.isDeleted && !showDeleted) return false;
+                if (
+                    r.defenseStatus === 'Tamamlandı' &&
+                    !showCompletedDefense
+                )
+                    return false;
 
                 var haystack =
                     (r.booking + r.user + r.ptr + r.veranstalter +
