@@ -2606,7 +2606,22 @@
                 return;
             }
 
-            if (!confirm('Bu kayıt için silme talebi göndermek istiyor musunuz?')) {
+            if (currentUser.role === 'admin') {
+
+                if (!confirm('Kayıt kalıcı olarak silinsin mi?')) {
+                    return;
+                }
+
+                complaints = complaints.filter(function (r) {
+                    return r.id !== id;
+                });
+
+                syncStorage();
+                renderRecordsTable();
+                renderDashboard();
+
+                showToast('Kayıt silindi.');
+
                 return;
             }
 
