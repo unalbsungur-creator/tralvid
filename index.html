@@ -1779,10 +1779,8 @@
 
             autoCalculateTimeFields();
 
-            toggleDefenseUnit();
-
-            document.getElementById('complaint-modal-overlay').classList.add('open');
-
+            document.getElementById('complaint-modal-overlay')
+                .classList.add('open');
         }
 
         function loadComplaintSubjects() {
@@ -1928,17 +1926,29 @@
 
             document.getElementById('invoice-modal-overlay').classList.add('open');
         }
-        function closeInvoiceModal() { document.getElementById('invoice-modal-overlay').classList.remove('open'); }
-        function closeDetailModal() { document.getElementById('detail-modal-overlay').classList.remove('open'); }
+        function closeInvoiceModal() {
+            document.getElementById('invoice-modal-overlay')
+                .classList.remove('open');
+        }
 
-        function clearComplaintForm() {
-            document.getElementById('c-booking').value = '';
-            document.getElementById('c-subbooking').value = '';
-            document.getElementById('c-adult').value = '2';
-            document.getElementById('c-child').value = '0';
-            document.getElementById('c-infant').value = '0';
-            document.getElementById('c-price').value = '0';
-            document.getElementById('c-notes').value = '';
+        function toggleDefenseUnit() {
+
+            var value =
+                document.getElementById(
+                    'c-defense-required'
+                ).value;
+
+            document.getElementById(
+                'defense-unit-area'
+            ).style.display =
+                value === 'Evet'
+                    ? 'block'
+                    : 'none';
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal-overlay')
+                .classList.remove('open');
         }
 
 
