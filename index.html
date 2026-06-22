@@ -4154,6 +4154,27 @@
                 return r.isDeleted === true;
             }).length;
 
+            var defenseWaiting = 0;
+            var defenseExpired = 0;
+
+            complaints.forEach(function (c) {
+
+                var info = getDefenseInfo(c);
+
+                if (
+                    c.defenseRequired === 'Evet' &&
+                    c.defenseStatus === 'Bekleniyor'
+                ) {
+
+                    defenseWaiting++;
+
+                    if (info.status === 'Süre Aşıldı') {
+                        defenseExpired++;
+                    }
+                }
+
+            });
+
             var paxData =
                 JSON.parse(
                     localStorage.getItem('passengerStats')
@@ -4271,9 +4292,26 @@
                 '<div class="s-val" style="color:#ff9800;">' + deleteRequests + '</div>' +
                 '</div>' +
 
+                '</div>' +
                 '<div class="stat-card">' +
                 '<div class="s-lbl">Silinen Kayıtlar</div>' +
-                '<div class="s-val" style="color:#d32f2f;">' + deletedCount + '</div>' +
+                '<div class="s-val" style="color:#d32f2f;">' +
+                deletedCount +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">Savunma Bekleyen</div>' +
+                '<div class="s-val" style="color:#f39c12;">' +
+                defenseWaiting +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">48 Saati Geçen</div>' +
+                '<div class="s-val" style="color:#e74c3c;">' +
+                defenseExpired +
+                '</div>' +
                 '</div>';
 
             renderOperatorRatios();
