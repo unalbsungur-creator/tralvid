@@ -4431,801 +4431,840 @@
                 return info.status === 'Kritik'
                     || info.status === 'Süre Aşıldı';
 
-                var defenseExpired = complaints.filter(function (c) {
 
-                    var info = getDefenseInfo(c);
 
-                    return info.status === 'Süre Aşıldı';
+                var info = getDefenseInfo(c);
 
-                }).length;
-                var paxData =
-                    JSON.parse(
-                        localStorage.getItem('passengerStats')
-                    ) || [];
+                return info.status === 'Süre Aşıldı';
 
-                var totalAdult = 0;
-                var totalChild = 0;
-                var totalInfant = 0;
+            }).length;
+            var paxData =
+                JSON.parse(
+                    localStorage.getItem('passengerStats')
+                ) || [];
 
-                paxData.forEach(function (p) {
+            var totalAdult = 0;
+            var totalChild = 0;
+            var totalInfant = 0;
 
-                    totalAdult += parseInt(p.adult || 0);
+            paxData.forEach(function (p) {
 
-                    totalChild += parseInt(p.child || 0);
+                totalAdult += parseInt(p.adult || 0);
 
-                    totalInfant += parseInt(p.infant || 0);
+                totalChild += parseInt(p.child || 0);
 
-                });
+                totalInfant += parseInt(p.infant || 0);
 
-                var totalPassengers =
-                    totalAdult +
-                    totalChild +
-                    totalInfant;
+            });
 
-                var complaintRatio =
-                    totalPassengers > 0
-                        ? ((total / totalPassengers) * 100).toFixed(2)
-                        : '0.00';
+            var totalPassengers =
+                totalAdult +
+                totalChild +
+                totalInfant;
 
-                var operatorCounts = {};
+            var complaintRatio =
+                totalPassengers > 0
+                    ? ((total / totalPassengers) * 100).toFixed(2)
+                    : '0.00';
 
-                complaints.forEach(function (c) {
+            var operatorCounts = {};
 
-                    var op = c.veranstalter || 'Bilinmiyor';
+            complaints.forEach(function (c) {
 
-                    operatorCounts[op] =
-                        (operatorCounts[op] || 0) + 1;
+                var op = c.veranstalter || 'Bilinmiyor';
 
-                });
+                operatorCounts[op] =
+                    (operatorCounts[op] || 0) + 1;
 
-                var topOperator = '-';
-                var topOperatorCount = 0;
+            });
 
-                Object.keys(operatorCounts).forEach(function (op) {
+            var topOperator = '-';
+            var topOperatorCount = 0;
 
-                    if (operatorCounts[op] > topOperatorCount) {
+            Object.keys(operatorCounts).forEach(function (op) {
 
-                        topOperator = op;
-                        topOperatorCount = operatorCounts[op];
+                if (operatorCounts[op] > topOperatorCount) {
 
-                    }
-
-                });
-
-                document.getElementById('dash-stats').innerHTML =
-
-                    '<div class="stat-card">' +
-                    '<div class="s-lbl">TOPLAM YOLCU</div>' +
-                    '<div class="s-val" style="color:#2196F3;font-size:34px;">' +
-                    totalPassengers +
-                    '</div>' +
-                    '</div>' +
-
-                    '<div class="stat-card">' +
-                    '<div class="s-lbl">TOPLAM ŞİKAYET</div>' +
-                    '<div class="s-val" style="color:#e53935;font-size:34px;">' +
-                    total +
-                    '</div>' +
-                    '</div>' +
-
-                    '<div class="stat-card">' +
-                    '<div class="s-lbl">Şikayet Oranı %</div>' +
-                    '<div class="s-val" style="color:#FF9800;">' +
-                    complaintRatio +
-                    '%</div>' +
-                    '</div>' +
-
-                    '<div class="stat-card">' +
-                    '<div class="s-lbl">EN ÇOK ŞİKAYET ALAN OPERATÖR</div>' +
-                    '<div class="s-val" style="color:#d32f2f;font-size:22px;">' +
-                    topOperatorCount +
-                    '</div>' +
-                    '<div style="font-size:11px;color:#666;margin-top:4px;">' +
-                    topOperator +
-                    '</div>' +
-                    '</div>' +
-
-
-                    '<div class="stat-card"><div class="s-lbl">Haklı Bulunan Dosyalar</div><div class="s-val" style="color:#3B6D11;">' + hakliCount + '</div><div class="s-sub">%' + (total ? Math.round((hakliCount / total) * 100) : 0) + ' Mutabakat Oranı</div></div>' +
-                    '<div class="stat-card">' +
-                    '<div class="s-lbl">Yetişkin</div>' +
-                    '<div class="s-val" style="color:#4CAF50;">' +
-                    totalAdult +
-                    '</div>' +
-                    '</div>' +
-
-                    '<div class="stat-card">' +
-                    '<div class="s-lbl">Çocuk</div>' +
-                    '<div class="s-val" style="color:#9C27B0;">' +
-                    totalChild +
-                    '</div>' +
-                    '</div>' +
-
-                    '<div class="stat-card">' +
-                    '<div class="s-lbl">Bebek</div>' +
-                    '<div class="s-val" style="color:#03A9F4;">' +
-                    totalInfant +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="stat-card"><div class="s-lbl">Muhasebe Fatura Takip Sayısı</div><div class="s-val" style="color:#185FA5;">' + activeInvs + '</div></div>' +
-                    '<div class="stat-card"><div class="s-lbl">Cevap Süresi Aşalan Dosyalar</div><div class="s-val" style="color:#A32D2D;">' + complaints.filter(function (o) { return o.timeout === 'Evet'; }).length + '</div></div>' +
-
-                    '<div class="stat-card">' +
-                    '<div class="s-lbl">Bekleyen Silme Talepleri</div>' +
-                    '<div class="s-val" style="color:#ff9800;">' +
-                    deleteRequests +
-                    '</div>' +
-                    '</div>' +
-
-                    '<div class="stat-card">' +
-                    '<div class="s-lbl">Silinen Kayıtlar</div>' +
-                    '<div class="s-val" style="color:#d32f2f;">' +
-                    deletedCount +
-                    '</div>' +
-                    '</div>' +
-
-                    '<div class="stat-card">' +
-                    '<div class="s-lbl">SAVUNMA TAKİP PANELİ</div>' +
-
-                    '<div style="margin-top:10px;line-height:24px;text-align:left;">' +
-
-                    '<div>🟡 Bekleyen <b style="float:right;">' +
-                    defenseWaiting +
-                    '</b></div>' +
-
-                    '<div>🔵 Geldi <b style="float:right;">' +
-                    defenseReceived +
-                    '</b></div>' +
-
-                    '<div>🔴 Eksik <b style="float:right;">' +
-                    defenseMissing +
-                    '</b></div>' +
-
-                    '<div>🟢 Tamamlanan <b style="float:right;">' +
-                    defenseCompleted +
-                    '</b></div>' +
-
-                    '<div>🚨 Kritik <b style="float:right;color:#c62828;">' +
-                    criticalDefenseCount +
-                    '</b></div>' +
-
-                    '</div>' +
-                    '</div>';
-                '<div class="s-val" style="color:#e74c3c;">' +
-                    defenseExpired +
-                    '</div>' +
-                    '</div>';
-
-                renderOperatorRatios();
-
-                renderDonutChart('chart-servis', countBy(complaints, 'servis'), ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
-
-                renderDonutChart('chart-sonuc', countBy(complaints, 'result'), ['#A32D2D', '#3B6D11']);
-
-                renderTrendChart('chart-kw', countBy(complaints, 'kw'));
-            }
-
-        function renderDonutChart(containerId, data, colors) {
-                    var el = document.getElementById(containerId); if (!el) return;
-                    var labels = Object.keys(data), values = Object.values(data), total = values.reduce(function (a, b) { return a + b; }, 0);
-                    if (!total) { el.innerHTML = '<div>Yeterli metrik yok</div>'; return; }
-
-                    var legendHtml = '';
-                    for (var i = 0; i < labels.length; i++) {
-                        legendHtml += '<div class="donut-leg-item"><div class="donut-leg-dot" style="background:' + colors[i % colors.length] + ';"></div><span>' + labels[i] + ' (' + values[i] + ')</span></div>';
-                    }
-                    el.innerHTML = '<svg width="80" height="80" viewBox="0 0 120 120"><circle cx="60" cy="60" r="45" fill="none" stroke="#edede9" stroke-width="16"/><circle cx="60" cy="60" r="45" fill="none" stroke="' + colors[0] + '" stroke-width="16" stroke-dasharray="282.7" stroke-dashoffset="80"/><text x="60" y="66" text-anchor="middle" font-size="18" font-weight="bold" fill="currentColor">' + total + '</text></svg><div class="donut-legend">' + legendHtml + '</div>';
-                }
-
-        function renderTrendChart(containerId, kwData) {
-                    var el = document.getElementById(containerId); if (!el) return;
-                    var keys = Object.keys(kwData).sort(); var max = 0;
-                    if (!keys.length) { el.innerHTML = '<div>Trend verisi yok</div>'; return; }
-
-                    for (var i = 0; i < keys.length; i++) {
-                        if (kwData[keys[i]] > max) max = kwData[keys[i]];
-                    }
-
-                    var html = '';
-                    for (var j = 0; j < keys.length; j++) {
-                        var h = Math.max(6, Math.round((kwData[keys[j]] / max) * 110));
-                        html += '<div class="kw-col">' +
-                            '<div style="font-size:11px;">' + kwData[keys[j]] + '</div>' +
-                            '<div style="height:' + h + 'px; background:var(--blue); width:24px; border-radius:4px 4px 0 0;"></div>' +
-                            '<div style="font-size:10px; color:var(--text-secondary);">' + keys[j] + '</div>' +
-                            '</div>';
-                    }
-                    el.innerHTML = html;
-                }
-        function renderOperatorRatios() {
-
-                    var paxData =
-                        JSON.parse(
-                            localStorage.getItem('passengerStats')
-                        ) || [];
-
-                    var stats = {};
-
-                    paxData.forEach(function (p) {
-
-                        var op = p.operator || 'Bilinmiyor';
-
-                        if (!stats[op]) {
-                            stats[op] = {
-                                pax: 0,
-                                complaints: 0
-                            };
-                        }
-
-                        stats[op].pax += Number(p.totalPax || 0);
-
-                    });
-
-                    complaints.forEach(function (c) {
-
-                        var op = c.veranstalter || 'Bilinmiyor';
-
-                        if (!stats[op]) {
-                            stats[op] = {
-                                pax: 0,
-                                complaints: 0
-                            };
-                        }
-
-                        stats[op].complaints++;
-
-                    });
-
-                    var rows = [];
-
-                    Object.keys(stats).forEach(function (op) {
-
-                        var pax = stats[op].pax;
-
-                        var comp = stats[op].complaints;
-
-                        var ratio =
-                            pax > 0
-                                ? ((comp / pax) * 100).toFixed(2)
-                                : 0;
-
-                        rows.push({
-                            operator: op,
-                            pax: pax,
-                            complaints: comp,
-                            ratio: Number(ratio)
-                        });
-
-                    });
-
-                    rows.sort(function (a, b) {
-                        return b.ratio - a.ratio;
-                    });
-
-                    console.table(rows);
-
-                    var html =
-                        '<table class="table">' +
-                        '<thead>' +
-                        '<tr>' +
-                        '<th>Operatör</th>' +
-                        '<th>PAX</th>' +
-                        '<th>Şikayet</th>' +
-                        '<th>Oran %</th>' +
-                        '</tr>' +
-                        '</thead><tbody>';
-
-                    rows.forEach(function (r) {
-
-                        html +=
-                            '<tr>' +
-                            '<td>' + r.operator + '</td>' +
-                            '<td>' + r.pax + '</td>' +
-                            '<td>' + r.complaints + '</td>' +
-                            '<td>' + r.ratio + '%</td>' +
-                            '</tr>';
-
-                    });
-
-                    html += '</tbody></table>';
-
-                    document.getElementById('operator-ratio').innerHTML = html;
-
-                    var maxComplaint = 0;
-
-                    rows.forEach(function (r) {
-
-                        if (r.complaints > maxComplaint) {
-                            maxComplaint = r.complaints;
-                        }
-
-                    });
-
-                    var chartHtml = '';
-
-                    rows.forEach(function (r) {
-
-                        var width =
-                            maxComplaint > 0
-                                ? (r.complaints / maxComplaint) * 100
-                                : 0;
-
-                        chartHtml +=
-                            '<div class="operator-bar">' +
-                            '<div class="operator-name">' +
-                            r.operator +
-                            '</div>' +
-                            '<div class="operator-track">' +
-                            '<div class="operator-fill" style="width:' +
-                            width +
-                            '%;">' +
-                            r.complaints +
-                            ' şikayet</div>' +
-                            '</div>' +
-                            '</div>';
-
-                    });
-
-                    document.getElementById('operator-chart').innerHTML =
-                        chartHtml;
-
-                    var regionStats = {};
-
-                    complaints.forEach(function (c) {
-
-                        var region = c.region || 'Bilinmiyor';
-
-                        regionStats[region] =
-                            (regionStats[region] || 0) + 1;
-
-                    });
-
-                    var maxRegion = 0;
-
-                    Object.keys(regionStats).forEach(function (r) {
-
-                        if (regionStats[r] > maxRegion) {
-                            maxRegion = regionStats[r];
-                        }
-
-                    });
-
-                    var regionHtml = '';
-
-                    Object.keys(regionStats).forEach(function (r) {
-
-                        var width =
-                            (regionStats[r] / maxRegion) * 100;
-
-                        regionHtml +=
-                            '<div class="operator-bar">' +
-                            '<div class="operator-name">' +
-                            r +
-                            '</div>' +
-                            '<div class="operator-track">' +
-                            '<div class="operator-fill" style="width:' +
-                            width +
-                            '%;">' +
-                            regionStats[r] +
-                            ' şikayet</div>' +
-                            '</div>' +
-                            '</div>';
-
-                    });
-
-                    document.getElementById('region-chart').innerHTML =
-                        regionHtml;
-
-                }
-
-
-        function resetDatabase() {
-                    if (!confirm('Tüm şikayet ve fatura kayıtları silinsin mi?')) return;
-                    localStorage.removeItem('tralvid_pages_complaints');
-                    localStorage.removeItem('tralvid_pages_invoices');
-                    complaints = []; invoices = [];
-                    renderRecordsTable(); renderAccounting(); renderDashboard();
-                    showToast('Veritabanı temizlendi.');
-                }
-
-        function backupDatabase() {
-                    var backup = {
-                        complaints: complaints,
-                        invoices: invoices,
-                        backupDate: new Date().toISOString()
-                    };
-                    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
-                    var dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr);
-                    dlAnchorElem.setAttribute("download", "CRM_Yedek_" + new Date().toISOString().slice(0, 10) + ".json");
-                    dlAnchorElem.click();
-                }
-
-        function restoreDatabase(event) {
-                    var file = event.target.files[0]; if (!file) return;
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        try {
-                            var data = JSON.parse(e.target.result);
-                            complaints = data.complaints || []; invoices = data.invoices || [];
-                            syncStorage(); renderRecordsTable(); renderDashboard(); renderAccounting();
-                            showToast('Yedek başarıyla geri yüklendi.');
-                        } catch (err) { alert('Geçersiz yedek dosyası.'); }
-                    };
-                    reader.readAsText(file);
-                }
-
-        function importMasterData(event) {
-
-                    var file = event.target.files[0];
-                    if (!file) return;
-
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-
-                        var data = new Uint8Array(e.target.result);
-
-                        var workbook = XLSX.read(data, {
-                            type: 'array'
-                        });
-
-                        function readSheet(sheetName) {
-
-                            if (!workbook.Sheets[sheetName]) {
-                                return [];
-                            }
-
-                            var rows = XLSX.utils.sheet_to_json(
-                                workbook.Sheets[sheetName],
-                                { header: 1 }
-                            );
-
-                            return rows
-                                .slice(1)
-                                .map(r => r[0])
-                                .filter(Boolean);
-
-                        }
-
-                        localStorage.setItem(
-                            'operators',
-                            JSON.stringify(readSheet('Operatörler'))
-                        );
-
-                        localStorage.setItem(
-                            'regions',
-                            JSON.stringify(readSheet('Bolgeler'))
-                        );
-
-                        localStorage.setItem(
-                            'airports',
-                            JSON.stringify(readSheet('Havalimanlari'))
-                        );
-
-                        localStorage.setItem(
-                            'services',
-                            JSON.stringify(readSheet('Servisler'))
-                        );
-
-                        var complaintSheet =
-                            workbook.Sheets['SikayetKonulari'];
-
-                        if (complaintSheet) {
-
-                            var rows =
-                                XLSX.utils.sheet_to_json(
-                                    complaintSheet,
-                                    { header: 1 }
-                                );
-
-                            var reasonsTR = [];
-                            var reasonsDE = [];
-                            var reasonsEN = [];
-
-                            for (var i = 1; i < rows.length; i++) {
-
-                                if (rows[i][0]) {
-                                    reasonsTR.push(rows[i][0]);
-                                }
-
-                                if (rows[i][1]) {
-                                    reasonsDE.push(rows[i][1]);
-                                }
-
-                                if (rows[i][2]) {
-                                    reasonsEN.push(rows[i][2]);
-                                }
-                            }
-
-                            localStorage.setItem(
-                                'reasonsTR',
-                                JSON.stringify(reasonsTR)
-                            );
-
-                            localStorage.setItem(
-                                'reasonsDE',
-                                JSON.stringify(reasonsDE)
-                            );
-
-                            localStorage.setItem(
-                                'reasonsEN',
-                                JSON.stringify(reasonsEN)
-                            );
-                        }
-
-                        localStorage.setItem(
-                            'transferTypes',
-                            JSON.stringify(readSheet('TransferTurleri'))
-                        );
-
-                        localStorage.setItem(
-                            'hotelPartners',
-                            JSON.stringify(readSheet('Oteller'))
-                        );
-
-                        showToast('Master veri başarıyla yüklendi.');
-
-                        renderDashboard();
-
-                    };
-
-                    reader.readAsArrayBuffer(file);
-
-                }
-
-        function exportMasterData() {
-
-                    var workbook = XLSX.utils.book_new();
-
-                    function addSheet(sheetName, storageKey, columnName) {
-
-                        var data =
-                            JSON.parse(
-                                localStorage.getItem(storageKey)
-                            ) || [];
-
-                        var rows = [[columnName]];
-
-                        data.forEach(function (item) {
-                            rows.push([item]);
-                        });
-
-                        var worksheet =
-                            XLSX.utils.aoa_to_sheet(rows);
-
-                        XLSX.utils.book_append_sheet(
-                            workbook,
-                            worksheet,
-                            sheetName
-                        );
-                    }
-
-                    addSheet(
-                        'Operatörler',
-                        'operators',
-                        'Operatör'
-                    );
-
-                    addSheet(
-                        'Bolgeler',
-                        'regions',
-                        'Bölge'
-                    );
-
-                    addSheet(
-                        'Havalimanlari',
-                        'airports',
-                        'Havalimanı'
-                    );
-
-                    addSheet(
-                        'Servisler',
-                        'services',
-                        'Servis'
-                    );
-
-                    addSheet(
-                        'SikayetKonulari',
-                        'reasons',
-                        'Konu'
-                    );
-
-                    addSheet(
-                        'TransferTurleri',
-                        'transferTypes',
-                        'Transfer Türü'
-                    );
-
-                    addSheet(
-                        'Oteller',
-                        'hotelPartners',
-                        'Otel'
-                    );
-
-                    XLSX.writeFile(
-                        workbook,
-                        'TRALVID_MasterData.xlsx'
-                    );
-
-                    showToast(
-                        'Master veri Excel dosyası oluşturuldu.'
-                    );
-                }
-
-        // Overlay Kapatıcı Kuralı
-        document.addEventListener('click', function (e) {
-                    if (e.target.id === 'complaint-modal-overlay') closeComplaintModal();
-                    if (e.target.id === 'invoice-modal-overlay') closeInvoiceModal();
-                    if (e.target.id === 'detail-modal-overlay') closeDetailModal();
-                });
-
-            // INITIALIZER
-            document.addEventListener('DOMContentLoaded', function () {
-
-                if (!localStorage.getItem('transferTypes')) {
-
-                    localStorage.setItem(
-                        'transferTypes',
-                        JSON.stringify([
-                            'Shuttle',
-                            'Private Sedan',
-                            'Private Minivan',
-                            'Private Vito',
-                            'Private Sprinter',
-                            'Private Midibus',
-                            'Private Bus',
-                            'VIP Sedan',
-                            'VIP Vito',
-                            'VIP Minibus',
-                            'VIP Midibus'
-                        ])
-                    );
-
-                }
-
-                if (!localStorage.getItem('operators')) {
-
-                    localStorage.setItem(
-                        'operators',
-                        JSON.stringify([
-                            'TUI',
-                            'JET2',
-                            'ANEX',
-                            'CORAL',
-                            'ODEON',
-                            'DERTOUR',
-                            'SCHAUINSLAND',
-                            'HOLIDAY CHECK',
-                            'LOVEHOLIDAYS',
-                            'ON THE BEACH',
-                            'EASYJET HOLIDAYS',
-                            'SUNEXPRESS HOLIDAYS'
-                        ])
-                    );
-
-                }
-
-                var savedUser = sessionStorage.getItem('currentUser');
-
-                if (savedUser) {
-
-                    currentUser = JSON.parse(savedUser);
-
-                    if (!currentUser) {
-                        sessionStorage.removeItem('currentUser');
-                        location.reload();
-                        return;
-                    }
-
-                    if (!currentUser.username) {
-                        sessionStorage.removeItem('currentUser');
-                        location.reload();
-                        return;
-                    }
-
-                    if (!USERS[currentUser.username]) {
-
-                        localStorage.removeItem('currentUser');
-
-                        document.getElementById('login-modal')
-                            .style.display = 'flex';
-
-                        return;
-                    }
-
-                    document.getElementById('login-modal')
-                        .style.display = 'none';
-
-                    applyPermissions();
-
-                    initSessionTimeout();
-
-                    renderDashboard();
-                    renderRecordsTable();
-                    renderAccounting();
-                    renderUsers();
-                    renderDeleteRequests();
-
-                    showPage(
-                        localStorage.getItem('activePage') || 'dashboard'
-                    );
-
-                    /* SAVUNMA DOSYALARI */
-
-                    document
-                        .getElementById('c-sn')
-                        .addEventListener('change', function () {
-
-                            document
-                                .getElementById('defense-file-area')
-                                .style.display =
-
-                                this.value === 'Evet'
-
-                                    ? 'block'
-                                    : 'none';
-
-                        });
-
-                    document
-                        .getElementById('c-defense-files')
-                        .addEventListener('change', function () {
-
-                            Array
-                                .from(this.files)
-                                .forEach(function (file) {
-
-                                    pendingAttachments.push(file);
-
-                                });
-
-                            var html = '';
-
-                            pendingAttachments.forEach(function (file, index) {
-
-                                html +=
-                                    (index + 1) +
-                                    '. 📎 ' +
-                                    file.name +
-                                    ' <button type="button" onclick="removePendingFile(' +
-                                    index +
-                                    ')">❌</button><br>';
-
-                            });
-
-                            document
-                                .getElementById('defense-file-list')
-                                .innerHTML = html;
-
-                            this.value = '';
-
-                        });
-
-                    window.addEventListener('storage', function () {
-
-                        complaints = JSON.parse(
-                            localStorage.getItem('tralvid_pages_complaints')
-                        ) || [];
-
-                        invoices = JSON.parse(
-                            localStorage.getItem('tralvid_pages_invoices')
-                        ) || [];
-
-                        renderDashboard();
-                        renderRecordsTable();
-                        renderAccounting();
-                        renderDeleteRequests();
-
-                    });
-
-                } else {
-
-                    document.getElementById('login-modal')
-                        .style.display = 'flex';
+                    topOperator = op;
+                    topOperatorCount = operatorCounts[op];
 
                 }
 
             });
+
+            document.getElementById('dash-stats').innerHTML =
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">TOPLAM YOLCU</div>' +
+                '<div class="s-val" style="color:#2196F3;font-size:34px;">' +
+                totalPassengers +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">TOPLAM ŞİKAYET</div>' +
+                '<div class="s-val" style="color:#e53935;font-size:34px;">' +
+                total +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">Şikayet Oranı %</div>' +
+                '<div class="s-val" style="color:#FF9800;">' +
+                complaintRatio +
+                '%</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">EN ÇOK ŞİKAYET ALAN OPERATÖR</div>' +
+                '<div class="s-val" style="color:#d32f2f;font-size:22px;">' +
+                topOperatorCount +
+                '</div>' +
+                '<div style="font-size:11px;color:#666;margin-top:4px;">' +
+                topOperator +
+                '</div>' +
+                '</div>' +
+
+
+                '<div class="stat-card"><div class="s-lbl">Haklı Bulunan Dosyalar</div><div class="s-val" style="color:#3B6D11;">' + hakliCount + '</div><div class="s-sub">%' + (total ? Math.round((hakliCount / total) * 100) : 0) + ' Mutabakat Oranı</div></div>' +
+                '<div class="stat-card">' +
+                '<div class="s-lbl">Yetişkin</div>' +
+                '<div class="s-val" style="color:#4CAF50;">' +
+                totalAdult +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">Çocuk</div>' +
+                '<div class="s-val" style="color:#9C27B0;">' +
+                totalChild +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">Bebek</div>' +
+                '<div class="s-val" style="color:#03A9F4;">' +
+                totalInfant +
+                '</div>' +
+                '</div>' +
+                '<div class="stat-card"><div class="s-lbl">Muhasebe Fatura Takip Sayısı</div><div class="s-val" style="color:#185FA5;">' + activeInvs + '</div></div>' +
+                '<div class="stat-card"><div class="s-lbl">Cevap Süresi Aşalan Dosyalar</div><div class="s-val" style="color:#A32D2D;">' + complaints.filter(function (o) { return o.timeout === 'Evet'; }).length + '</div></div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">Bekleyen Silme Talepleri</div>' +
+                '<div class="s-val" style="color:#ff9800;">' +
+                deleteRequests +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">Silinen Kayıtlar</div>' +
+                '<div class="s-val" style="color:#d32f2f;">' +
+                deletedCount +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">SAVUNMA TAKİP PANELİ</div>' +
+
+                '<div style="margin-top:10px;line-height:24px;text-align:left;">' +
+
+                '<div>🟡 Bekleyen <b style="float:right;">' +
+                defenseWaiting +
+                '</b></div>' +
+
+                '<div>🔵 Geldi <b style="float:right;">' +
+                defenseReceived +
+                '</b></div>' +
+
+                '<div>🔴 Eksik <b style="float:right;">' +
+                defenseMissing +
+                '</b></div>' +
+
+                '<div>🟢 Tamamlanan <b style="float:right;">' +
+                defenseCompleted +
+                '</b></div>' +
+
+                '<div>🚨 Kritik <b style="float:right;color:#c62828;">' +
+                criticalDefenseCount +
+                '</b></div>' +
+
+                '<div class="s-lbl">Bekleyen Silme Talepleri</div>' +
+                '<div class="s-val" style="color:#ff9800;">' +
+                deleteRequests +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">Silinen Kayıtlar</div>' +
+                '<div class="s-val" style="color:#d32f2f;">' +
+                deletedCount +
+                '</div>' +
+                '</div>' +
+
+                '<div class="stat-card">' +
+                '<div class="s-lbl">SAVUNMA TAKİP PANELİ</div>' +
+
+                '<div style="margin-top:10px;line-height:24px;text-align:left;">' +
+
+                '<div>🟡 Bekleyen <b style="float:right;">' +
+                defenseWaiting +
+                '</b></div>' +
+
+                '<div>🔵 Geldi <b style="float:right;">' +
+                defenseReceived +
+                '</b></div>' +
+
+                '<div>🔴 Eksik <b style="float:right;">' +
+                defenseMissing +
+                '</b></div>' +
+
+                '<div>🟢 Tamamlanan <b style="float:right;">' +
+                defenseCompleted +
+                '</b></div>' +
+
+                '<div>🚨 Kritik <b style="float:right;color:#c62828;">' +
+                criticalDefenseCount +
+                '</b></div>' +
+
+                '</div>' +
+                '</div>';
+            '<div class="s-val" style="color:#e74c3c;">' +
+                defenseExpired +
+                '</div>' +
+                '</div>';
+
+
+            renderOperatorRatios();
+
+            renderDonutChart('chart-servis', countBy(complaints, 'servis'), ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
+
+            renderDonutChart('chart-sonuc', countBy(complaints, 'result'), ['#A32D2D', '#3B6D11']);
+
+            renderTrendChart('chart-kw', countBy(complaints, 'kw'));
+        }
+
+        function renderDonutChart(containerId, data, colors) {
+            var el = document.getElementById(containerId); if (!el) return;
+            var labels = Object.keys(data), values = Object.values(data), total = values.reduce(function (a, b) { return a + b; }, 0);
+            if (!total) { el.innerHTML = '<div>Yeterli metrik yok</div>'; return; }
+
+            var legendHtml = '';
+            for (var i = 0; i < labels.length; i++) {
+                legendHtml += '<div class="donut-leg-item"><div class="donut-leg-dot" style="background:' + colors[i % colors.length] + ';"></div><span>' + labels[i] + ' (' + values[i] + ')</span></div>';
+            }
+            el.innerHTML = '<svg width="80" height="80" viewBox="0 0 120 120"><circle cx="60" cy="60" r="45" fill="none" stroke="#edede9" stroke-width="16"/><circle cx="60" cy="60" r="45" fill="none" stroke="' + colors[0] + '" stroke-width="16" stroke-dasharray="282.7" stroke-dashoffset="80"/><text x="60" y="66" text-anchor="middle" font-size="18" font-weight="bold" fill="currentColor">' + total + '</text></svg><div class="donut-legend">' + legendHtml + '</div>';
+        }
+
+        function renderTrendChart(containerId, kwData) {
+            var el = document.getElementById(containerId); if (!el) return;
+            var keys = Object.keys(kwData).sort(); var max = 0;
+            if (!keys.length) { el.innerHTML = '<div>Trend verisi yok</div>'; return; }
+
+            for (var i = 0; i < keys.length; i++) {
+                if (kwData[keys[i]] > max) max = kwData[keys[i]];
+            }
+
+            var html = '';
+            for (var j = 0; j < keys.length; j++) {
+                var h = Math.max(6, Math.round((kwData[keys[j]] / max) * 110));
+                html += '<div class="kw-col">' +
+                    '<div style="font-size:11px;">' + kwData[keys[j]] + '</div>' +
+                    '<div style="height:' + h + 'px; background:var(--blue); width:24px; border-radius:4px 4px 0 0;"></div>' +
+                    '<div style="font-size:10px; color:var(--text-secondary);">' + keys[j] + '</div>' +
+                    '</div>';
+            }
+            el.innerHTML = html;
+        }
+        function renderOperatorRatios() {
+
+            var paxData =
+                JSON.parse(
+                    localStorage.getItem('passengerStats')
+                ) || [];
+
+            var stats = {};
+
+            paxData.forEach(function (p) {
+
+                var op = p.operator || 'Bilinmiyor';
+
+                if (!stats[op]) {
+                    stats[op] = {
+                        pax: 0,
+                        complaints: 0
+                    };
+                }
+
+                stats[op].pax += Number(p.totalPax || 0);
+
+            });
+
+            complaints.forEach(function (c) {
+
+                var op = c.veranstalter || 'Bilinmiyor';
+
+                if (!stats[op]) {
+                    stats[op] = {
+                        pax: 0,
+                        complaints: 0
+                    };
+                }
+
+                stats[op].complaints++;
+
+            });
+
+            var rows = [];
+
+            Object.keys(stats).forEach(function (op) {
+
+                var pax = stats[op].pax;
+
+                var comp = stats[op].complaints;
+
+                var ratio =
+                    pax > 0
+                        ? ((comp / pax) * 100).toFixed(2)
+                        : 0;
+
+                rows.push({
+                    operator: op,
+                    pax: pax,
+                    complaints: comp,
+                    ratio: Number(ratio)
+                });
+
+            });
+
+            rows.sort(function (a, b) {
+                return b.ratio - a.ratio;
+            });
+
+            console.table(rows);
+
+            var html =
+                '<table class="table">' +
+                '<thead>' +
+                '<tr>' +
+                '<th>Operatör</th>' +
+                '<th>PAX</th>' +
+                '<th>Şikayet</th>' +
+                '<th>Oran %</th>' +
+                '</tr>' +
+                '</thead><tbody>';
+
+            rows.forEach(function (r) {
+
+                html +=
+                    '<tr>' +
+                    '<td>' + r.operator + '</td>' +
+                    '<td>' + r.pax + '</td>' +
+                    '<td>' + r.complaints + '</td>' +
+                    '<td>' + r.ratio + '%</td>' +
+                    '</tr>';
+
+            });
+
+            html += '</tbody></table>';
+
+            document.getElementById('operator-ratio').innerHTML = html;
+
+            var maxComplaint = 0;
+
+            rows.forEach(function (r) {
+
+                if (r.complaints > maxComplaint) {
+                    maxComplaint = r.complaints;
+                }
+
+            });
+
+            var chartHtml = '';
+
+            rows.forEach(function (r) {
+
+                var width =
+                    maxComplaint > 0
+                        ? (r.complaints / maxComplaint) * 100
+                        : 0;
+
+                chartHtml +=
+                    '<div class="operator-bar">' +
+                    '<div class="operator-name">' +
+                    r.operator +
+                    '</div>' +
+                    '<div class="operator-track">' +
+                    '<div class="operator-fill" style="width:' +
+                    width +
+                    '%;">' +
+                    r.complaints +
+                    ' şikayet</div>' +
+                    '</div>' +
+                    '</div>';
+
+            });
+
+            document.getElementById('operator-chart').innerHTML =
+                chartHtml;
+
+            var regionStats = {};
+
+            complaints.forEach(function (c) {
+
+                var region = c.region || 'Bilinmiyor';
+
+                regionStats[region] =
+                    (regionStats[region] || 0) + 1;
+
+            });
+
+            var maxRegion = 0;
+
+            Object.keys(regionStats).forEach(function (r) {
+
+                if (regionStats[r] > maxRegion) {
+                    maxRegion = regionStats[r];
+                }
+
+            });
+
+            var regionHtml = '';
+
+            Object.keys(regionStats).forEach(function (r) {
+
+                var width =
+                    (regionStats[r] / maxRegion) * 100;
+
+                regionHtml +=
+                    '<div class="operator-bar">' +
+                    '<div class="operator-name">' +
+                    r +
+                    '</div>' +
+                    '<div class="operator-track">' +
+                    '<div class="operator-fill" style="width:' +
+                    width +
+                    '%;">' +
+                    regionStats[r] +
+                    ' şikayet</div>' +
+                    '</div>' +
+                    '</div>';
+
+            });
+
+            document.getElementById('region-chart').innerHTML =
+                regionHtml;
+
+        }
+
+
+        function resetDatabase() {
+            if (!confirm('Tüm şikayet ve fatura kayıtları silinsin mi?')) return;
+            localStorage.removeItem('tralvid_pages_complaints');
+            localStorage.removeItem('tralvid_pages_invoices');
+            complaints = []; invoices = [];
+            renderRecordsTable(); renderAccounting(); renderDashboard();
+            showToast('Veritabanı temizlendi.');
+        }
+
+        function backupDatabase() {
+            var backup = {
+                complaints: complaints,
+                invoices: invoices,
+                backupDate: new Date().toISOString()
+            };
+            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+            var dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", "CRM_Yedek_" + new Date().toISOString().slice(0, 10) + ".json");
+            dlAnchorElem.click();
+        }
+
+        function restoreDatabase(event) {
+            var file = event.target.files[0]; if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    var data = JSON.parse(e.target.result);
+                    complaints = data.complaints || []; invoices = data.invoices || [];
+                    syncStorage(); renderRecordsTable(); renderDashboard(); renderAccounting();
+                    showToast('Yedek başarıyla geri yüklendi.');
+                } catch (err) { alert('Geçersiz yedek dosyası.'); }
+            };
+            reader.readAsText(file);
+        }
+
+        function importMasterData(event) {
+
+            var file = event.target.files[0];
+            if (!file) return;
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+
+                var data = new Uint8Array(e.target.result);
+
+                var workbook = XLSX.read(data, {
+                    type: 'array'
+                });
+
+                function readSheet(sheetName) {
+
+                    if (!workbook.Sheets[sheetName]) {
+                        return [];
+                    }
+
+                    var rows = XLSX.utils.sheet_to_json(
+                        workbook.Sheets[sheetName],
+                        { header: 1 }
+                    );
+
+                    return rows
+                        .slice(1)
+                        .map(r => r[0])
+                        .filter(Boolean);
+
+                }
+
+                localStorage.setItem(
+                    'operators',
+                    JSON.stringify(readSheet('Operatörler'))
+                );
+
+                localStorage.setItem(
+                    'regions',
+                    JSON.stringify(readSheet('Bolgeler'))
+                );
+
+                localStorage.setItem(
+                    'airports',
+                    JSON.stringify(readSheet('Havalimanlari'))
+                );
+
+                localStorage.setItem(
+                    'services',
+                    JSON.stringify(readSheet('Servisler'))
+                );
+
+                var complaintSheet =
+                    workbook.Sheets['SikayetKonulari'];
+
+                if (complaintSheet) {
+
+                    var rows =
+                        XLSX.utils.sheet_to_json(
+                            complaintSheet,
+                            { header: 1 }
+                        );
+
+                    var reasonsTR = [];
+                    var reasonsDE = [];
+                    var reasonsEN = [];
+
+                    for (var i = 1; i < rows.length; i++) {
+
+                        if (rows[i][0]) {
+                            reasonsTR.push(rows[i][0]);
+                        }
+
+                        if (rows[i][1]) {
+                            reasonsDE.push(rows[i][1]);
+                        }
+
+                        if (rows[i][2]) {
+                            reasonsEN.push(rows[i][2]);
+                        }
+                    }
+
+                    localStorage.setItem(
+                        'reasonsTR',
+                        JSON.stringify(reasonsTR)
+                    );
+
+                    localStorage.setItem(
+                        'reasonsDE',
+                        JSON.stringify(reasonsDE)
+                    );
+
+                    localStorage.setItem(
+                        'reasonsEN',
+                        JSON.stringify(reasonsEN)
+                    );
+                }
+
+                localStorage.setItem(
+                    'transferTypes',
+                    JSON.stringify(readSheet('TransferTurleri'))
+                );
+
+                localStorage.setItem(
+                    'hotelPartners',
+                    JSON.stringify(readSheet('Oteller'))
+                );
+
+                showToast('Master veri başarıyla yüklendi.');
+
+                renderDashboard();
+
+            };
+
+            reader.readAsArrayBuffer(file);
+
+        }
+
+        function exportMasterData() {
+
+            var workbook = XLSX.utils.book_new();
+
+            function addSheet(sheetName, storageKey, columnName) {
+
+                var data =
+                    JSON.parse(
+                        localStorage.getItem(storageKey)
+                    ) || [];
+
+                var rows = [[columnName]];
+
+                data.forEach(function (item) {
+                    rows.push([item]);
+                });
+
+                var worksheet =
+                    XLSX.utils.aoa_to_sheet(rows);
+
+                XLSX.utils.book_append_sheet(
+                    workbook,
+                    worksheet,
+                    sheetName
+                );
+            }
+
+            addSheet(
+                'Operatörler',
+                'operators',
+                'Operatör'
+            );
+
+            addSheet(
+                'Bolgeler',
+                'regions',
+                'Bölge'
+            );
+
+            addSheet(
+                'Havalimanlari',
+                'airports',
+                'Havalimanı'
+            );
+
+            addSheet(
+                'Servisler',
+                'services',
+                'Servis'
+            );
+
+            addSheet(
+                'SikayetKonulari',
+                'reasons',
+                'Konu'
+            );
+
+            addSheet(
+                'TransferTurleri',
+                'transferTypes',
+                'Transfer Türü'
+            );
+
+            addSheet(
+                'Oteller',
+                'hotelPartners',
+                'Otel'
+            );
+
+            XLSX.writeFile(
+                workbook,
+                'TRALVID_MasterData.xlsx'
+            );
+
+            showToast(
+                'Master veri Excel dosyası oluşturuldu.'
+            );
+        }
+
+        // Overlay Kapatıcı Kuralı
+        document.addEventListener('click', function (e) {
+            if (e.target.id === 'complaint-modal-overlay') closeComplaintModal();
+            if (e.target.id === 'invoice-modal-overlay') closeInvoiceModal();
+            if (e.target.id === 'detail-modal-overlay') closeDetailModal();
+        });
+
+        // INITIALIZER
+        document.addEventListener('DOMContentLoaded', function () {
+
+            if (!localStorage.getItem('transferTypes')) {
+
+                localStorage.setItem(
+                    'transferTypes',
+                    JSON.stringify([
+                        'Shuttle',
+                        'Private Sedan',
+                        'Private Minivan',
+                        'Private Vito',
+                        'Private Sprinter',
+                        'Private Midibus',
+                        'Private Bus',
+                        'VIP Sedan',
+                        'VIP Vito',
+                        'VIP Minibus',
+                        'VIP Midibus'
+                    ])
+                );
+
+            }
+
+            if (!localStorage.getItem('operators')) {
+
+                localStorage.setItem(
+                    'operators',
+                    JSON.stringify([
+                        'TUI',
+                        'JET2',
+                        'ANEX',
+                        'CORAL',
+                        'ODEON',
+                        'DERTOUR',
+                        'SCHAUINSLAND',
+                        'HOLIDAY CHECK',
+                        'LOVEHOLIDAYS',
+                        'ON THE BEACH',
+                        'EASYJET HOLIDAYS',
+                        'SUNEXPRESS HOLIDAYS'
+                    ])
+                );
+
+            }
+
+            var savedUser = sessionStorage.getItem('currentUser');
+
+            if (savedUser) {
+
+                currentUser = JSON.parse(savedUser);
+
+                if (!currentUser) {
+                    sessionStorage.removeItem('currentUser');
+                    location.reload();
+                    return;
+                }
+
+                if (!currentUser.username) {
+                    sessionStorage.removeItem('currentUser');
+                    location.reload();
+                    return;
+                }
+
+                if (!USERS[currentUser.username]) {
+
+                    localStorage.removeItem('currentUser');
+
+                    document.getElementById('login-modal')
+                        .style.display = 'flex';
+
+                    return;
+                }
+
+                document.getElementById('login-modal')
+                    .style.display = 'none';
+
+                applyPermissions();
+
+                initSessionTimeout();
+
+                renderDashboard();
+                renderRecordsTable();
+                renderAccounting();
+                renderUsers();
+                renderDeleteRequests();
+
+                showPage(
+                    localStorage.getItem('activePage') || 'dashboard'
+                );
+
+                /* SAVUNMA DOSYALARI */
+
+                document
+                    .getElementById('c-sn')
+                    .addEventListener('change', function () {
+
+                        document
+                            .getElementById('defense-file-area')
+                            .style.display =
+
+                            this.value === 'Evet'
+
+                                ? 'block'
+                                : 'none';
+
+                    });
+
+                document
+                    .getElementById('c-defense-files')
+                    .addEventListener('change', function () {
+
+                        Array
+                            .from(this.files)
+                            .forEach(function (file) {
+
+                                pendingAttachments.push(file);
+
+                            });
+
+                        var html = '';
+
+                        pendingAttachments.forEach(function (file, index) {
+
+                            html +=
+                                (index + 1) +
+                                '. 📎 ' +
+                                file.name +
+                                ' <button type="button" onclick="removePendingFile(' +
+                                index +
+                                ')">❌</button><br>';
+
+                        });
+
+                        document
+                            .getElementById('defense-file-list')
+                            .innerHTML = html;
+
+                        this.value = '';
+
+                    });
+
+                window.addEventListener('storage', function () {
+
+                    complaints = JSON.parse(
+                        localStorage.getItem('tralvid_pages_complaints')
+                    ) || [];
+
+                    invoices = JSON.parse(
+                        localStorage.getItem('tralvid_pages_invoices')
+                    ) || [];
+
+                    renderDashboard();
+                    renderRecordsTable();
+                    renderAccounting();
+                    renderDeleteRequests();
+
+                });
+
+            } else {
+
+                document.getElementById('login-modal')
+                    .style.display = 'flex';
+
+            }
+
+        });
 
     </script>
 </body>
