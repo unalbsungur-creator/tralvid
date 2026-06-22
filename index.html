@@ -538,6 +538,14 @@
             opacity: 0.8;
         }
 
+        .completed-row td {
+            background: #e8f5e9 !important;
+        }
+
+        .completed-row {
+            border-left: 4px solid #4caf50;
+        }
+
         .badge-blue {
             background: var(--blue-bg);
             color: var(--blue-text);
@@ -2673,8 +2681,17 @@
                         : ''
                 ) +
                     '</span>';
-                html += '<tr class="' + (r.isDeleted ? 'deleted-row' : '') + '">' +
-                    '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
+                var rowClass = '';
+
+                if (r.isDeleted) {
+                    rowClass = 'deleted-row';
+                }
+                else if (r.defenseStatus === 'Tamamlandı') {
+                    rowClass = 'completed-row';
+                }
+
+                html += '<tr class="' + rowClass + '">';
+                '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
                     '<td>' + r.date + '</td>' +
                     '<td>' + truncate(r.user, 14) + '</td>' +
                     '<td style="font-family:monospace; font-weight:bold;">' + r.booking + '</td>' +
