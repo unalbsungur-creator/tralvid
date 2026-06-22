@@ -2406,7 +2406,9 @@
                         document.getElementById('c-defense-required').value,
 
                     defenseUnit:
-                        document.getElementById('c-defense-unit').value,
+                        document.getElementById('c-defense-unit')
+                            ? document.getElementById('c-defense-unit').value
+                            : '',
 
                     defenseRequestedAt:
                         document.getElementById('c-defense-required').value === 'Evet'
@@ -4074,6 +4076,66 @@
         }
 
         // ==================== DASHBOARD VE CSS GRAPHICS ====================
+        function getDefenseInfo(record) {
+
+            if (record.defenseRequired !== 'Evet') {
+
+                return {
+                    status: 'Yok',
+                    color: '#999',
+                    remaining: ''
+                };
+            }
+
+            if (!record.defenseRequestedAt) {
+
+                return {
+                    status: 'Bekleniyor',
+                    color: '#f39c12',
+                    remaining: ''
+                };
+            }
+
+            var requested =
+                new Date(record.defenseRequestedAt);
+
+            var now = new Date();
+
+            var diffHours =
+                (now - requested) / (1000 * 60 * 60);
+
+            var remaining =
+                Math.max(0, 48 - diffHours);
+
+            if (diffHours >= 48) {
+
+                return {
+                    status: 'Süre Aşıldı',
+                    color: '#e74c3c',
+                    remaining: '0 saat'
+                };
+            }
+
+            if (diffHours >= 24) {
+
+                return {
+                    status: 'Yaklaşıyor',
+                    color: '#f1c40f',
+                    remaining:
+                        Math.floor(remaining) +
+                        ' saat'
+                };
+            }
+
+            return {
+                status: 'Normal',
+                color: '#27ae60',
+                remaining:
+                    Math.floor(remaining) +
+                    ' saat'
+            };
+        }
+
         function renderDashboard() {
 
             var total = complaints.length;
