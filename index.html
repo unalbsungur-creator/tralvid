@@ -1362,7 +1362,7 @@
                                 Savunma Talep Edildi mi?
                             </label>
 
-                            <select id="c-defense-required">
+                            <select id="c-defense-required" onchange="toggleDefenseUnit()">
                                 <option value="Hayır">Hayır</option>
                                 <option value="Evet">Evet</option>
                             </select>
@@ -1937,17 +1937,28 @@
 
         function toggleDefenseUnit() {
 
+            var area =
+                document.getElementById('defense-unit-area');
+
+            if (!area) return;
+
             var value =
                 document.getElementById(
                     'c-defense-required'
                 ).value;
 
-            document.getElementById(
-                'defense-unit-area'
-            ).style.display =
-                value === 'Evet'
-                    ? 'block'
-                    : 'none';
+            if (value === 'Evet') {
+
+                area.style.display = 'block';
+
+            } else {
+
+                area.style.display = 'none';
+
+                document.getElementById(
+                    'c-defense-unit'
+                ).value = '';
+            }
         }
 
         function closeDetailModal() {
