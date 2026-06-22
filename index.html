@@ -2575,16 +2575,34 @@
 
                 var defenseInfo = getDefenseInfo(r);
 
+                var icon = '⚪';
+
+                if (defenseInfo.status === 'Normal')
+                    icon = '🟢';
+
+                if (defenseInfo.status === 'Yaklaşıyor')
+                    icon = '🟡';
+
+                if (defenseInfo.status === 'Süre Aşıldı')
+                    icon = '🔴';
+
                 var defenseBadge =
                     '<span style="color:' +
                     defenseInfo.color +
                     ';font-weight:700;">' +
+                    icon + ' ' +
                     defenseInfo.status +
                     (
                         defenseInfo.remaining
                             ? ' (' + defenseInfo.remaining + ')'
                             : ''
                     ) +
+                    '</span>';
+                (
+                    defenseInfo.remaining
+                        ? ' (' + defenseInfo.remaining + ')'
+                        : ''
+                ) +
                     '</span>';
                 html += '<tr class="' + (r.isDeleted ? 'deleted-row' : '') + '">' +
                     '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
