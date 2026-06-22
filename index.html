@@ -937,7 +937,6 @@
                                 <th style="width:120px;">Rezervasyon No</th>
                                 <th style="width:140px;">Tur Operatörü</th>
                                 <th style="width:80px;">Bölge</th>
-                                <th style="width:100px;">Hizmet</th>
                                 <th style="width:140px;">Şikayet Konusu (TR)</th>
                                 <th style="width:80px;">Sonuç</th>
                                 <th style="width:80px;">Tazminat</th>
@@ -2566,12 +2565,7 @@
                     '<td style="font-family:monospace; font-weight:bold;">' + r.booking + '</td>' +
                     '<td>' + truncate(r.veranstalter, 18) + '</td>' +
 
-                    '<td>' + (r.region || '-') + '</td>' +
-
-                    '<td><span class="badge badge-blue">' +
-                    (r.service || '-') +
-                    '</span></td>' +
-
+                    '<td>' + r.region + '</td>' +
                     '<td>' + truncate(r.ptr || '-', 22) + '</td>' +
 
                     '<td><span class="badge ' +
