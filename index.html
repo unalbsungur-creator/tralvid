@@ -2347,6 +2347,14 @@
                     return;
                 }
 
+                console.log('c-defense-required', document.getElementById('c-defense-required'));
+                console.log('c-defense-unit', document.getElementById('c-defense-unit'));
+                console.log('c-kw', document.getElementById('c-kw'));
+                console.log('c-quarter', document.getElementById('c-quarter'));
+                console.log('c-date', document.getElementById('c-date'));
+                console.log('c-timeout', document.getElementById('c-timeout'));
+                console.log('c-sn', document.getElementById('c-sn'));
+
                 var rec = {
                     id: complaints.length > 0 ? Math.max.apply(Math, complaints.map(function (o) { return o.id; })) + 1 : 1,
                     kw: document.getElementById('c-kw').value,
