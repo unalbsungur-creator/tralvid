@@ -1605,6 +1605,7 @@
         var currentUser = JSON.parse(sessionStorage.getItem('currentUser') || 'null');
 
         var complaintEditMode = false;
+        var editingComplaintId = null;
 
         function syncStorage() {
             localStorage.setItem('tralvid_pages_complaints', JSON.stringify(complaints));
@@ -4103,10 +4104,24 @@
 
                 (
                     currentUser.role === 'admin'
-                        ? ' <button class="btn btn-primary" ' +
-                        'style="margin-left:15px;" ' +
-                        'onclick="enableComplaintEdit(' + r.id + ')">' +
-                        '✏ Düzenle</button>'
+                        ? (
+                            !complaintEditMode
+
+                                ? ' <button class="btn btn-primary" ' +
+                                'style="margin-left:15px;" ' +
+                                'onclick="enableComplaintEdit(' + r.id + ')">' +
+                                '✏ Düzenle</button>'
+
+                                : ' <button class="btn btn-success" ' +
+                                'style="margin-left:15px;" ' +
+                                'onclick="saveComplaintChanges(' + r.id + ')">' +
+                                '💾 Kaydet</button>' +
+
+                                ' <button class="btn" ' +
+                                'style="margin-left:8px;background:#9e9e9e;color:#fff;" ' +
+                                'onclick="cancelComplaintEdit(' + r.id + ')">' +
+                                '❌ Vazgeç</button>'
+                        )
                         : ''
                 );
 
@@ -4455,6 +4470,7 @@
         function enableComplaintEdit(id) {
 
             complaintEditMode = true;
+            editingComplaintId = id;
 
             openComplaintDetail(id);
 
@@ -4463,6 +4479,38 @@
         function cancelComplaintEdit(id) {
 
             complaintEditMode = false;
+
+            openComplaintDetail(id);
+
+        }
+
+        function saveComplaintChanges(id) {
+
+            var r = complaints.find(function (o) {
+                return o.id === id;
+            });
+
+            if (!r) return;
+
+            var operatorSelect =
+                document.getElementById(
+                    'edit-veranstalter'
+                );
+
+            if (operatorSelect) {
+
+                r.veranstalter =
+                    operatorSelect.value;
+
+            }
+
+            syncStorage();
+
+            complaintEditMode = false;
+
+            showToast(
+                'Değişiklikler kaydedildi.'
+            );
 
             openComplaintDetail(id);
 
