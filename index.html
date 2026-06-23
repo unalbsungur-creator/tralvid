@@ -4443,6 +4443,23 @@
                     'edit-veranstalter'
                 ).value = r.veranstalter;
 
+                console.log(
+                    'OPTION COUNT:',
+                    document.getElementById('edit-veranstalter').options.length
+                );
+
+                console.log(
+                    'CURRENT VALUE:',
+                    r.veranstalter
+                );
+
+                console.log(
+                    'OPTIONS:',
+                    Array.from(
+                        document.getElementById('edit-veranstalter').options
+                    ).map(o => o.value)
+                );
+
             }
             console.log(
                 'OPERATORS:',
