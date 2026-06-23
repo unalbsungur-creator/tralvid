@@ -4456,70 +4456,18 @@
 
                 document.getElementById(
                     'edit-veranstalter'
-                ).value = r.veranstalter;
-
-                console.log(
-                    'OPTION COUNT:',
-                    document.getElementById('edit-veranstalter').options.length
-                );
-
-                console.log(
-                    'CURRENT VALUE:',
-                    r.veranstalter
-                );
-
-                console.log(
-                    'OPTIONS:',
-                    Array.from(
-                        document.getElementById('edit-veranstalter').options
-                    ).map(o => o.value)
-                );
+                ).value =
+                    (r.veranstalter || '').trim();
 
             }
-            console.log(
-                'OPERATORS:',
-                JSON.parse(localStorage.getItem('operators') || '[]')
-            );
 
-            console.log(
-                'SELECT:',
-                document.getElementById('edit-veranstalter')
-            );
-            document.getElementById('detail-modal-overlay').classList.add('open');
+            document.getElementById('detail-modal-overlay')
+                .classList.add('open');
 
-            if (currentUser.role === 'admin') {
+        }
+        document.getElementById('detail-modal-overlay')
+            .classList.add('open');
 
-                setTimeout(function () {
-
-                    if (document.getElementById('edit-veranstalter')) {
-
-                        loadSimpleDropdown(
-                            'edit-veranstalter',
-                            'operators'
-                        );
-
-                        console.log(
-                            'OPTION SAYISI:',
-                            document.getElementById('edit-veranstalter').options.length
-                        );
-
-                        console.log(
-                            'OPTIONLAR:',
-                            Array.from(
-                                document.getElementById('edit-veranstalter').options
-                            ).map(x => x.value)
-                        );
-
-                        document.getElementById(
-                            'edit-veranstalter'
-                        ).value =
-                            (r.veranstalter || '').trim();
-
-                    }
-
-                }, 100);
-
-            }
         }
 
         // ==================== SİLME MEKANİZMALARI ====================
