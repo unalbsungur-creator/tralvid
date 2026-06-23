@@ -912,164 +912,164 @@
             <div class="stats-row" id="dash-stats"></div>
 
 
-            <div class="charts-grid-pure">
-                <div class="chart-card compact-chart">
-                    <h3>Hizmet Dağılımı</h3>
-                    <div id="chart-servis" class="donut-wrap"></div>
-                </div>
-                <div class="chart-card compact-chart">
-                    <h3>Şikayet Sonuç Analizi</h3>
-                    <div id="chart-sonuc" class="donut-wrap"></div>
-                </div>
-                <div class="chart-card compact-chart">
-                    <h3>Haftalık Şikayet Dağılımı (KW Trend)</h3>
-                    <div id="chart-kw" class="kw-chart-box"></div>
-                </div>
-                <div class="chart-card">
-                    <h3>Operatör Bazlı Şikayet Oranı</h3>
-                    <div id="operator-ratio"></div>
-                    <div id="operator-chart"></div>
+            <div class="chart-card">
+                <h3>Hizmet Bazlı Şikayetler</h3>
+                <div id="service-complaint-chart"></div>
+            </div>
 
-                    <h3 style="margin-top:20px;">Bölge Bazlı Şikayet</h3>
-                    <div id="region-chart"></div>
-                </div>
+            <div class="chart-card">
+                <h3>En Çok Şikayet Alan Konular (Top 5)</h3>
+                <div id="top-complaints-chart"></div>
+            </div>
+            <div class="chart-card compact-chart">
+                <h3>Haftalık Şikayet Dağılımı (KW Trend)</h3>
+                <div id="chart-kw" class="kw-chart-box"></div>
+            </div>
+            <div class="chart-card">
+                <h3>Operatör Bazlı Şikayet Oranı</h3>
+                <div id="operator-ratio"></div>
+                <div id="operator-chart"></div>
+
+                <h3 style="margin-top:20px;">Bölge Bazlı Şikayet</h3>
+                <div id="region-chart"></div>
             </div>
         </div>
+    </div>
 
-        <div id="page-records" class="page">
-            <div class="table-wrap">
-                <div class="table-toolbar">
-                    <label>
-                        <input type="checkbox" id="showDeleted">
-                        Silinenleri Göster
-                    </label>
+    <div id="page-records" class="page">
+        <div class="table-wrap">
+            <div class="table-toolbar">
+                <label>
+                    <input type="checkbox" id="showDeleted">
+                    Silinenleri Göster
+                </label>
 
-                    <label style="margin-left:15px;">
-                        <input type="checkbox" id="showCompletedDefense" onchange="renderRecordsTable()">
-                        Tamamlananları Göster
-                    </label>
-                    <input class="toolbar-input" type="text" id="rec-search"
-                        placeholder="Rezervasyon No veya Kelime Ara…" oninput="renderRecordsTable()">
-                    <select class="toolbar-select" id="rec-filter-sonuc" onchange="renderRecordsTable()">
-                        <option value="">Tüm Şikayet Sonuçları</option>
-                        <option value="">Sonuç seçiniz...</option>
-                        <option value="Haklı">Haklı</option>
-                        <option value="Haksız">Haksız</option>
-                    </select>
-                </div>
-                <div class="table-scroll">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width:80px;">Hafta No</th>
-                                <th style="width:100px;">Tarih</th>
-                                <th style="width:120px;">Kullanıcı</th>
-                                <th style="width:120px;">Rezervasyon No</th>
-                                <th style="width:140px;">Tur Operatörü</th>
-                                <th style="width:80px;">Bölge</th>
-                                <th style="width:140px;">Şikayet Konusu (TR)</th>
-                                <th style="width:140px;">Savunma</th>
-                                <th style="width:80px;">Sonuç</th>
-                                <th style="width:80px;">Tazminat</th>
-                                <th style="width:120px;">İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rec-tbody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-accounting" class="page">
-            <div class="stats-row" id="acc-stats"></div>
-            <div class="table-toolbar"
-                style="border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin-bottom:0; border-bottom:none;">
-                <select class="toolbar-select" id="acc-filter-partner" onchange="renderAccounting()">
-                    <option value="">Tüm Partnerler</option>
-                </select>
-                <select class="toolbar-select" id="acc-filter-durum" onchange="renderAccounting()">
-                    <option value="">Tüm Durumlar</option>
-                    <option value="Beklemede">Beklemede</option>
-                    <option value="Gönderildi">Gönderildi</option>
-                    <option value="İade edildi">İade edildi</option>
-                    <option value="Kabul edildi">Kabul edildi</option>
-                    <option value="İtiraz edildi">İtiraz edildi</option>
-                </select>
-                <select class="toolbar-select" id="acc-filter-doviz" onchange="renderAccounting()">
-                    <option value="">Tüm Dövizler</option>
-                    <option value="">Döviz seçiniz...</option>
-                    <option value="EUR">EUR</option>
-                    <option value="USD">USD</option>
-                    <option value="GBP">GBP</option>
-                    <option value="TRY">TRY</option>
+                <label style="margin-left:15px;">
+                    <input type="checkbox" id="showCompletedDefense" onchange="renderRecordsTable()">
+                    Tamamlananları Göster
+                </label>
+                <input class="toolbar-input" type="text" id="rec-search" placeholder="Rezervasyon No veya Kelime Ara…"
+                    oninput="renderRecordsTable()">
+                <select class="toolbar-select" id="rec-filter-sonuc" onchange="renderRecordsTable()">
+                    <option value="">Tüm Şikayet Sonuçları</option>
+                    <option value="">Sonuç seçiniz...</option>
+                    <option value="Haklı">Haklı</option>
+                    <option value="Haksız">Haksız</option>
                 </select>
             </div>
-
-            <div class="acc-section table-wrap"
-                style="border-top:none; border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
-                <div class="table-scroll">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Fatura No</th>
-                                <th>Fatura Tarihi</th>
-                                <th>Partner (Kime)</th>
-                                <th>İlgili Rezervasyon</th>
-                                <th>Gönderilen Tutar</th>
-                                <th>Döviz</th>
-                                <th>Durum</th>
-                                <th>İade Tutarı</th>
-                                <th>İade Tarihi</th>
-                                <th>Kabul Durumu</th>
-                                <th>Kesinti Sebebi / Not</th>
-                                <th style="width:90px;">Aksiyon</th>
-                            </tr>
-                        </thead>
-                        <tbody id="acc-tbody"></tbody>
-                    </table>
-                </div>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:80px;">Hafta No</th>
+                            <th style="width:100px;">Tarih</th>
+                            <th style="width:120px;">Kullanıcı</th>
+                            <th style="width:120px;">Rezervasyon No</th>
+                            <th style="width:140px;">Tur Operatörü</th>
+                            <th style="width:80px;">Bölge</th>
+                            <th style="width:140px;">Şikayet Konusu (TR)</th>
+                            <th style="width:140px;">Savunma</th>
+                            <th style="width:80px;">Sonuç</th>
+                            <th style="width:80px;">Tazminat</th>
+                            <th style="width:120px;">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rec-tbody"></tbody>
+                </table>
             </div>
+        </div>
+    </div>
 
-            <div class="acc-section table-wrap">
-                <div class="table-toolbar" style="font-weight:600;">Partner Bazlı Finansal Tahsilat &amp; Regress
-                    Performans Göstergeleri</div>
-                <div class="table-scroll">
-                    <table style="min-width:1000px;">
-                        <thead>
-                            <tr>
-                                <th>Partner Adı</th>
-                                <th>Toplam Gönderilen</th>
-                                <th>İade Edilen (Tahsil Edilen)</th>
-                                <th>Kabul Edilen Tutar</th>
-                                <th>Yanıt Bekleyen Tutar</th>
-                                <th style="width:300px;">Tahsilat Başarı Oranı (%)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="acc-summary-tbody"></tbody>
-                    </table>
-                </div>
+    <div id="page-accounting" class="page">
+        <div class="stats-row" id="acc-stats"></div>
+        <div class="table-toolbar"
+            style="border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin-bottom:0; border-bottom:none;">
+            <select class="toolbar-select" id="acc-filter-partner" onchange="renderAccounting()">
+                <option value="">Tüm Partnerler</option>
+            </select>
+            <select class="toolbar-select" id="acc-filter-durum" onchange="renderAccounting()">
+                <option value="">Tüm Durumlar</option>
+                <option value="Beklemede">Beklemede</option>
+                <option value="Gönderildi">Gönderildi</option>
+                <option value="İade edildi">İade edildi</option>
+                <option value="Kabul edildi">Kabul edildi</option>
+                <option value="İtiraz edildi">İtiraz edildi</option>
+            </select>
+            <select class="toolbar-select" id="acc-filter-doviz" onchange="renderAccounting()">
+                <option value="">Tüm Dövizler</option>
+                <option value="">Döviz seçiniz...</option>
+                <option value="EUR">EUR</option>
+                <option value="USD">USD</option>
+                <option value="GBP">GBP</option>
+                <option value="TRY">TRY</option>
+            </select>
+        </div>
+
+        <div class="acc-section table-wrap"
+            style="border-top:none; border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fatura No</th>
+                            <th>Fatura Tarihi</th>
+                            <th>Partner (Kime)</th>
+                            <th>İlgili Rezervasyon</th>
+                            <th>Gönderilen Tutar</th>
+                            <th>Döviz</th>
+                            <th>Durum</th>
+                            <th>İade Tutarı</th>
+                            <th>İade Tarihi</th>
+                            <th>Kabul Durumu</th>
+                            <th>Kesinti Sebebi / Not</th>
+                            <th style="width:90px;">Aksiyon</th>
+                        </tr>
+                    </thead>
+                    <tbody id="acc-tbody"></tbody>
+                </table>
             </div>
         </div>
 
-        <div id="page-users" class="page">
-            <div class="table-wrap">
-                <div class="table-toolbar">
-                    <button class="fab" onclick="openUserModal()">➕ Yeni Kullanıcı</button>
-                </div>
-                <div class="table-scroll">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Kullanıcı</th>
-                                <th>Yetki</th>
-                                <th>İşlem</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-body"></tbody>
-                    </table>
-                </div>
+        <div class="acc-section table-wrap">
+            <div class="table-toolbar" style="font-weight:600;">Partner Bazlı Finansal Tahsilat &amp; Regress
+                Performans Göstergeleri</div>
+            <div class="table-scroll">
+                <table style="min-width:1000px;">
+                    <thead>
+                        <tr>
+                            <th>Partner Adı</th>
+                            <th>Toplam Gönderilen</th>
+                            <th>İade Edilen (Tahsil Edilen)</th>
+                            <th>Kabul Edilen Tutar</th>
+                            <th>Yanıt Bekleyen Tutar</th>
+                            <th style="width:300px;">Tahsilat Başarı Oranı (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="acc-summary-tbody"></tbody>
+                </table>
             </div>
         </div>
+    </div>
+
+    <div id="page-users" class="page">
+        <div class="table-wrap">
+            <div class="table-toolbar">
+                <button class="fab" onclick="openUserModal()">➕ Yeni Kullanıcı</button>
+            </div>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kullanıcı</th>
+                            <th>Yetki</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
     </div>
     <div id="page-data" class="page">
 
@@ -4614,6 +4614,10 @@
             renderDonutChart('chart-sonuc', countBy(complaints, 'result'), ['#A32D2D', '#3B6D11']);
 
             renderTrendChart('chart-kw', countBy(complaints, 'kw'));
+
+            renderServiceComplaints();
+
+            renderTopComplaintSubjects();
         }
 
         function renderDonutChart(containerId, data, colors) {
@@ -4829,6 +4833,87 @@
 
         }
 
+        function renderServiceComplaints() {
+
+            var box = document.getElementById('service-complaint-chart');
+            if (!box) return;
+
+            var services = {};
+
+            complaints.forEach(function (c) {
+
+                var service = c.service || 'Diğer';
+
+                services[service] = (services[service] || 0) + 1;
+
+            });
+
+            var html = '';
+
+            Object.keys(services)
+                .sort(function (a, b) {
+                    return services[b] - services[a];
+                })
+                .forEach(function (s) {
+
+                    html +=
+                        '<div style="margin-bottom:12px;">' +
+                        '<div style="display:flex;justify-content:space-between;">' +
+                        '<span>' + s + '</span>' +
+                        '<b>' + services[s] + '</b>' +
+                        '</div>' +
+                        '<div style="height:8px;background:#eee;border-radius:5px;">' +
+                        '<div style="height:8px;background:#2563eb;border-radius:5px;width:' +
+                        (services[s] * 20) +
+                        '%;"></div>' +
+                        '</div>' +
+                        '</div>';
+
+                });
+
+            box.innerHTML = html;
+        }
+
+        function renderTopComplaintSubjects() {
+
+            var box = document.getElementById('top-complaints-chart');
+            if (!box) return;
+
+            var topics = {};
+
+            complaints.forEach(function (c) {
+
+                [c.ptr, c.ptr2, c.ptr3].forEach(function (p) {
+
+                    if (!p) return;
+
+                    topics[p] = (topics[p] || 0) + 1;
+
+                });
+
+            });
+
+            var top =
+                Object.entries(topics)
+                    .sort(function (a, b) {
+                        return b[1] - a[1];
+                    })
+                    .slice(0, 5);
+
+            var html = '';
+
+            top.forEach(function (item) {
+
+                html +=
+                    '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;">' +
+                    '<span>' + item[0] + '</span>' +
+                    '<b>' + item[1] + '</b>' +
+                    '</div>';
+
+            });
+
+            box.innerHTML = html;
+        }
 
         function resetDatabase() {
             if (!confirm('Tüm şikayet ve fatura kayıtları silinsin mi?')) return;
