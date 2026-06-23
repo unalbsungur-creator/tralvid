@@ -4312,33 +4312,6 @@
             document.getElementById('detail-modal-overlay')
                 .classList.add('open');
 
-            if (complaintEditMode) {
-
-                setTimeout(function () {
-
-                    var select =
-                        document.getElementById(
-                            'edit-veranstalter'
-                        );
-
-                    if (!select) return;
-
-                    loadSimpleDropdown(
-                        'edit-veranstalter',
-                        'operators'
-                    );
-
-                    select.value =
-                        (r.veranstalter || '').trim();
-
-                    console.log(
-                        'Dropdown yüklendi:',
-                        select.options.length
-                    );
-
-                }, 100);
-
-            }
 
         }
 
