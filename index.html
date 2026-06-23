@@ -671,6 +671,17 @@
             height: auto;
         }
 
+        #chart-kw {
+            min-height: 260px;
+        }
+
+        .kw-chart-box {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            min-height: 220px;
+        }
+
         .operator-bar {
             margin: 10px 0;
         }
@@ -4443,6 +4454,17 @@
                 return r.defenseStatus === 'Tamamlandı';
             }).length;
 
+            var totalDefenseRequests =
+                defenseWaiting +
+                defenseReceived +
+                defenseMissing +
+                defenseCompleted;
+
+            var completionRate =
+                totalDefenseRequests > 0
+                    ? Math.round((defenseCompleted / totalDefenseRequests) * 100)
+                    : 0;
+
             var criticalDefenseCount = complaints.filter(function (r) {
 
                 var info = getDefenseInfo(r);
@@ -4571,7 +4593,23 @@
 
 
                 '<div class="stat-card defense-panel">' +
-                '<div class="s-lbl">SAVUNMA TAKİP PANELİ</div>' +
+                '<div class="s-lbl">SAVUNMA TAKİP MERKEZİ</div>' +
+
+                '<div style="margin-top:8px;margin-bottom:14px;padding:10px;background:#f8fafc;border-radius:8px;font-size:12px;">' +
+
+                '<div>Toplam Talep: <b>' +
+                totalDefenseRequests +
+                '</b></div>' +
+
+                '<div>Açık Dosya: <b>' +
+                (defenseWaiting + defenseReceived + defenseMissing) +
+                '</b></div>' +
+
+                '<div>Tamamlanma Oranı: <b style="color:#16a34a;">%' +
+                completionRate +
+                '</b></div>' +
+
+                '</div>' +
 
                 '<div style="margin-top:10px;line-height:26px;font-size:14px;">' +
 
@@ -4701,16 +4739,26 @@
 
                 var comp = stats[op].complaints;
 
-                var ratio =
+                vvar ratio =
                     pax > 0
                         ? ((comp / pax) * 100).toFixed(2)
                         : 0;
+
+                var riskLevel = '🟢 Düşük';
+
+                if (ratio >= 7) {
+                    riskLevel = '🔴 Yüksek';
+                }
+                else if (ratio >= 3) {
+                    riskLevel = '🟡 Orta';
+                }
 
                 rows.push({
                     operator: op,
                     pax: pax,
                     complaints: comp,
-                    ratio: Number(ratio)
+                    ratio: Number(ratio),
+                    risk: riskLevel
                 });
 
             });
