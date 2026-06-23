@@ -4838,15 +4838,19 @@
 
         function renderDashboard() {
 
-            var total = complaints.length;
+            var activeComplaints = complaints.filter(function (r) {
+                return !r.isDeleted;
+            });
 
-            var hakliCount = complaints.filter(function (o) {
+            var total = activeComplaints.length;
+
+            var hakliCount = activeComplaints.filter(function (o) {
                 return o.result === 'Haklı';
             }).length;
 
             var activeInvs = invoices.length;
 
-            var deleteRequests = complaints.filter(function (o) {
+            var deleteRequests = activeComplaints.filter(function (o) {
                 return o.deleteRequested === true && !o.isDeleted;
             }).length;
 
@@ -4854,19 +4858,19 @@
                 return r.isDeleted === true;
             }).length;
 
-            var defenseWaiting = complaints.filter(function (r) {
+            var defenseWaiting = activeComplaints.filter(function (r) {
                 return r.defenseStatus === 'Bekleniyor';
             }).length;
 
-            var defenseReceived = complaints.filter(function (r) {
+            var defenseReceived = activeComplaints.filter(function (r) {
                 return r.defenseStatus === 'Savunma Geldi';
             }).length;
 
-            var defenseMissing = complaints.filter(function (r) {
+            var defenseMissing = activeComplaints.filter(function (r) {
                 return r.defenseStatus === 'Eksik Dosya';
             }).length;
 
-            var defenseCompleted = complaints.filter(function (r) {
+            var defenseCompleted = activeComplaints.filter(function (r) {
                 return r.defenseStatus === 'Tamamlandı';
             }).length;
 
@@ -4881,7 +4885,7 @@
                     ? Math.round((defenseCompleted / totalDefenseRequests) * 100)
                     : 0;
 
-            var criticalDefenseCount = complaints.filter(function (r) {
+            var criticalDefenseCount = activeComplaints.filter(function (r) {
 
                 var info = getDefenseInfo(r);
 
@@ -4926,7 +4930,7 @@
 
             var operatorCounts = {};
 
-            complaints.forEach(function (c) {
+            activeComplaints.forEach(function (c) {
 
                 var op = c.veranstalter || 'Bilinmiyor';
 
