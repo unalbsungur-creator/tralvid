@@ -4444,6 +4444,15 @@
                 ).value = r.veranstalter;
 
             }
+            console.log(
+                'OPERATORS:',
+                JSON.parse(localStorage.getItem('operators') || '[]')
+            );
+
+            console.log(
+                'SELECT:',
+                document.getElementById('edit-veranstalter')
+            );
             document.getElementById('detail-modal-overlay').classList.add('open');
             if (currentUser.role === 'admin') {
 
