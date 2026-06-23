@@ -2877,6 +2877,10 @@
 
             var filtered = visibleComplaints.filter(function (r) {
 
+                if (r.isDeleted && !showDeleted)
+                    return false;
+
+
                 if (
                     r.defenseStatus === 'Tamamlandı' &&
                     !showCompletedDefense
@@ -3029,17 +3033,28 @@
 
             if (currentUser.role === 'admin') {
 
-                if (!confirm('Kayıt kalıcı olarak silinsin mi?')) {
+                if (!confirm('Kayıt silinsin mi?')) {
                     return;
                 }
 
-                complaints = complaints.filter(function (r) {
-                    return r.id !== id;
-                });
+                rec.isDeleted = true;
+
+                rec.deletedBy =
+                    currentUser.username;
+
+                rec.deletedAt =
+                    new Date().toLocaleString('tr-TR');
 
                 syncStorage();
+
                 renderRecordsTable();
                 renderDashboard();
+
+                addLog(
+                    'Kayıt #' +
+                    id +
+                    ' silindi'
+                );
 
                 showToast('Kayıt silindi.');
 
