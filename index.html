@@ -2034,6 +2034,35 @@
 
         function closeDetailModal() {
 
+            if (
+                complaintEditMode &&
+                document.getElementById('edit-veranstalter')
+            ) {
+
+                loadSimpleDropdown(
+                    'edit-veranstalter',
+                    'operators'
+                );
+
+                console.log(
+                    'OPERATORS:',
+                    JSON.parse(
+                        localStorage.getItem('operators') || '[]'
+                    )
+                );
+
+                console.log(
+                    'SELECT:',
+                    document.getElementById('edit-veranstalter')
+                );
+
+                document.getElementById(
+                    'edit-veranstalter'
+                ).value =
+                    (r.veranstalter || '').trim();
+
+            }
+
             document.getElementById('detail-modal-overlay')
                 .classList.remove('open');
         }
@@ -4444,29 +4473,11 @@
                 '<div class="detail-item"><span class="detail-lbl">İade / Tahsilat Tarihi</span><span class="detail-val">' + (r.iadeDate || '—') + '</span></div>' +
                 '<div class="detail-item full"><span class="detail-lbl">Kesinti Sebebi Gerekçesi / Finans Notu</span><div class="note-box">' + (r.kesinti || '—') + '</div></div>' +
                 '</div>';
-            if (
-                complaintEditMode &&
-                document.getElementById('edit-veranstalter')
-            ) {
-
-                loadSimpleDropdown(
-                    'edit-veranstalter',
-                    'operators'
-                );
-
-                document.getElementById(
-                    'edit-veranstalter'
-                ).value =
-                    (r.veranstalter || '').trim();
-
-            }
 
             document.getElementById('detail-modal-overlay')
                 .classList.add('open');
 
         }
-
-
 
         // ==================== SİLME MEKANİZMALARI ====================
         function deleteComplaint(id) {
