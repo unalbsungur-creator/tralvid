@@ -4314,6 +4314,26 @@
             document.getElementById('detail-modal-overlay')
                 .classList.add('open');
 
+            if (complaintEditMode) {
+
+                loadSimpleDropdown(
+                    'edit-veranstalter',
+                    'operators',
+                    'Operatör seçiniz...'
+                );
+
+                var operatorSelect =
+                    document.getElementById('edit-veranstalter');
+
+                if (operatorSelect) {
+
+                    operatorSelect.value =
+                        r.veranstalter || '';
+
+                }
+
+            }
+
 
         }
 
