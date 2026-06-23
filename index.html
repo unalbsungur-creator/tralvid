@@ -1032,6 +1032,17 @@
         <div id="page-records" class="page">
             <div class="table-wrap">
                 <div class="table-toolbar">
+                    <button id="btnBulkDelete" onclick="bulkDeleteComplaints()" style="
+        background:#dc2626;
+        color:white;
+        border:none;
+        padding:8px 14px;
+        border-radius:8px;
+        cursor:pointer;
+        margin-right:10px;
+    ">
+                        🗑 Seçilenleri Sil
+                    </button>
                     <label>
                         <input type="checkbox" id="showDeleted">
                         Silinenleri Göster
@@ -1054,6 +1065,11 @@
                     <table>
                         <thead>
                             <tr>
+                                <th style="width:40px;">
+                                    <input type="checkbox" id="selectAllComplaints"
+                                        onchange="toggleAllComplaints(this)">
+                                </th>
+
                                 <th style="width:80px;">Hafta No</th>
                                 <th style="width:100px;">Tarih</th>
                                 <th style="width:120px;">Kullanıcı</th>
@@ -2937,6 +2953,11 @@
                 }
 
                 html += '<tr class="' + rowClass + '">' +
+
+                    '<td>' +
+                    '<input type="checkbox" class="complaint-select" value="' + r.id + '">' +
+                    '</td>' +
+
                     '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
                     '<td>' + r.date + '</td>' +
                     '<td>' + truncate(r.user, 14) + '</td>' +
@@ -2981,6 +3002,18 @@
             }
             tbody.innerHTML = html;
         }
+
+        function toggleAllComplaints(cb) {
+
+            document
+                .querySelectorAll('.complaint-select')
+                .forEach(function (c) {
+
+                    c.checked = cb.checked;
+
+                });
+        }
+
         function requestDeleteComplaint(id) {
 
             var rec = complaints.find(function (r) {
@@ -3227,6 +3260,53 @@
                     '</tr>';
             }
             sumTbody.innerHTML = sumHtml;
+        }
+
+        function bulkDeleteComplaints() {
+
+            var selected =
+                document.querySelectorAll(
+                    '.complaint-select:checked'
+                );
+
+            if (!selected.length) {
+
+                alert('Lütfen kayıt seçiniz.');
+                return;
+            }
+
+            if (
+                !confirm(
+                    selected.length +
+                    ' kayıt için silme talebi oluşturulsun mu?'
+                )
+            ) return;
+
+            selected.forEach(function (cb) {
+
+                var id = parseInt(cb.value);
+
+                var rec = complaints.find(function (r) {
+
+                    return r.id === id;
+
+                });
+
+                if (rec) {
+
+                    rec.deleteRequested = true;
+
+                }
+            });
+
+            saveData();
+
+            renderRecordsTable();
+
+            alert(
+                selected.length +
+                ' kayıt için silme talebi oluşturuldu.'
+            );
         }
 
         // ==================== USER MANAGEMENT ====================
