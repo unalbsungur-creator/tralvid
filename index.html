@@ -2565,6 +2565,71 @@
             }
         }
 
+        function saveComplaintChanges(id) {
+
+            var r = complaints.find(function (o) {
+                return o.id == id;
+            });
+
+            if (!r) return;
+
+            var oldOperator = r.veranstalter;
+
+            r.veranstalter =
+                document.getElementById(
+                    'edit-veranstalter'
+                ).value;
+
+            syncStorage();
+
+            renderRecordsTable();
+            renderDashboard();
+
+            showToast(
+                'Operatör güncellendi'
+            );
+
+            console.log(
+                'LOG:',
+                oldOperator +
+                ' -> ' +
+                r.veranstalter
+            );
+        }
+
+        function saveComplaintChanges(id) {
+
+            var r = complaints.find(function (o) {
+                return o.id == id;
+            });
+
+            if (!r) return;
+
+            var oldOperator = r.veranstalter;
+
+            r.veranstalter =
+                document.getElementById(
+                    'edit-veranstalter'
+                ).value;
+
+            syncStorage();
+
+            renderRecordsTable();
+            renderDashboard();
+
+            showToast(
+                'Operatör güncellendi'
+            );
+
+            console.log(
+                'LOG:',
+                oldOperator +
+                ' -> ' +
+                r.veranstalter
+            );
+
+        }
+
         function saveInvoice() {
             var nextId = invoices.length > 0 ? Math.max.apply(Math, invoices.map(function (o) { return o.id; })) + 1 : 1;
             var rec = {
@@ -4018,10 +4083,10 @@
 
                 (
                     currentUser.role === 'admin'
-                        ? ' <button class="btn btn-primary" ' +
+                        ? ' <button class="btn btn-success" ' +
                         'style="margin-left:15px;" ' +
-                        'onclick="enableComplaintEdit(' + r.id + ')">' +
-                        '✏ Düzenle</button>'
+                        'onclick="saveComplaintChanges(' + r.id + ')">' +
+                        '💾 Kaydet</button>'
                         : ''
                 );
 
