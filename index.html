@@ -649,10 +649,10 @@
         }
 
         .charts-grid-pure {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
             width: 100%;
-            align-items: flex-start;
         }
 
         .chart-card {
@@ -4842,7 +4842,7 @@
 
             complaints.forEach(function (c) {
 
-                var service = c.service || 'Diğer';
+                var service = c.ptr || 'Diğer';
 
                 services[service] = (services[service] || 0) + 1;
 
