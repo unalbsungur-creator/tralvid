@@ -241,6 +241,22 @@
             margin-top: 3px;
         }
 
+        .defense-panel {
+            min-height: 220px;
+        }
+
+        .defense-panel .s-lbl {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .defense-panel .line {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 14px;
+        }
+
         /* ===== TABLES & TOOLBARS ===== */
         .table-wrap {
             background: var(--bg-primary);
@@ -4564,29 +4580,39 @@
                 '</div>' +
                 '</div>' +
 
-                '<div class="stat-card">' +
+                '<div class="stat-card defense-panel">' +
                 '<div class="s-lbl">SAVUNMA TAKİP PANELİ</div>' +
 
                 '<div style="margin-top:10px;line-height:26px;font-size:14px;">' +
 
-                '<div>🟡 Bekleyen <b style="float:right;">' +
+                '<div class="line"><span>🟡 Bekleyen</span><b>' +
                 defenseWaiting +
                 '</b></div>' +
 
-                '<div>🔵 Geldi <b style="float:right;">' +
+                '<div class="line"><span>🔵 Savunma Geldi</span><b>' +
                 defenseReceived +
                 '</b></div>' +
 
-                '<div>🔴 Eksik <b style="float:right;">' +
+                '<div class="line"><span>🔴 Eksik Dosya</span><b>' +
                 defenseMissing +
                 '</b></div>' +
 
-                '<div>🟢 Tamamlanan <b style="float:right;">' +
+                '<div class="line"><span>🟢 Tamamlanan</span><b>' +
                 defenseCompleted +
                 '</b></div>' +
 
-                '<div>🚨 Kritik <b style="float:right;color:#c62828;">' +
+                '<div class="line"><span>🚨 Kritik</span><b style="color:#c62828;">' +
                 criticalDefenseCount +
+                '</b></div>' +
+
+                '<hr style="margin:10px 0;border:none;border-top:1px solid #e5e7eb;">' +
+
+                '<div class="line"><span>🗑 Silme Talepleri</span><b>' +
+                deleteRequests +
+                '</b></div>' +
+
+                '<div class="line"><span>📦 Silinen Kayıtlar</span><b>' +
+                deletedCount +
                 '</b></div>' +
 
                 '</div>' +
