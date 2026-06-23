@@ -242,7 +242,8 @@
         }
 
         .defense-panel {
-            min-height: 220px;
+            min-height: 260px;
+            grid-column: span 2;
         }
 
         .defense-panel .s-lbl {
@@ -4566,19 +4567,6 @@
                 '<div class="stat-card"><div class="s-lbl">Muhasebe Fatura Takip Sayısı</div><div class="s-val" style="color:#185FA5;">' + activeInvs + '</div></div>' +
                 '<div class="stat-card"><div class="s-lbl">Cevap Süresi Aşalan Dosyalar</div><div class="s-val" style="color:#A32D2D;">' + complaints.filter(function (o) { return o.timeout === 'Evet'; }).length + '</div></div>' +
 
-                '<div class="stat-card">' +
-                '<div class="s-lbl">Bekleyen Silme Talepleri</div>' +
-                '<div class="s-val" style="color:#ff9800;">' +
-                deleteRequests +
-                '</div>' +
-                '</div>' +
-
-                '<div class="stat-card">' +
-                '<div class="s-lbl">Silinen Kayıtlar</div>' +
-                '<div class="s-val" style="color:#d32f2f;">' +
-                deletedCount +
-                '</div>' +
-                '</div>' +
 
                 '<div class="stat-card defense-panel">' +
                 '<div class="s-lbl">SAVUNMA TAKİP PANELİ</div>' +
