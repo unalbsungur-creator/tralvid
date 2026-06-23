@@ -4844,6 +4844,15 @@
 
             var total = activeComplaints.length;
 
+            console.log(
+                'Toplam:',
+                complaints.length,
+                'Aktif:',
+                activeComplaints.length,
+                'Silinen:',
+                complaints.filter(x => x.isDeleted).length
+            );
+
             var hakliCount = activeComplaints.filter(function (o) {
                 return o.result === 'Haklı';
             }).length;
@@ -5069,11 +5078,16 @@
 
             renderOperatorRatios();
 
-            renderDonutChart('chart-servis', countBy(complaints, 'servis'), ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
+            renderDonutChart('chart-servis',
+                countBy(activeComplaints, 'servis'),
+                ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
 
-            renderDonutChart('chart-sonuc', countBy(complaints, 'result'), ['#A32D2D', '#3B6D11']);
+            renderDonutChart('chart-sonuc',
+                countBy(activeComplaints, 'result'),
+                ['#A32D2D', '#3B6D11']);
 
-            renderTrendChart('chart-kw', countBy(complaints, 'kw'));
+            renderTrendChart('chart-kw',
+                countBy(activeComplaints, 'kw'));
 
             renderServiceComplaints();
 
@@ -5114,6 +5128,10 @@
         }
         function renderOperatorRatios() {
 
+            var activeComplaints = complaints.filter(function (r) {
+                return !r.isDeleted;
+            });
+
             var paxData =
                 JSON.parse(
                     localStorage.getItem('passengerStats')
@@ -5136,224 +5154,231 @@
 
             });
 
-            complaints.forEach(function (c) {
+            activeComplaints.forEach(
 
                 var op = c.veranstalter || 'Bilinmiyor';
 
-                if (!stats[op]) {
-                    stats[op] = {
-                        pax: 0,
-                        complaints: 0
-                    };
-                }
+            if (!stats[op]) {
+                stats[op] = {
+                    pax: 0,
+                    complaints: 0
+                };
+            }
 
-                stats[op].complaints++;
+            stats[op].complaints++;
 
+        });
+
+        var rows = [];
+
+        Object.keys(stats).forEach(function (op) {
+
+            var pax = stats[op].pax;
+
+            var comp = stats[op].complaints;
+
+            var ratio =
+                pax > 0
+                    ? ((comp / pax) * 100).toFixed(2)
+                    : 0;
+
+            var riskLevel = '🟢 Düşük';
+
+            if (ratio >= 7) {
+                riskLevel = '🔴 Yüksek';
+            }
+            else if (ratio >= 3) {
+                riskLevel = '🟡 Orta';
+            }
+
+            rows.push({
+                operator: op,
+                pax: pax,
+                complaints: comp,
+                ratio: Number(ratio),
+                risk: riskLevel
             });
 
-            var rows = [];
+        });
 
-            Object.keys(stats).forEach(function (op) {
+        rows.sort(function (a, b) {
+            return b.ratio - a.ratio;
+        });
 
-                var pax = stats[op].pax;
+        console.table(rows);
 
-                var comp = stats[op].complaints;
+        var html =
+            '<table class="table">' +
+            '<thead>' +
+            '<tr>' +
+            '<th>Operatör</th>' +
+            '<th>PAX</th>' +
+            '<th>Şikayet</th>' +
+            '<th>Oran %</th>' +
+            '<th>Risk</th>' +
+            '</tr>' +
+            '</thead><tbody>';
 
-                var ratio =
-                    pax > 0
-                        ? ((comp / pax) * 100).toFixed(2)
-                        : 0;
+        rows.forEach(function (r) {
 
-                var riskLevel = '🟢 Düşük';
-
-                if (ratio >= 7) {
-                    riskLevel = '🔴 Yüksek';
-                }
-                else if (ratio >= 3) {
-                    riskLevel = '🟡 Orta';
-                }
-
-                rows.push({
-                    operator: op,
-                    pax: pax,
-                    complaints: comp,
-                    ratio: Number(ratio),
-                    risk: riskLevel
-                });
-
-            });
-
-            rows.sort(function (a, b) {
-                return b.ratio - a.ratio;
-            });
-
-            console.table(rows);
-
-            var html =
-                '<table class="table">' +
-                '<thead>' +
+            html +=
                 '<tr>' +
-                '<th>Operatör</th>' +
-                '<th>PAX</th>' +
-                '<th>Şikayet</th>' +
-                '<th>Oran %</th>' +
-                '<th>Risk</th>' +
-                '</tr>' +
-                '</thead><tbody>';
+                '<td>' + r.operator + '</td>' +
+                '<td>' + r.pax + '</td>' +
+                '<td>' + r.complaints + '</td>' +
+                '<td>' + r.ratio + '%</td>' +
+                '<td>' + r.risk + '</td>' +
+                '</tr>';
 
-            rows.forEach(function (r) {
+        });
 
-                html +=
-                    '<tr>' +
-                    '<td>' + r.operator + '</td>' +
-                    '<td>' + r.pax + '</td>' +
-                    '<td>' + r.complaints + '</td>' +
-                    '<td>' + r.ratio + '%</td>' +
-                    '<td>' + r.risk + '</td>' +
-                    '</tr>';
+        html += '</tbody></table>';
 
-            });
+        document.getElementById('operator-ratio').innerHTML = html;
 
-            html += '</tbody></table>';
+        var maxComplaint = 0;
 
-            document.getElementById('operator-ratio').innerHTML = html;
+        rows.forEach(function (r) {
 
-            var maxComplaint = 0;
+            if (r.complaints > maxComplaint) {
+                maxComplaint = r.complaints;
+            }
 
-            rows.forEach(function (r) {
+        });
 
-                if (r.complaints > maxComplaint) {
-                    maxComplaint = r.complaints;
-                }
+        var chartHtml = '';
 
-            });
+        rows.forEach(function (r) {
 
-            var chartHtml = '';
+            var width =
+                maxComplaint > 0
+                    ? (r.complaints / maxComplaint) * 100
+                    : 0;
 
-            rows.forEach(function (r) {
+            chartHtml +=
+                '<div class="operator-bar">' +
+                '<div class="operator-name">' +
+                r.operator +
+                '</div>' +
+                '<div class="operator-track">' +
+                '<div class="operator-fill" style="width:' +
+                width +
+                '%;">' +
+                r.complaints +
+                ' şikayet</div>' +
+                '</div>' +
+                '</div>';
 
-                var width =
-                    maxComplaint > 0
-                        ? (r.complaints / maxComplaint) * 100
-                        : 0;
+        });
 
-                chartHtml +=
-                    '<div class="operator-bar">' +
-                    '<div class="operator-name">' +
-                    r.operator +
-                    '</div>' +
-                    '<div class="operator-track">' +
-                    '<div class="operator-fill" style="width:' +
-                    width +
-                    '%;">' +
-                    r.complaints +
-                    ' şikayet</div>' +
-                    '</div>' +
-                    '</div>';
+        document.getElementById('operator-chart').innerHTML =
+            chartHtml;
 
-            });
+        var regionStats = {};
 
-            document.getElementById('operator-chart').innerHTML =
-                chartHtml;
+        complaints.forEach(function (c) {
 
-            var regionStats = {};
+            var region = c.region || 'Bilinmiyor';
 
-            complaints.forEach(function (c) {
+            regionStats[region] =
+                (regionStats[region] || 0) + 1;
 
-                var region = c.region || 'Bilinmiyor';
+        });
 
-                regionStats[region] =
-                    (regionStats[region] || 0) + 1;
+        var maxRegion = 0;
 
-            });
+        Object.keys(regionStats).forEach(function (r) {
 
-            var maxRegion = 0;
+            if (regionStats[r] > maxRegion) {
+                maxRegion = regionStats[r];
+            }
 
-            Object.keys(regionStats).forEach(function (r) {
+        });
 
-                if (regionStats[r] > maxRegion) {
-                    maxRegion = regionStats[r];
-                }
+        var regionHtml = '';
 
-            });
+        Object.keys(regionStats).forEach(function (r) {
 
-            var regionHtml = '';
+            var width =
+                (regionStats[r] / maxRegion) * 100;
 
-            Object.keys(regionStats).forEach(function (r) {
+            regionHtml +=
+                '<div class="operator-bar">' +
+                '<div class="operator-name">' +
+                r +
+                '</div>' +
+                '<div class="operator-track">' +
+                '<div class="operator-fill" style="width:' +
+                width +
+                '%;">' +
+                regionStats[r] +
+                ' şikayet</div>' +
+                '</div>' +
+                '</div>';
 
-                var width =
-                    (regionStats[r] / maxRegion) * 100;
+        });
 
-                regionHtml +=
-                    '<div class="operator-bar">' +
-                    '<div class="operator-name">' +
-                    r +
-                    '</div>' +
-                    '<div class="operator-track">' +
-                    '<div class="operator-fill" style="width:' +
-                    width +
-                    '%;">' +
-                    regionStats[r] +
-                    ' şikayet</div>' +
-                    '</div>' +
-                    '</div>';
-
-            });
-
-            document.getElementById('region-chart').innerHTML =
-                regionHtml;
+        document.getElementById('region-chart').innerHTML =
+            regionHtml;
 
         }
 
         function renderServiceComplaints() {
+
+            var activeComplaints = complaints.filter(function (r) {
+                return !r.isDeleted;
+            });
 
             var box = document.getElementById('service-complaint-chart');
             if (!box) return;
 
             var services = {};
 
-            complaints.forEach(function (c) {
+            activeComplaints.forEach(
 
                 var service = c.ptr || 'Diğer';
 
-                services[service] = (services[service] || 0) + 1;
+            services[service] = (services[service] || 0) + 1;
+
+        });
+
+        var html = '';
+
+        Object.keys(services)
+            .sort(function (a, b) {
+                return services[b] - services[a];
+            })
+            .forEach(function (s) {
+
+                html +=
+                    '<div style="margin-bottom:12px;">' +
+                    '<div style="display:flex;justify-content:space-between;">' +
+                    '<span>' + s + '</span>' +
+                    '<b>' + services[s] + '</b>' +
+                    '</div>' +
+                    '<div style="height:8px;background:#eee;border-radius:5px;">' +
+                    '<div style="height:8px;background:#2563eb;border-radius:5px;width:' +
+                    (services[s] * 20) +
+                    '%;"></div>' +
+                    '</div>' +
+                    '</div>';
 
             });
 
-            var html = '';
-
-            Object.keys(services)
-                .sort(function (a, b) {
-                    return services[b] - services[a];
-                })
-                .forEach(function (s) {
-
-                    html +=
-                        '<div style="margin-bottom:12px;">' +
-                        '<div style="display:flex;justify-content:space-between;">' +
-                        '<span>' + s + '</span>' +
-                        '<b>' + services[s] + '</b>' +
-                        '</div>' +
-                        '<div style="height:8px;background:#eee;border-radius:5px;">' +
-                        '<div style="height:8px;background:#2563eb;border-radius:5px;width:' +
-                        (services[s] * 20) +
-                        '%;"></div>' +
-                        '</div>' +
-                        '</div>';
-
-                });
-
-            box.innerHTML = html;
+        box.innerHTML = html;
         }
 
         function renderTopComplaintSubjects() {
 
+            var activeComplaints = complaints.filter(function (r) {
+                return !r.isDeleted;
+            });
+
             var box = document.getElementById('top-complaints-chart');
             if (!box) return;
-
             var topics = {};
 
-            complaints.forEach(function (c) {
+            activeComplaints.forEach(function (c) {
 
                 [c.ptr, c.ptr2, c.ptr3].forEach(function (p) {
 
