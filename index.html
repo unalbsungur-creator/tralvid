@@ -4036,7 +4036,25 @@
                 '<div class="detail-item"><span class="detail-lbl">Şikayet Tarihi</span><span class="detail-val">' + r.bdate + '</span></div>' +
                 '<div class="detail-item"><span class="detail-lbl">Geliş Tarihi</span><span class="detail-val">' + r.adate + '</span></div>' +
                 '<div class="detail-item"><span class="detail-lbl">Dönüş Tarihi</span><span class="detail-val">' + r.ddate + '</span></div>' +
-                '<div class="detail-item"><span class="detail-lbl">Tur Operatörü</span><span class="detail-val">' + r.veranstalter + '</span></div>' +
+                '<div class="detail-item">' +
+                '<span class="detail-lbl">Tur Operatörü</span>' +
+
+                (
+                    currentUser.role === 'admin'
+                        ?
+
+                        '<select id="edit-veranstalter" style="width:100%;padding:6px;">' +
+                        '<option>' + r.veranstalter + '</option>' +
+                        '</select>'
+
+                        :
+
+                        '<span class="detail-val">' +
+                        r.veranstalter +
+                        '</span>'
+                ) +
+
+                '</div>' +
                 '<div class="detail-item"><span class="detail-lbl">Sorumlu taraf</span><span class="detail-val">' + r.Verursacher + '</span></div>' +
                 '<div class="detail-item"><span class="detail-lbl">Bölge / Havalimanı</span><span class="detail-val">' + r.region + ' / ' + r.airport + '</span></div>' +
                 '<div class="detail-item"><span class="detail-lbl">Transfer Türü</span><span class="detail-val">' + (r.transfertype || '-') + '</span></div>' +
@@ -4310,6 +4328,15 @@
             });
 
         }
+
+        function enableComplaintEdit(id) {
+
+            loadSimpleDropdown(
+                'edit-veranstalter',
+                'operators'
+            );
+
+        }
         function openInvoiceDetail(id) {
             var r = invoices.find(function (o) { return o.id === id; }); if (!r) return;
             document.getElementById('detail-modal-title').textContent = 'Fatura Finans Kart Detayı: ' + r.faturaNo;
@@ -4327,6 +4354,21 @@
                 '<div class="detail-item full"><span class="detail-lbl">Kesinti Sebebi Gerekçesi / Finans Notu</span><div class="note-box">' + (r.kesinti || '—') + '</div></div>' +
                 '</div>';
             document.getElementById('detail-modal-overlay').classList.add('open');
+            if (currentUser.role === 'admin') {
+
+                setTimeout(function () {
+
+                    if (document.getElementById('edit-veranstalter')) {
+
+                        document.getElementById(
+                            'edit-veranstalter'
+                        ).value = r.veranstalter;
+
+                    }
+
+                }, 50);
+
+            }
         }
 
         // ==================== SİLME MEKANİZMALARI ====================
