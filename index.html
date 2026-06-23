@@ -2266,20 +2266,30 @@
                 'operators'
             );
 
-            document.getElementById('c-veranstalter').value = op;
+            var select =
+                document.getElementById('c-veranstalter');
+
+            Array.from(select.options).forEach(function (opt) {
+
+                if (
+                    opt.value.trim().toUpperCase() ===
+                    op.trim().toUpperCase()
+                ) {
+                    select.value = opt.value;
+                }
+
+            });
 
             console.log(
                 'OPTIONS:',
-                Array.from(
-                    document.getElementById('c-veranstalter').options
-                ).map(o => o.value)
+                Array.from(select.options)
+                    .map(o => o.value)
             );
 
             console.log(
                 'SELECT VALUE:',
-                document.getElementById('c-veranstalter').value
+                select.value
             );
-
 
             document.getElementById('c-region').value =
                 (pax.region || '').trim()
