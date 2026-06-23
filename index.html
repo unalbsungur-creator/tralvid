@@ -4483,6 +4483,18 @@
                             'operators'
                         );
 
+                        console.log(
+                            'OPTION SAYISI:',
+                            document.getElementById('edit-veranstalter').options.length
+                        );
+
+                        console.log(
+                            'OPTIONLAR:',
+                            Array.from(
+                                document.getElementById('edit-veranstalter').options
+                            ).map(x => x.value)
+                        );
+
                         document.getElementById(
                             'edit-veranstalter'
                         ).value =
