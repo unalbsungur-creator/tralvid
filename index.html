@@ -5334,38 +5334,37 @@
 
             var services = {};
 
-            activeComplaints.forEach(
+            activeComplaints.forEach(function (c) {
 
                 var service = c.ptr || 'Diğer';
 
-            services[service] = (services[service] || 0) + 1;
-
-        });
-
-        var html = '';
-
-        Object.keys(services)
-            .sort(function (a, b) {
-                return services[b] - services[a];
-            })
-            .forEach(function (s) {
-
-                html +=
-                    '<div style="margin-bottom:12px;">' +
-                    '<div style="display:flex;justify-content:space-between;">' +
-                    '<span>' + s + '</span>' +
-                    '<b>' + services[s] + '</b>' +
-                    '</div>' +
-                    '<div style="height:8px;background:#eee;border-radius:5px;">' +
-                    '<div style="height:8px;background:#2563eb;border-radius:5px;width:' +
-                    (services[s] * 20) +
-                    '%;"></div>' +
-                    '</div>' +
-                    '</div>';
+                services[service] = (services[service] || 0) + 1;
 
             });
+            var html = '';
 
-        box.innerHTML = html;
+            Object.keys(services)
+                .sort(function (a, b) {
+                    return services[b] - services[a];
+                })
+                .forEach(function (s) {
+
+                    html +=
+                        '<div style="margin-bottom:12px;">' +
+                        '<div style="display:flex;justify-content:space-between;">' +
+                        '<span>' + s + '</span>' +
+                        '<b>' + services[s] + '</b>' +
+                        '</div>' +
+                        '<div style="height:8px;background:#eee;border-radius:5px;">' +
+                        '<div style="height:8px;background:#2563eb;border-radius:5px;width:' +
+                        (services[s] * 20) +
+                        '%;"></div>' +
+                        '</div>' +
+                        '</div>';
+
+                });
+
+            box.innerHTML = html;
         }
 
         function renderTopComplaintSubjects() {
