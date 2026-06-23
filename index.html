@@ -5154,172 +5154,172 @@
 
             });
 
-            activeComplaints.forEach(
+            activeComplaints.forEach(function (c) {
 
                 var op = c.veranstalter || 'Bilinmiyor';
 
-            if (!stats[op]) {
-                stats[op] = {
-                    pax: 0,
-                    complaints: 0
-                };
-            }
+                if (!stats[op]) {
+                    stats[op] = {
+                        pax: 0,
+                        complaints: 0
+                    };
+                }
 
-            stats[op].complaints++;
+                stats[op].complaints++;
 
-        });
-
-        var rows = [];
-
-        Object.keys(stats).forEach(function (op) {
-
-            var pax = stats[op].pax;
-
-            var comp = stats[op].complaints;
-
-            var ratio =
-                pax > 0
-                    ? ((comp / pax) * 100).toFixed(2)
-                    : 0;
-
-            var riskLevel = '🟢 Düşük';
-
-            if (ratio >= 7) {
-                riskLevel = '🔴 Yüksek';
-            }
-            else if (ratio >= 3) {
-                riskLevel = '🟡 Orta';
-            }
-
-            rows.push({
-                operator: op,
-                pax: pax,
-                complaints: comp,
-                ratio: Number(ratio),
-                risk: riskLevel
             });
 
-        });
+            var rows = [];
 
-        rows.sort(function (a, b) {
-            return b.ratio - a.ratio;
-        });
+            Object.keys(stats).forEach(function (op) {
 
-        console.table(rows);
+                var pax = stats[op].pax;
 
-        var html =
-            '<table class="table">' +
-            '<thead>' +
-            '<tr>' +
-            '<th>Operatör</th>' +
-            '<th>PAX</th>' +
-            '<th>Şikayet</th>' +
-            '<th>Oran %</th>' +
-            '<th>Risk</th>' +
-            '</tr>' +
-            '</thead><tbody>';
+                var comp = stats[op].complaints;
 
-        rows.forEach(function (r) {
+                var ratio =
+                    pax > 0
+                        ? ((comp / pax) * 100).toFixed(2)
+                        : 0;
 
-            html +=
+                var riskLevel = '🟢 Düşük';
+
+                if (ratio >= 7) {
+                    riskLevel = '🔴 Yüksek';
+                }
+                else if (ratio >= 3) {
+                    riskLevel = '🟡 Orta';
+                }
+
+                rows.push({
+                    operator: op,
+                    pax: pax,
+                    complaints: comp,
+                    ratio: Number(ratio),
+                    risk: riskLevel
+                });
+
+            });
+
+            rows.sort(function (a, b) {
+                return b.ratio - a.ratio;
+            });
+
+            console.table(rows);
+
+            var html =
+                '<table class="table">' +
+                '<thead>' +
                 '<tr>' +
-                '<td>' + r.operator + '</td>' +
-                '<td>' + r.pax + '</td>' +
-                '<td>' + r.complaints + '</td>' +
-                '<td>' + r.ratio + '%</td>' +
-                '<td>' + r.risk + '</td>' +
-                '</tr>';
+                '<th>Operatör</th>' +
+                '<th>PAX</th>' +
+                '<th>Şikayet</th>' +
+                '<th>Oran %</th>' +
+                '<th>Risk</th>' +
+                '</tr>' +
+                '</thead><tbody>';
 
-        });
+            rows.forEach(function (r) {
 
-        html += '</tbody></table>';
+                html +=
+                    '<tr>' +
+                    '<td>' + r.operator + '</td>' +
+                    '<td>' + r.pax + '</td>' +
+                    '<td>' + r.complaints + '</td>' +
+                    '<td>' + r.ratio + '%</td>' +
+                    '<td>' + r.risk + '</td>' +
+                    '</tr>';
 
-        document.getElementById('operator-ratio').innerHTML = html;
+            });
 
-        var maxComplaint = 0;
+            html += '</tbody></table>';
 
-        rows.forEach(function (r) {
+            document.getElementById('operator-ratio').innerHTML = html;
 
-            if (r.complaints > maxComplaint) {
-                maxComplaint = r.complaints;
-            }
+            var maxComplaint = 0;
 
-        });
+            rows.forEach(function (r) {
 
-        var chartHtml = '';
+                if (r.complaints > maxComplaint) {
+                    maxComplaint = r.complaints;
+                }
 
-        rows.forEach(function (r) {
+            });
 
-            var width =
-                maxComplaint > 0
-                    ? (r.complaints / maxComplaint) * 100
-                    : 0;
+            var chartHtml = '';
 
-            chartHtml +=
-                '<div class="operator-bar">' +
-                '<div class="operator-name">' +
-                r.operator +
-                '</div>' +
-                '<div class="operator-track">' +
-                '<div class="operator-fill" style="width:' +
-                width +
-                '%;">' +
-                r.complaints +
-                ' şikayet</div>' +
-                '</div>' +
-                '</div>';
+            rows.forEach(function (r) {
 
-        });
+                var width =
+                    maxComplaint > 0
+                        ? (r.complaints / maxComplaint) * 100
+                        : 0;
 
-        document.getElementById('operator-chart').innerHTML =
-            chartHtml;
+                chartHtml +=
+                    '<div class="operator-bar">' +
+                    '<div class="operator-name">' +
+                    r.operator +
+                    '</div>' +
+                    '<div class="operator-track">' +
+                    '<div class="operator-fill" style="width:' +
+                    width +
+                    '%;">' +
+                    r.complaints +
+                    ' şikayet</div>' +
+                    '</div>' +
+                    '</div>';
 
-        var regionStats = {};
+            });
 
-        complaints.forEach(function (c) {
+            document.getElementById('operator-chart').innerHTML =
+                chartHtml;
 
-            var region = c.region || 'Bilinmiyor';
+            var regionStats = {};
 
-            regionStats[region] =
-                (regionStats[region] || 0) + 1;
+            complaints.forEach(function (c) {
 
-        });
+                var region = c.region || 'Bilinmiyor';
 
-        var maxRegion = 0;
+                regionStats[region] =
+                    (regionStats[region] || 0) + 1;
 
-        Object.keys(regionStats).forEach(function (r) {
+            });
 
-            if (regionStats[r] > maxRegion) {
-                maxRegion = regionStats[r];
-            }
+            var maxRegion = 0;
 
-        });
+            Object.keys(regionStats).forEach(function (r) {
 
-        var regionHtml = '';
+                if (regionStats[r] > maxRegion) {
+                    maxRegion = regionStats[r];
+                }
 
-        Object.keys(regionStats).forEach(function (r) {
+            });
 
-            var width =
-                (regionStats[r] / maxRegion) * 100;
+            var regionHtml = '';
 
-            regionHtml +=
-                '<div class="operator-bar">' +
-                '<div class="operator-name">' +
-                r +
-                '</div>' +
-                '<div class="operator-track">' +
-                '<div class="operator-fill" style="width:' +
-                width +
-                '%;">' +
-                regionStats[r] +
-                ' şikayet</div>' +
-                '</div>' +
-                '</div>';
+            Object.keys(regionStats).forEach(function (r) {
 
-        });
+                var width =
+                    (regionStats[r] / maxRegion) * 100;
 
-        document.getElementById('region-chart').innerHTML =
-            regionHtml;
+                regionHtml +=
+                    '<div class="operator-bar">' +
+                    '<div class="operator-name">' +
+                    r +
+                    '</div>' +
+                    '<div class="operator-track">' +
+                    '<div class="operator-fill" style="width:' +
+                    width +
+                    '%;">' +
+                    regionStats[r] +
+                    ' şikayet</div>' +
+                    '</div>' +
+                    '</div>';
+
+            });
+
+            document.getElementById('region-chart').innerHTML =
+                regionHtml;
 
         }
 
