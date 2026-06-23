@@ -1604,6 +1604,8 @@
 
         var currentUser = JSON.parse(sessionStorage.getItem('currentUser') || 'null');
 
+        var complaintEditMode = false;
+
         function syncStorage() {
             localStorage.setItem('tralvid_pages_complaints', JSON.stringify(complaints));
             localStorage.setItem('tralvid_pages_invoices', JSON.stringify(invoices));
@@ -4083,24 +4085,10 @@
 
                 (
                     currentUser.role === 'admin'
-                        ? (
-                            !complaintEditMode
-
-                                ? ' <button class="btn btn-primary" ' +
-                                'style="margin-left:15px;" ' +
-                                'onclick="enableComplaintEdit(' + r.id + ')">' +
-                                '✏ Düzenle</button>'
-
-                                : ' <button class="btn btn-success" ' +
-                                'style="margin-left:15px;" ' +
-                                'onclick="saveComplaintChanges(' + r.id + ')">' +
-                                '💾 Kaydet</button>' +
-
-                                ' <button class="btn" ' +
-                                'style="margin-left:8px;background:#9e9e9e;color:#fff;" ' +
-                                'onclick="cancelComplaintEdit(' + r.id + ')">' +
-                                '❌ Vazgeç</button>'
-                        )
+                        ? ' <button class="btn btn-primary" ' +
+                        'style="margin-left:15px;" ' +
+                        'onclick="enableComplaintEdit(' + r.id + ')">' +
+                        '✏ Düzenle</button>'
                         : ''
                 );
 
