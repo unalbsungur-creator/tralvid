@@ -3278,35 +3278,17 @@
             if (
                 !confirm(
                     selected.length +
-                    ' kayıt için silme talebi oluşturulsun mu?'
+                    ' kayıt işlensin mi?'
                 )
             ) return;
 
             selected.forEach(function (cb) {
 
-                var id = parseInt(cb.value);
+                requestDeleteComplaint(
+                    parseInt(cb.value)
+                );
 
-                var rec = complaints.find(function (r) {
-
-                    return r.id === id;
-
-                });
-
-                if (rec) {
-
-                    rec.deleteRequested = true;
-
-                }
             });
-
-            saveData();
-
-            renderRecordsTable();
-
-            alert(
-                selected.length +
-                ' kayıt için silme talebi oluşturuldu.'
-            );
         }
 
         // ==================== USER MANAGEMENT ====================
