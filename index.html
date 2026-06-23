@@ -2557,6 +2557,27 @@
 
                 ).then(function () {
 
+                    var existingComplaint =
+                        complaints.find(function (x) {
+
+                            return x.booking === rec.booking;
+
+                        });
+
+                    if (existingComplaint) {
+
+                        alert(
+                            'Bu rezervasyon numarası için zaten bir kayıt mevcut.\n\nRezervasyon No: ' +
+                            rec.booking
+                        );
+
+                        openComplaintDetail(
+                            existingComplaint.id
+                        );
+
+                        return;
+                    }
+
                     complaints.unshift(rec);
 
                     syncStorage();
