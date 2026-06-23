@@ -4106,9 +4106,21 @@
 
                 '<div class="detail-item">' +
                 '<span class="detail-lbl">Tur Operatörü</span>' +
-                '<span class="detail-val">' +
-                r.veranstalter +
-                '</span>' +
+
+                (
+                    complaintEditMode
+
+                        ?
+
+                        '<select id="edit-veranstalter" style="width:100%;padding:6px;"></select>'
+
+                        :
+
+                        '<span class="detail-val">' +
+                        r.veranstalter +
+                        '</span>'
+                ) +
+
                 '</div>' +
 
                 '<div class="detail-item"><span class="detail-lbl">Sorumlu taraf</span><span class="detail-val">' + r.Verursacher + '</span></div>' +
@@ -4417,6 +4429,21 @@
                 '<div class="detail-item"><span class="detail-lbl">İade / Tahsilat Tarihi</span><span class="detail-val">' + (r.iadeDate || '—') + '</span></div>' +
                 '<div class="detail-item full"><span class="detail-lbl">Kesinti Sebebi Gerekçesi / Finans Notu</span><div class="note-box">' + (r.kesinti || '—') + '</div></div>' +
                 '</div>';
+            if (
+                complaintEditMode &&
+                document.getElementById('edit-veranstalter')
+            ) {
+
+                loadSimpleDropdown(
+                    'edit-veranstalter',
+                    'operators'
+                );
+
+                document.getElementById(
+                    'edit-veranstalter'
+                ).value = r.veranstalter;
+
+            }
             document.getElementById('detail-modal-overlay').classList.add('open');
             if (currentUser.role === 'admin') {
 
