@@ -700,20 +700,50 @@
 
         .charts-grid-pure {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 20px;
             width: 100%;
+            align-items: start;
         }
 
         .chart-card {
-            flex: 1;
-            min-width: 0;
-            min-height: 220px;
             background: #fff;
-            border: 1px solid #dcdcdc;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+            border: 1px solid #e5e7eb;
+
+            border-radius: 16px;
+
+            padding: 20px;
+
+            min-width: 0;
+
+            min-height: 120px;
+
+            box-shadow:
+                0 4px 10px rgba(0, 0, 0, .04),
+                0 1px 3px rgba(0, 0, 0, .03);
+
+            transition: .25s;
+        }
+
+        .compact-chart {
+            min-height: 160px !important;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 20px rgba(0, 0, 0, .08),
+                0 2px 6px rgba(0, 0, 0, .04);
+        }
+
+        .chart-card h3 {
+            margin: 0 0 14px 0;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            color: #1e293b;
         }
 
         .compact-chart {
@@ -5685,6 +5715,9 @@
         });
 
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 
 </html>
