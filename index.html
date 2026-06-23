@@ -4083,10 +4083,24 @@
 
                 (
                     currentUser.role === 'admin'
-                        ? ' <button class="btn btn-success" ' +
-                        'style="margin-left:15px;" ' +
-                        'onclick="saveComplaintChanges(' + r.id + ')">' +
-                        '💾 Kaydet</button>'
+                        ? (
+                            !complaintEditMode
+
+                                ? ' <button class="btn btn-primary" ' +
+                                'style="margin-left:15px;" ' +
+                                'onclick="enableComplaintEdit(' + r.id + ')">' +
+                                '✏ Düzenle</button>'
+
+                                : ' <button class="btn btn-success" ' +
+                                'style="margin-left:15px;" ' +
+                                'onclick="saveComplaintChanges(' + r.id + ')">' +
+                                '💾 Kaydet</button>' +
+
+                                ' <button class="btn" ' +
+                                'style="margin-left:8px;background:#9e9e9e;color:#fff;" ' +
+                                'onclick="cancelComplaintEdit(' + r.id + ')">' +
+                                '❌ Vazgeç</button>'
+                        )
                         : ''
                 );
 
@@ -4102,23 +4116,11 @@
                 '<div class="detail-item"><span class="detail-lbl">Geliş Tarihi</span><span class="detail-val">' + r.adate + '</span></div>' +
                 '<div class="detail-item"><span class="detail-lbl">Dönüş Tarihi</span><span class="detail-val">' + r.ddate + '</span></div>' +
                 '<div class="detail-item">' +
+                '<div class="detail-item">' +
                 '<span class="detail-lbl">Tur Operatörü</span>' +
-
-                (
-                    currentUser.role === 'admin'
-                        ?
-
-                        '<span class="detail-val">' +
-                        r.veranstalter +
-                        '</span>'
-
-                        :
-
-                        '<span class="detail-val">' +
-                        r.veranstalter +
-                        '</span>'
-                ) +
-
+                '<span class="detail-val">' +
+                r.veranstalter +
+                '</span>' +
                 '</div>' +
                 '<div class="detail-item"><span class="detail-lbl">Sorumlu taraf</span><span class="detail-val">' + r.Verursacher + '</span></div>' +
                 '<div class="detail-item"><span class="detail-lbl">Bölge / Havalimanı</span><span class="detail-val">' + r.region + ' / ' + r.airport + '</span></div>' +
@@ -4396,12 +4398,20 @@
 
         function enableComplaintEdit(id) {
 
-            loadSimpleDropdown(
-                'edit-veranstalter',
-                'operators'
-            );
+            complaintEditMode = true;
+
+            openComplaintDetail(id);
 
         }
+
+        function cancelComplaintEdit(id) {
+
+            complaintEditMode = false;
+
+            openComplaintDetail(id);
+
+        }
+
         function openInvoiceDetail(id) {
             var r = invoices.find(function (o) { return o.id === id; }); if (!r) return;
             document.getElementById('detail-modal-title').textContent = 'Fatura Finans Kart Detayı: ' + r.faturaNo;
