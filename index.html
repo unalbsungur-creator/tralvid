@@ -2269,8 +2269,10 @@
             document.getElementById('c-veranstalter').value = op;
 
             console.log(
-                'PAX OPERATOR:',
-                op
+                'OPTIONS:',
+                Array.from(
+                    document.getElementById('c-veranstalter').options
+                ).map(o => o.value)
             );
 
             console.log(
