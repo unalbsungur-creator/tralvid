@@ -4316,6 +4316,10 @@
 
             if (complaintEditMode) {
 
+                console.log(
+                    'EDIT MODE AKTİF'
+                );
+
                 loadSimpleDropdown(
                     'edit-veranstalter',
                     'operators',
@@ -4324,6 +4328,18 @@
 
                 var operatorSelect =
                     document.getElementById('edit-veranstalter');
+
+                console.log(
+                    'SELECT BULUNDU:',
+                    operatorSelect
+                );
+
+                console.log(
+                    'OPTION SAYISI:',
+                    operatorSelect
+                        ? operatorSelect.options.length
+                        : 0
+                );
 
                 if (operatorSelect) {
 
