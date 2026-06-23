@@ -4471,19 +4471,26 @@
                 document.getElementById('edit-veranstalter')
             );
             document.getElementById('detail-modal-overlay').classList.add('open');
+
             if (currentUser.role === 'admin') {
 
                 setTimeout(function () {
 
                     if (document.getElementById('edit-veranstalter')) {
 
+                        loadSimpleDropdown(
+                            'edit-veranstalter',
+                            'operators'
+                        );
+
                         document.getElementById(
                             'edit-veranstalter'
-                        ).value = r.veranstalter;
+                        ).value =
+                            (r.veranstalter || '').trim();
 
                     }
 
-                }, 50);
+                }, 100);
 
             }
         }
