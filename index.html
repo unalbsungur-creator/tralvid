@@ -4402,7 +4402,7 @@
                 '3 = Havalimanı\n' +
                 '4 = Servis\n' +
                 '5 = Şikayet Konuları\n' +
-                '6 = Yolcu Verileri (PAX)'
+                '6 = Operasyon Exceli (V2)'
             );
 
             if (!secim) return;
@@ -4563,6 +4563,198 @@
 
             reader.readAsArrayBuffer(file);
 
+        }
+
+        function importOperationExcel(event) {
+
+            var file = event.target.files[0];
+
+            if (!file) return;
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+
+                var data =
+                    new Uint8Array(
+                        e.target.result
+                    );
+
+                var workbook =
+                    XLSX.read(data, {
+                        type: 'array'
+                    });
+
+                var sheet =
+                    workbook.Sheets[
+                    workbook.SheetNames[0]
+                    ];
+
+                var rows =
+                    XLSX.utils.sheet_to_json(
+                        sheet,
+                        { header: 1 }
+                    );
+
+                var reservations = [];
+                var flights = [];
+                var transfers = [];
+                var passengers = [];
+
+                for (var i = 1; i < rows.length; i++) {
+
+                    var row = rows[i];
+
+                    if (!row || !row.length)
+                        continue;
+
+                    var booking =
+                        String(
+                            row[0] || ''
+                        ).trim();
+
+                    if (!booking)
+                        continue;
+
+                    reservations.push({
+
+                        booking: booking,
+
+                        hotel:
+                            row[10] || '',
+
+                        operator:
+                            row[5] || '',
+
+                        checkIn:
+                            row[7] || '',
+
+                        checkOut:
+                            row[8] || '',
+
+                        adult:
+                            Number(row[20] || 0),
+
+                        child:
+                            Number(row[21] || 0),
+
+                        infant:
+                            Number(row[22] || 0)
+
+                    });
+
+                    flights.push({
+
+                        booking: booking,
+
+                        arrivalAirline:
+                            row[30] || '',
+
+                        arrivalFlightNo:
+                            row[31] || '',
+
+                        arrivalFrom:
+                            row[32] || '',
+
+                        arrivalTo:
+                            row[33] || '',
+
+                        arrivalDepartureTime:
+                            row[34] || '',
+
+                        arrivalArrivalTime:
+                            row[35] || '',
+
+                        departureAirline:
+                            row[40] || '',
+
+                        departureFlightNo:
+                            row[41] || '',
+
+                        departureFrom:
+                            row[42] || '',
+
+                        departureTo:
+                            row[43] || '',
+
+                        departureDepartureTime:
+                            row[44] || '',
+
+                        departureArrivalTime:
+                            row[45] || ''
+
+                    });
+
+                    transfers.push({
+
+                        booking: booking,
+
+                        supplier:
+                            row[50] || '',
+
+                        transferNo:
+                            row[51] || '',
+
+                        transferType:
+                            row[52] || ''
+
+                    });
+
+                    passengers.push({
+
+                        booking: booking,
+
+                        firstName:
+                            row[60] || '',
+
+                        lastName:
+                            row[61] || '',
+
+                        age:
+                            row[62] || '',
+
+                        paxType:
+                            row[63] || ''
+
+                    });
+
+                }
+
+                localStorage.setItem(
+                    'reservations',
+                    JSON.stringify(reservations)
+                );
+
+                localStorage.setItem(
+                    'flights',
+                    JSON.stringify(flights)
+                );
+
+                localStorage.setItem(
+                    'transfers',
+                    JSON.stringify(transfers)
+                );
+
+                localStorage.setItem(
+                    'passengers',
+                    JSON.stringify(passengers)
+                );
+
+                alert(
+                    'V2 Operasyon Verisi Yüklendi\n\n' +
+                    'Rezervasyon : ' +
+                    reservations.length +
+                    '\nUçuş : ' +
+                    flights.length +
+                    '\nTransfer : ' +
+                    transfers.length +
+                    '\nYolcu : ' +
+                    passengers.length
+                );
+
+            };
+
+            reader.readAsArrayBuffer(file);
         }
 
         function deleteHotel(index) {
