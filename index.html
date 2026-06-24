@@ -725,6 +725,38 @@
             transition: .25s;
         }
 
+        #dashboard-defense-panel {
+            margin-bottom: 20px;
+        }
+
+        .defense-dashboard-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .05);
+        }
+
+        .defense-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .defense-mini {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .defense-mini .val {
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
         .compact-chart {
             min-height: 160px !important;
         }
@@ -5046,6 +5078,47 @@
                 '</div></div>' +
 
                 '<div class="defense-mini"><div>Kritik</div><div class="val">' +
+                criticalDefenseCount +
+                '</div></div>' +
+
+                '</div>' +
+                '</div>';
+
+            document.getElementById('dashboard-defense-panel').innerHTML =
+
+                '<div class="defense-dashboard-card">' +
+
+                '<h3>🛡️ Savunma Takip Merkezi</h3>' +
+
+                '<div class="defense-grid">' +
+
+                '<div class="defense-mini">' +
+                '<div>Bekleyen</div>' +
+                '<div class="val" style="color:#f59e0b;">' +
+                defenseWaiting +
+                '</div></div>' +
+
+                '<div class="defense-mini">' +
+                '<div>Savunma Geldi</div>' +
+                '<div class="val" style="color:#2563eb;">' +
+                defenseReceived +
+                '</div></div>' +
+
+                '<div class="defense-mini">' +
+                '<div>Eksik Dosya</div>' +
+                '<div class="val" style="color:#dc2626;">' +
+                defenseMissing +
+                '</div></div>' +
+
+                '<div class="defense-mini">' +
+                '<div>Tamamlandı</div>' +
+                '<div class="val" style="color:#16a34a;">' +
+                defenseCompleted +
+                '</div></div>' +
+
+                '<div class="defense-mini">' +
+                '<div>Kritik</div>' +
+                '<div class="val" style="color:#b91c1c;">' +
                 criticalDefenseCount +
                 '</div></div>' +
 
