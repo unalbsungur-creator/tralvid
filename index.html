@@ -4752,7 +4752,7 @@
                 var transfers = [];
                 var passengers = [];
 
-                for (var i = 1; i < rows.length; i++) {
+                for (var i = 2; i < rows.length; i++) {
 
                     var row = rows[i];
 
@@ -4761,7 +4761,7 @@
 
                     var booking =
                         String(
-                            row[0] || ''
+                            row[1] || ''
                         ).trim();
 
                     if (!booking)
