@@ -3449,6 +3449,73 @@
 
         }
 
+        var paxExcelRows = [];
+
+        function convertPaxExcel() {
+
+            if (!paxExcelRows.length) {
+
+                alert('Önce Excel analiz edilmelidir.');
+                return;
+
+            }
+
+            var headers = paxExcelRows[0];
+
+            var voucherIndex =
+                headers.indexOf('Asıl Voucher');
+
+            var operatorIndex =
+                headers.indexOf('Operatör');
+
+            var hotelIndex =
+                headers.indexOf('Otel');
+
+            var adultIndex =
+                headers.indexOf('Yetişkin');
+
+            var childIndex =
+                headers.indexOf('Çocuk');
+
+            var infantIndex =
+                headers.indexOf('Bebek');
+
+            var arrivalIndex =
+                headers.indexOf('Giriş Tarihi');
+
+            var departureIndex =
+                headers.indexOf('Çıkış Tarihi');
+
+            var converted = [];
+
+            for (var i = 1; i < paxExcelRows.length; i++) {
+
+                var row = paxExcelRows[i];
+
+                converted.push({
+
+                    booking: row[voucherIndex] || '',
+                    veranstalter: row[operatorIndex] || '',
+                    hotel: row[hotelIndex] || '',
+                    adult: parseInt(row[adultIndex] || 0),
+                    child: parseInt(row[childIndex] || 0),
+                    infant: parseInt(row[infantIndex] || 0),
+                    arrival: row[arrivalIndex] || '',
+                    departure: row[departureIndex] || ''
+
+                });
+
+            }
+
+            console.log(converted);
+
+            alert(
+                converted.length +
+                ' kayıt dönüştürüldü.'
+            );
+
+        }
+
         function analyzePaxExcel() {
 
             var file =
@@ -3490,6 +3557,8 @@
                         sheet,
                         { header: 1 }
                     );
+
+                paxExcelRows = rows;
 
                 console.log(rows);
 
