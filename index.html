@@ -2598,19 +2598,23 @@
                 'operators'
             );
 
-            var select =
+            var opSelect =
                 document.getElementById('c-veranstalter');
 
-            Array.from(select.options).forEach(function (opt) {
+            Array.from(opSelect.options)
+                .forEach(function (opt) {
 
-                if (
-                    opt.value.trim().toUpperCase() ===
-                    op.trim().toUpperCase()
-                ) {
-                    select.value = opt.value;
-                }
+                    if (
+                        opt.value.toUpperCase() ===
+                        String(reservation.operator || '')
+                            .toUpperCase()
+                    ) {
 
-            });
+                        opSelect.value = opt.value;
+
+                    }
+
+                });
 
             console.log(
                 'OPTIONS:',
