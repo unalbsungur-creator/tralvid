@@ -4582,6 +4582,7 @@
                 '4 = Servis\n' +
                 '5 = Şikayet Konuları\n' +
                 '6 = Operasyon Exceli (V2)'
+                '7 = Konaklama Exceli (V2)'
             );
 
             if (!secim) return;
@@ -4598,18 +4599,32 @@
         function downloadPaxTemplate() {
 
             var rows = [[
+
                 'Rezervasyon No',
                 'Alt Rezervasyon No',
+                'Voucher',
+
                 'Tur Operatörü',
+
                 'Bölge',
-                'Otel',
                 'Havalimanı',
+
+                'Otel',
+                'Gerçek Otel',
+
+                'Check-In',
+                'Check-Out',
+                'Geceleme',
+
+                'Pansiyon',
+                'Oda Tipi',
+
                 'Transfer Türü',
-                'Geliş Tarihi',
-                'Dönüş Tarihi',
+
                 'Yetişkin',
                 'Çocuk',
                 'Bebek'
+
             ]];
 
             var ws =
@@ -4646,6 +4661,13 @@
             if (secim == '6') {
 
                 importOperationExcel(event);
+
+                return;
+            }
+
+            if (secim == '7') {
+
+                importReservationExcel(event);
 
                 return;
             }
@@ -4891,6 +4913,120 @@
             };
 
             reader.readAsArrayBuffer(file);
+        }
+
+        function importReservationExcel(event) {
+
+            var file = event.target.files[0];
+
+            if (!file) return;
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+
+                var data =
+                    new Uint8Array(
+                        e.target.result
+                    );
+
+                var workbook =
+                    XLSX.read(data, {
+                        type: 'array'
+                    });
+
+                var sheet =
+                    workbook.Sheets[
+                    workbook.SheetNames[0]
+                    ];
+
+                var rows =
+                    XLSX.utils.sheet_to_json(
+                        sheet,
+                        { header: 1 }
+                    );
+
+                var reservations = [];
+
+                for (var i = 1; i < rows.length; i++) {
+
+                    var row = rows[i];
+
+                    if (!row || !row.length)
+                        continue;
+
+                    var booking =
+                        String(
+                            row[5] || ''
+                        ).trim();
+
+                    if (!booking)
+                        continue;
+
+                    reservations.push({
+
+                        booking: booking,
+
+                        operator:
+                            row[3] || '',
+
+                        masterVoucher:
+                            row[4] || '',
+
+                        voucher:
+                            row[5] || '',
+
+                        hotel:
+                            row[1] || '',
+
+                        roomNo:
+                            row[6] || '',
+
+                        roomType:
+                            row[7] || '',
+
+                        checkIn:
+                            row[8] || '',
+
+                        checkOut:
+                            row[9] || '',
+
+                        nights:
+                            row[10] || '',
+
+                        board:
+                            row[11] || '',
+
+                        adult:
+                            Number(row[13] || 0),
+
+                        child:
+                            Number(row[15] || 0),
+
+                        infant:
+                            Number(row[16] || 0),
+
+                        roomCount:
+                            Number(row[17] || 0)
+
+                    });
+
+                }
+
+                localStorage.setItem(
+                    'reservations',
+                    JSON.stringify(reservations)
+                );
+
+                alert(
+                    reservations.length +
+                    ' rezervasyon yüklendi.'
+                );
+
+            };
+
+            reader.readAsArrayBuffer(file);
+
         }
 
         function deleteHotel(index) {
