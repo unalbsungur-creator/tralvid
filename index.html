@@ -2420,6 +2420,21 @@
 
             if (!bookingNo) return;
 
+            var reservations =
+                JSON.parse(
+                    localStorage.getItem('reservations') || '[]'
+                );
+
+            var reservation =
+                reservations.find(function (item) {
+
+                    return (
+                        String(item.booking).trim() ===
+                        String(bookingNo).trim()
+                    );
+
+                });
+
             var passengers =
                 JSON.parse(
                     localStorage.getItem('passengerStats') || '[]'
@@ -2492,21 +2507,33 @@
                 select.value
             );
 
-            document.getElementById('c-region').value =
-                (pax.region || '').trim()
+            if (reservation) {
 
-            document.getElementById('c-airport').value =
-                (pax.airport || '').trim()
+                document.getElementById('c-region').value =
+                    (reservation.region || '').trim();
 
-            document.getElementById('c-adate').value =
-                excelDateToInputDate(
-                    pax.arrivalDate
-                );
+                document.getElementById('c-adate').value =
+                    reservation.checkIn || '';
 
-            document.getElementById('c-ddate').value =
-                excelDateToInputDate(
-                    pax.departureDate
-                );
+                document.getElementById('c-ddate').value =
+                    reservation.checkOut || '';
+
+            } else {
+
+                document.getElementById('c-region').value =
+                    (pax.region || '').trim();
+
+                document.getElementById('c-adate').value =
+                    excelDateToInputDate(
+                        pax.arrivalDate
+                    );
+
+                document.getElementById('c-ddate').value =
+                    excelDateToInputDate(
+                        pax.departureDate
+                    );
+
+            }
 
             var transferValue =
                 (pax.transferType || '').trim();
@@ -2549,7 +2576,11 @@
                     document.getElementById('c-hotel');
 
                 var hotelName =
-                    String(pax.hotel || '').trim();
+                    String(
+                        reservation
+                            ? reservation.hotel
+                            : pax.hotel
+                    ).trim();
 
                 Array.from(hotelSelect.options)
                     .forEach(function (opt) {
@@ -4586,8 +4617,6 @@
                         { header: 1 }
                     );
 
-                console.log(rows[0]);
-                console.log(rows[1]);
 
                 var reservations = [];
                 var flights = [];
