@@ -2534,6 +2534,24 @@
 
                 });
 
+            console.log('GUEST=', guest);
+            console.log('FLIGHT=', flight);
+            console.log('TRANSFER=', transfer);
+
+            console.log('BOOKING ARANIYOR:', bookingNo);
+
+            console.log('RESERVATIONS:',
+                JSON.parse(localStorage.getItem('reservations') || '[]').length);
+
+            console.log('FLIGHTS:',
+                JSON.parse(localStorage.getItem('flights') || '[]').length);
+
+            console.log('TRANSFERS:',
+                JSON.parse(localStorage.getItem('transfers') || '[]').length);
+
+            console.log('PASSENGERS:',
+                JSON.parse(localStorage.getItem('passengers') || '[]').length);
+
             if (!pax) {
 
                 console.log(
