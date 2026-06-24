@@ -5402,7 +5402,10 @@
 
             paxData.forEach(function (p) {
 
-                var op = p.operator || 'Bilinmiyor';
+                var op =
+                    p.veranstalter ||
+                    p.operator ||
+                    'Bilinmiyor';
 
                 if (!stats[op]) {
                     stats[op] = {
@@ -5411,7 +5414,10 @@
                     };
                 }
 
-                stats[op].pax += Number(p.totalPax || 0);
+                stats[op].pax +=
+                    Number(p.adult || 0) +
+                    Number(p.child || 0) +
+                    Number(p.infant || 0);
 
             });
 
