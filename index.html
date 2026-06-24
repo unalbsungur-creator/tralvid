@@ -3451,7 +3451,58 @@
 
         function analyzePaxExcel() {
 
-            alert('PAX Converter Açıldı');
+            var file =
+                document.getElementById(
+                    'paxConverterFile'
+                ).files[0];
+
+            if (!file) {
+
+                alert(
+                    'Lütfen Excel dosyası seçiniz.'
+                );
+
+                return;
+            }
+
+            var reader =
+                new FileReader();
+
+            reader.onload = function (e) {
+
+                var data =
+                    new Uint8Array(
+                        e.target.result
+                    );
+
+                var workbook =
+                    XLSX.read(data, {
+                        type: 'array'
+                    });
+
+                var sheet =
+                    workbook.Sheets[
+                    workbook.SheetNames[0]
+                    ];
+
+                var rows =
+                    XLSX.utils.sheet_to_json(
+                        sheet,
+                        { header: 1 }
+                    );
+
+                console.log(rows);
+
+                document.getElementById(
+                    'pax-preview'
+                ).innerHTML =
+
+                    '<b>Bulunan Satır:</b> ' +
+                    (rows.length - 1);
+
+            };
+
+            reader.readAsArrayBuffer(file);
 
         }
 
