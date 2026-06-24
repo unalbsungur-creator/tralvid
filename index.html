@@ -3493,6 +3493,23 @@
 
                 console.log(rows);
 
+                var requiredFields = [
+                    'Operatör',
+                    'Asıl Voucher',
+                    'Giriş Tarihi',
+                    'Çıkış Tarihi',
+                    'Yetişkin',
+                    'Çocuk',
+                    'Bebek',
+                    'Otel'
+                ];
+
+                var foundFields = requiredFields.filter(function (f) {
+
+                    return rows[0].indexOf(f) > -1;
+
+                });
+
                 document.getElementById(
                     'pax-preview'
                 ).innerHTML =
@@ -3501,17 +3518,21 @@
                     (rows.length - 1) +
                     '</div><br>' +
 
-                    '<div><b>Bulunan Kolonlar:</b></div>' +
+                    '<div><b>Dönüştürülebilen Alanlar:</b></div>' +
 
-                    rows[0]
-                        .map(function (col) {
+                    foundFields.map(function (f) {
 
-                            return '<div>' +
-                                col +
-                                '</div>';
+                        return '<div style="color:green;">✓ ' +
+                            f +
+                            '</div>';
 
-                        })
-                        .join('');
+                    }).join('') +
+
+                    '<br><br>' +
+
+                    '<button class="fab" onclick="convertPaxExcel()">' +
+                    'DÖNÜŞTÜR' +
+                    '</button>';
 
             };
 
