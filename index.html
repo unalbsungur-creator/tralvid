@@ -3497,8 +3497,21 @@
                     'pax-preview'
                 ).innerHTML =
 
-                    '<b>Bulunan Satır:</b> ' +
-                    (rows.length - 1);
+                    '<div><b>Bulunan Satır:</b> ' +
+                    (rows.length - 1) +
+                    '</div><br>' +
+
+                    '<div><b>Bulunan Kolonlar:</b></div>' +
+
+                    rows[0]
+                        .map(function (col) {
+
+                            return '<div>' +
+                                col +
+                                '</div>';
+
+                        })
+                        .join('');
 
             };
 
