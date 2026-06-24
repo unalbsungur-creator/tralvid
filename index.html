@@ -706,6 +706,22 @@
             align-items: start;
         }
 
+        .dashboard-left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        #accounting-summary {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 220px;
+            font-size: 64px;
+            font-weight: 700;
+            color: #185FA5;
+        }
+
         .chart-card {
             background: #fff;
             border: 1px solid #e5e7eb;
@@ -1048,10 +1064,20 @@
                     <h3>En Çok Şikayet Alan Konular (Top 5)</h3>
                     <div id="top-complaints-chart"></div>
                 </div>
-                <div class="chart-card compact-chart">
-                    <h3>Haftalık Şikayet Dağılımı (KW Trend)</h3>
-                    <div id="chart-kw" class="kw-chart-box"></div>
+                <div class="dashboard-left-column">
+
+                    <div class="chart-card compact-chart">
+                        <h3>Haftalık Şikayet Dağılımı (KW Trend)</h3>
+                        <div id="chart-kw" class="kw-chart-box"></div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Bekleyen Muhasebe İşlemleri</h3>
+                        <div id="accounting-summary"></div>
+                    </div>
+
                 </div>
+
                 <div class="chart-card">
                     <h3>Operatör Bazlı Şikayet Oranı</h3>
                     <div id="operator-ratio"></div>
@@ -5051,11 +5077,11 @@
                 totalInfant +
                 '</div>' +
                 '</div>' +
-                '<div class="stat-card"><div class="s-lbl">Bekleyen Muhasebe İşlemleri</div><div class="s-val" style="color:#185FA5;">' + activeInvs + '</div></div>';
 
-            document.getElementById('dashboard-defense-panel').innerHTML =
 
-                '<div class="defense-dashboard-card">' +
+                document.getElementById('dashboard-defense-panel').innerHTML =
+
+            '<div class="defense-dashboard-card">' +
 
                 '<h3>Savunma Takip Merkezi</h3>' +
 
@@ -5124,6 +5150,16 @@
 
                 '</div>' +
                 '</div>';
+
+            var accBox =
+                document.getElementById('accounting-summary');
+
+            if (accBox) {
+
+                accBox.innerHTML =
+                    activeInvs;
+
+            }
 
             renderOperatorRatios();
 
