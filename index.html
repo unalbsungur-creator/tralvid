@@ -2489,6 +2489,51 @@
 
                 });
 
+            var flightData =
+                JSON.parse(
+                    localStorage.getItem('flights') || '[]'
+                );
+
+            var transferData =
+                JSON.parse(
+                    localStorage.getItem('transfers') || '[]'
+                );
+
+            var passengerData =
+                JSON.parse(
+                    localStorage.getItem('passengers') || '[]'
+                );
+
+            var flight =
+                flightData.find(function (item) {
+
+                    return (
+                        String(item.booking).trim() ===
+                        String(bookingNo).trim()
+                    );
+
+                });
+
+            var transfer =
+                transferData.find(function (item) {
+
+                    return (
+                        String(item.booking).trim() ===
+                        String(bookingNo).trim()
+                    );
+
+                });
+
+            var guest =
+                passengerData.find(function (item) {
+
+                    return (
+                        String(item.booking).trim() ===
+                        String(bookingNo).trim()
+                    );
+
+                });
+
             if (!pax) {
 
                 console.log(
@@ -2640,6 +2685,35 @@
                     });
 
             }, 300);
+
+            if (guest) {
+
+                document.getElementById('c-guestname').value =
+                    (guest.firstName || '') +
+                    ' ' +
+                    (guest.lastName || '');
+
+                document.getElementById('c-age').value =
+                    guest.age || '';
+            }
+
+            if (flight) {
+
+                document.getElementById('c-arrflight').value =
+                    (flight.arrivalFlightNo || '');
+
+                document.getElementById('c-depflight').value =
+                    (flight.departureFlightNo || '');
+            }
+
+            if (transfer) {
+
+                document.getElementById('c-transferprovider').value =
+                    transfer.supplier || '';
+
+                document.getElementById('c-transferno').value =
+                    transfer.transferNo || '';
+            }
 
             console.log(
                 'PAX bilgileri yüklendi:',
