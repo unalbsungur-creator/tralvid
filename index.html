@@ -4613,26 +4613,21 @@
 
                         booking: booking,
 
-                        hotel:
-                            row[10] || '',
+                        hotel: row[21] || '',
 
-                        operator:
-                            row[5] || '',
+                        region: row[22] || '',
 
-                        checkIn:
-                            row[7] || '',
+                        operator: row[27] || '',
 
-                        checkOut:
-                            row[8] || '',
+                        checkIn: row[3] || '',
 
-                        adult:
-                            Number(row[20] || 0),
+                        checkOut: row[4] || '',
 
-                        child:
-                            Number(row[21] || 0),
+                        adult: Number(row[35] || 0),
 
-                        infant:
-                            Number(row[22] || 0)
+                        child: Number(row[36] || 0),
+
+                        infant: Number(row[37] || 0)
 
                     });
 
@@ -4640,41 +4635,29 @@
 
                         booking: booking,
 
-                        arrivalAirline:
-                            row[30] || '',
+                        arrivalAirline: row[10] || '',
 
-                        arrivalFlightNo:
-                            row[31] || '',
+                        arrivalFlightNo: row[11] || '',
 
-                        arrivalFrom:
-                            row[32] || '',
+                        arrivalFrom: row[8] || '',
 
-                        arrivalTo:
-                            row[33] || '',
+                        arrivalTo: row[9] || '',
 
-                        arrivalDepartureTime:
-                            row[34] || '',
+                        arrivalDepartureTime: row[12] || '',
 
-                        arrivalArrivalTime:
-                            row[35] || '',
+                        arrivalArrivalTime: row[13] || '',
 
-                        departureAirline:
-                            row[40] || '',
+                        departureAirline: row[17] || '',
 
-                        departureFlightNo:
-                            row[41] || '',
+                        departureFlightNo: row[18] || '',
 
-                        departureFrom:
-                            row[42] || '',
+                        departureFrom: row[14] || '',
 
-                        departureTo:
-                            row[43] || '',
+                        departureTo: row[15] || '',
 
-                        departureDepartureTime:
-                            row[44] || '',
+                        departureDepartureTime: row[19] || '',
 
-                        departureArrivalTime:
-                            row[45] || ''
+                        departureArrivalTime: row[20] || ''
 
                     });
 
@@ -4682,14 +4665,11 @@
 
                         booking: booking,
 
-                        supplier:
-                            row[50] || '',
+                        supplier: row[27] || '',
 
-                        transferNo:
-                            row[51] || '',
+                        transferNo: row[28] || '',
 
-                        transferType:
-                            row[52] || ''
+                        transferType: row[29] || ''
 
                     });
 
@@ -4697,17 +4677,19 @@
 
                         booking: booking,
 
-                        firstName:
-                            row[60] || '',
+                        title: row[31] || '',
 
-                        lastName:
-                            row[61] || '',
+                        lastName: row[32] || '',
 
-                        age:
-                            row[62] || '',
+                        firstName: row[33] || '',
 
-                        paxType:
-                            row[63] || ''
+                        age: row[34] || '',
+
+                        adult: Number(row[35] || 0),
+
+                        child: Number(row[36] || 0),
+
+                        infant: Number(row[37] || 0)
 
                     });
 
