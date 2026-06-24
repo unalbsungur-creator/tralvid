@@ -3494,14 +3494,40 @@
 
                 converted.push({
 
-                    booking: row[voucherIndex] || '',
-                    veranstalter: row[operatorIndex] || '',
-                    hotel: row[hotelIndex] || '',
-                    adult: parseInt(row[adultIndex] || 0),
-                    child: parseInt(row[childIndex] || 0),
-                    infant: parseInt(row[infantIndex] || 0),
-                    arrival: row[arrivalIndex] || '',
-                    departure: row[departureIndex] || ''
+                    booking:
+                        String(row[voucherIndex] || '').trim(),
+
+                    subBooking:
+                        String(row[1] || '').trim(),
+
+                    operator:
+                        row[operatorIndex] || '',
+
+                    veranstalter:
+                        row[operatorIndex] || '',
+
+                    hotel:
+                        row[hotelIndex] || '',
+
+                    adult:
+                        parseInt(row[adultIndex] || 0),
+
+                    child:
+                        parseInt(row[childIndex] || 0),
+
+                    infant:
+                        parseInt(row[infantIndex] || 0),
+
+                    totalPax:
+                        parseInt(row[adultIndex] || 0) +
+                        parseInt(row[childIndex] || 0) +
+                        parseInt(row[infantIndex] || 0),
+
+                    arrival:
+                        row[arrivalIndex] || '',
+
+                    departure:
+                        row[departureIndex] || ''
 
                 });
 
