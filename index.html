@@ -2545,8 +2545,29 @@
 
             setTimeout(function () {
 
-                document.getElementById('c-hotel').value =
+                var hotelSelect =
+                    document.getElementById('c-hotel');
+
+                var hotelName =
                     String(pax.hotel || '').trim();
+
+                Array.from(hotelSelect.options)
+                    .forEach(function (opt) {
+
+                        if (
+                            opt.value
+                                .toUpperCase()
+                                .startsWith(
+                                    hotelName.toUpperCase()
+                                )
+                        ) {
+
+                            hotelSelect.value =
+                                opt.value;
+
+                        }
+
+                    });
 
             }, 300);
 
