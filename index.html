@@ -3618,7 +3618,15 @@
                 }
 
                 var operatorIndex = getColIndex('Operatör');
-                var hotelIndex = getColIndex('Otel');
+                var hotelIndex =
+                    getColIndex('Otel Adı');
+
+                if (hotelIndex === -1) {
+
+                    hotelIndex =
+                        getColIndex('Otel');
+
+                }
                 var regionIndex = getColIndex('Bölge');
                 var airportIndex = getColIndex('Havalimanı');
 
@@ -3752,6 +3760,16 @@
                 console.log(
                     'Yeni Bölgeler:',
                     newRegions
+                );
+
+                console.log(
+                    'Yeni Otel Sayısı:',
+                    newHotels.length
+                );
+
+                console.log(
+                    'İlk 20 Otel:',
+                    newHotels.slice(0, 20)
                 );
 
                 console.log(
