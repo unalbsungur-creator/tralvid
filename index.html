@@ -3504,6 +3504,24 @@
 
             }
 
+            var hotelCodeIndex =
+                headers.indexOf('Otel ');
+
+            var realHotelIndex =
+                headers.indexOf('Gerçek Otel');
+
+            var roomTypeIndex =
+                headers.indexOf('Oda Tipi Tanmı');
+
+            var mealPlanIndex =
+                headers.indexOf('Pansiyon');
+
+            var nightsIndex =
+                headers.indexOf('Gün');
+
+            var transferIncludedIndex =
+                headers.indexOf('HDS OTEL + TRANSFER');
+
             var adultIndex =
                 headers.indexOf('Yetişkin');
 
@@ -3544,6 +3562,26 @@
 
                     hotel:
                         String(row[hotelIndex] || '').trim(),
+
+                    hotelCode:
+                        String(row[hotelCodeIndex] || '').trim(),
+
+                    realHotel:
+                        String(row[realHotelIndex] || '').trim(),
+
+                    roomType:
+                        String(row[roomTypeIndex] || '').trim(),
+
+                    mealPlan:
+                        String(row[mealPlanIndex] || '').trim(),
+
+                    nights:
+                        Number(row[nightsIndex] || 0),
+
+                    transferIncluded:
+                        String(
+                            row[transferIncludedIndex] || ''
+                        ).toUpperCase() === 'EVET',
 
                     adult:
                         parseInt(row[adultIndex] || 0),
