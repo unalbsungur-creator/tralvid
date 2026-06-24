@@ -1304,7 +1304,28 @@
 
             </div>
 
-            <div id="data-manager-content" style="margin-top:25px;">
+            <div id="pax-converter-area" style="display:none;
+            margin-top:25px;
+            background:#fff;
+            padding:20px;
+            border-radius:12px;
+            border:1px solid #ddd;">
+
+                <h3>🔄 Excel → PAX Dönüştürücü</h3>
+
+                <p style="margin:10px 0;color:#666;">
+                    Operatörden gelen Excel dosyasını yükleyin.
+                </p>
+
+                <input type="file" id="paxConverterFile" accept=".xlsx,.xls">
+
+                <button class="fab" style="margin-top:15px;" onclick="analyzePaxExcel()">
+                    Excel Analiz Et
+                </button>
+
+                <div id="pax-preview" style="margin-top:20px;">
+                </div>
+
             </div>
 
         </div>
