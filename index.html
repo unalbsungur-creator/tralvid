@@ -3431,6 +3431,10 @@
 
             if (!area) return;
 
+            if (area.innerHTML.trim()) {
+                return;
+            }
+
             area.innerHTML =
                 '<div class="section-title">' +
                 'Bir kategori seçin' +
