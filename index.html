@@ -3474,7 +3474,14 @@
                 headers.indexOf('Operatör');
 
             var hotelIndex =
-                headers.indexOf('Otel');
+                headers.indexOf('Otel Adı');
+
+            if (hotelIndex === -1) {
+
+                hotelIndex =
+                    headers.indexOf('Otel');
+
+            }
 
             var adultIndex =
                 headers.indexOf('Yetişkin');
@@ -3503,7 +3510,7 @@
                         String(row[voucherIndex] || '').trim(),
 
                     subBooking:
-                        String(row[1] || '').trim(),
+                        String(row[5] || row[4] || '').trim(),
 
                     operator:
                         row[operatorIndex] || '',
@@ -3515,7 +3522,7 @@
                         row[operatorIndex] || '',
 
                     hotel:
-                        row[hotelIndex] || '',
+                        String(row[hotelIndex] || '').trim(),
 
                     adult:
                         parseInt(row[adultIndex] || 0),
