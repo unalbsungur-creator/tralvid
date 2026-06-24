@@ -3507,12 +3507,21 @@
 
             }
 
-            console.log(converted);
+            localStorage.setItem(
+                'passengerStats',
+                JSON.stringify(converted)
+            );
 
             alert(
                 converted.length +
-                ' kayıt dönüştürüldü.'
+                ' kayıt PAX verilerine aktarıldı.'
             );
+
+            renderDashboard();
+
+            if (typeof renderPassengerStats === 'function') {
+                renderPassengerStats();
+            }
 
         }
 
