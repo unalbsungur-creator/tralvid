@@ -3611,6 +3611,154 @@
 
                 console.log(rows);
 
+                var header = rows[0];
+
+                function getColIndex(name) {
+                    return header.indexOf(name);
+                }
+
+                var operatorIndex = getColIndex('Operatör');
+                var hotelIndex = getColIndex('Otel');
+                var regionIndex = getColIndex('Bölge');
+                var airportIndex = getColIndex('Havalimanı');
+
+                var operators =
+                    JSON.parse(localStorage.getItem('operators')) || [];
+
+                var hotels =
+                    JSON.parse(localStorage.getItem('hotelPartners')) || [];
+
+                var regions =
+                    JSON.parse(localStorage.getItem('regions')) || [];
+
+                var airports =
+                    JSON.parse(localStorage.getItem('airports')) || [];
+
+                var newOperators = [];
+                var newHotels = [];
+                var newRegions = [];
+                var newAirports = [];
+
+                rows.slice(1).forEach(function (row) {
+
+                    if (
+                        operatorIndex > -1 &&
+                        row[operatorIndex]
+                    ) {
+
+                        var op =
+                            String(row[operatorIndex]).trim();
+
+                        if (
+                            op &&
+                            operators.indexOf(op) === -1
+                        ) {
+
+                            operators.push(op);
+                            newOperators.push(op);
+
+                        }
+                    }
+
+                    if (
+                        hotelIndex > -1 &&
+                        row[hotelIndex]
+                    ) {
+
+                        var hotel =
+                            String(row[hotelIndex]).trim();
+
+                        if (
+                            hotel &&
+                            hotels.indexOf(hotel) === -1
+                        ) {
+
+                            hotels.push(hotel);
+                            newHotels.push(hotel);
+
+                        }
+                    }
+
+                    if (
+                        regionIndex > -1 &&
+                        row[regionIndex]
+                    ) {
+
+                        var region =
+                            String(row[regionIndex]).trim();
+
+                        if (
+                            region &&
+                            regions.indexOf(region) === -1
+                        ) {
+
+                            regions.push(region);
+                            newRegions.push(region);
+
+                        }
+                    }
+
+                    if (
+                        airportIndex > -1 &&
+                        row[airportIndex]
+                    ) {
+
+                        var airport =
+                            String(row[airportIndex]).trim();
+
+                        if (
+                            airport &&
+                            airports.indexOf(airport) === -1
+                        ) {
+
+                            airports.push(airport);
+                            newAirports.push(airport);
+
+                        }
+                    }
+
+                });
+
+                localStorage.setItem(
+                    'operators',
+                    JSON.stringify(operators)
+                );
+
+                localStorage.setItem(
+                    'hotelPartners',
+                    JSON.stringify(hotels)
+                );
+
+                localStorage.setItem(
+                    'regions',
+                    JSON.stringify(regions)
+                );
+
+                localStorage.setItem(
+                    'airports',
+                    JSON.stringify(airports)
+                );
+
+                console.log(
+                    'Yeni Operatörler:',
+                    newOperators
+                );
+
+                console.log(
+                    'Yeni Oteller:',
+                    newHotels
+                );
+
+                console.log(
+                    'Yeni Bölgeler:',
+                    newRegions
+                );
+
+                console.log(
+                    'Yeni Havalimanları:',
+                    newAirports
+                );
+
                 var requiredFields = [
                     'Operatör',
                     'Asıl Voucher',
