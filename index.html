@@ -4466,17 +4466,7 @@
 
             if (secim == '6') {
 
-                importPassengerExcel(event);
-
-                setTimeout(function () {
-
-                    console.log(
-                        JSON.parse(
-                            localStorage.getItem('passengerStats')
-                        )
-                    );
-
-                }, 1000);
+                importOperationExcel(event);
 
                 return;
             }
@@ -4595,6 +4585,9 @@
                         sheet,
                         { header: 1 }
                     );
+
+                console.log(rows[0]);
+                console.log(rows[1]);
 
                 var reservations = [];
                 var flights = [];
