@@ -2552,7 +2552,7 @@
             console.log('PASSENGERS:',
                 JSON.parse(localStorage.getItem('passengers') || '[]').length);
 
-            if (!pax) {
+            if (!pax && !reservation) {
 
                 console.log(
                     'Rezervasyon bulunamadı:',
@@ -2568,6 +2568,20 @@
 
 
             loadTransferTypeDropdown();
+
+            if (!pax) {
+                pax = {
+                    subBooking: '',
+                    operator: reservation ? reservation.operator : '',
+                    region: reservation ? reservation.region : '',
+                    hotel: reservation ? reservation.hotel : '',
+                    airport: '',
+                    transferType: '',
+                    adult: reservation ? reservation.adult : 0,
+                    child: reservation ? reservation.child : 0,
+                    infant: reservation ? reservation.infant : 0
+                };
+            }
             document.getElementById('c-subbooking').value =
                 String(pax.subBooking || '').trim();
 
