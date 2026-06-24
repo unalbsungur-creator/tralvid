@@ -4108,7 +4108,7 @@
 
                 passengers: {
                     title: '👥 Yolcu Verileri (PAX)',
-                    storage: 'passengerStats',
+                    storage: 'passengers',
                     placeholder: 'Yeni kayıt'
                 },
 
@@ -4249,15 +4249,13 @@
 
                                     ?
 
-                                    '🏢 ' + item.operator +
-                                    ' | 🌍 ' + item.region +
-                                    ' | ✈️ ' + item.airport +
-                                    ' | 🏨 ' + item.hotel +
-                                    ' | 🚐 ' + item.transferType +
-                                    ' | 👨 ' + item.adult +
-                                    ' | 🧒 ' + item.child +
-                                    ' | 👶 ' + item.infant +
-                                    ' | 👥 ' + item.totalPax
+                                    '📋 ' + item.booking +
+                                    ' | 👤 ' + (item.firstName || '') +
+                                    ' ' + (item.lastName || '') +
+                                    ' | 🎂 ' + (item.age || '') +
+                                    ' | 👨 ' + (item.adult || 0) +
+                                    ' | 🧒 ' + (item.child || 0) +
+                                    ' | 👶 ' + (item.infant || 0)
 
                                     :
 
