@@ -901,13 +901,18 @@ const IMPORT_PROFILES = {
 
     operation: {
 
-        requiredHeaders: [
+        headers: [
 
             "Buch.-Nr.",
             "Transfer-Art",
+            "Transfer Veranstalter",
+            "Transfer Vorgangs-Nr.",
             "Hotel",
-            "Hinflug",
-            "Rückflug"
+            "Hotel Region",
+            "Hinflug Flug-Nr.",
+            "Rückflug Flug-Nr.",
+            "Vorname",
+            "Name"
 
         ]
 
@@ -915,12 +920,18 @@ const IMPORT_PROFILES = {
 
     reservation: {
 
-        requiredHeaders: [
+        headers: [
 
             "Asıl Voucher",
+            "Voucher",
+            "Otel",
             "Otel Adı",
+            "Operatör",
             "Pansiyon",
-            "Oda Tipi Tanmı"
+            "Oda",
+            "Oda Tipi Tanmı",
+            "Giriş Tarihi",
+            "Çıkış Tarihi"
 
         ]
 
@@ -941,31 +952,40 @@ function detectImportProfile(headers) {
 
         });
 
+    var bestProfile = null;
+    var bestScore = 0;
+
     for (var profile in IMPORT_PROFILES) {
 
-        var ok = true;
+        var score = 0;
 
-        IMPORT_PROFILES[profile]
-            .requiredHeaders
+        IMPORT_PROFILES[profile].headers
             .forEach(function (field) {
 
-                if (!list.includes(field)) {
+                if (list.includes(field)) {
 
-                    ok = false;
+                    score++;
 
                 }
 
             });
 
-        if (ok) {
+        console.log(
+            profile,
+            score + "/" +
+            IMPORT_PROFILES[profile].headers.length
+        );
 
-            return profile;
+        if (score > bestScore) {
+
+            bestScore = score;
+            bestProfile = profile;
 
         }
 
     }
 
-    return null;
+    return bestProfile;
 
 }
 
