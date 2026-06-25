@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRALVID CRM & MUTABAKAT SAYFASI</title>
-        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -433,7 +433,8 @@
                         </thead>
                         <tbody id="c-guests-tbody">
                             <tr>
-                                <td colspan="5" class="guest-table-empty">Rezervasyon No girildiğinde misafirler otomatik listelenir.</td>
+                                <td colspan="5" class="guest-table-empty">Rezervasyon No girildiğinde misafirler
+                                    otomatik listelenir.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -533,8 +534,8 @@
                     </div>
                     <div class="form-group span-2">
                         <label class="form-label" for="c-hotel">Hotel / Partner</label>
-                        <input type="text" id="hotel-search" placeholder="Otel adı yazın..."
-                            onkeyup="filterHotels()" style="width:100%;margin-bottom:8px;padding:10px;">
+                        <input type="text" id="hotel-search" placeholder="Otel adı yazın..." onkeyup="filterHotels()"
+                            style="width:100%;margin-bottom:8px;padding:10px;">
                         <select id="c-hotel"></select>
                     </div>
                     <div class="form-group span-2">
@@ -551,7 +552,8 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="c-deadline">Timeout</label>
-                        <select id="c-deadline" onchange="document.getElementById('c-timeout').value=this.value;"></select>
+                        <select id="c-deadline"
+                            onchange="document.getElementById('c-timeout').value=this.value;"></select>
                     </div>
                     <input type="text" id="c-timeout" class="field-hidden" readonly>
                     <div class="form-group">
@@ -632,8 +634,7 @@
 
                     <div class="form-group full">
                         <label class="form-label" for="c-notes">Notes</label>
-                        <textarea id="c-notes"
-                            placeholder="Şikayet süreciyle ilgili notlarınızı yazın..."></textarea>
+                        <textarea id="c-notes" placeholder="Şikayet süreciyle ilgili notlarınızı yazın..."></textarea>
                     </div>
                 </div>
 
@@ -645,133 +646,133 @@
         </div>
     </div>
 
-        <div class="modal-overlay" id="invoice-modal-overlay">
-            <div class="modal">
-                <div class="modal-header">
-                    <h2>Yeni Regress / Finansal Fatura Takip Kartı</h2>
-                    <button class="modal-close" onclick="closeInvoiceModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label" for="inv-no">Fatura No</label>
-                            <input type="text" id="inv-no" placeholder="Örn: HDA2025000005763">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="inv-date">Fatura Tarihi</label>
-                            <input type="date" id="inv-date">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="inv-partner">Partner (Kime Gönderildi)</label>
-                            <select id="inv-partner">
-                                <option value="XQ">SUNEXPRESS</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="inv-booking">İlgili Rezervasyon (Booking)</label>
-                            <input type="text" id="inv-booking" placeholder="Örn: 1295423">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="inv-tutar">Gönderilen Tutar</label>
-                            <input type="number" id="inv-tutar" min="0" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="inv-doviz">Döviz</label>
-                            <select id="inv-doviz">
-                                <option value="EUR">EUR</option>
-                                <option value="USD">USD</option>
-                                <option value="TRY">TRY</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="inv-durum">Durum</label>
-                            <select id="inv-durum">
-                                <option value="Beklemede">Beklemede</option>
-                                <option value="Gönderildi">Gönderildi</option>
-                                <option value="İade edildi">İade edildi</option>
-                                <option value="Kabul edildi">Kabul edildi</option>
-                                <option value="İtiraz edildi">İtiraz edildi</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="inv-kabul">Kabul Durumu</label>
-                            <select id="inv-kabul">
-                                <option value="">— Seçiniz —</option>
-                                <option value="Evet">Evet</option>
-                                <option value="Hayır">Hayır</option>
-                                <option value="Kısmi kabul">Kısmi kabul</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="inv-iade-tutar">İade Tutarı</label>
-                            <input type="number" id="inv-iade-tutar" min="0" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="inv-iade-date">İade Tarihi</label>
-                            <input type="date" id="inv-iade-date">
-                        </div>
-                        <div class="form-group span-2">
-                            <label class="form-label" for="inv-kesinti">Kesinti Sebebi / Not</label>
-                            <input type="text" id="inv-kesinti" placeholder="Kesinti gerekçesi veya finansal notlar…">
-                        </div>
+    <div class="modal-overlay" id="invoice-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Yeni Regress / Finansal Fatura Takip Kartı</h2>
+                <button class="modal-close" onclick="closeInvoiceModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="inv-no">Fatura No</label>
+                        <input type="text" id="inv-no" placeholder="Örn: HDA2025000005763">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inv-date">Fatura Tarihi</label>
+                        <input type="date" id="inv-date">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inv-partner">Partner (Kime Gönderildi)</label>
+                        <select id="inv-partner">
+                            <option value="XQ">SUNEXPRESS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inv-booking">İlgili Rezervasyon (Booking)</label>
+                        <input type="text" id="inv-booking" placeholder="Örn: 1295423">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inv-tutar">Gönderilen Tutar</label>
+                        <input type="number" id="inv-tutar" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inv-doviz">Döviz</label>
+                        <select id="inv-doviz">
+                            <option value="EUR">EUR</option>
+                            <option value="USD">USD</option>
+                            <option value="TRY">TRY</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inv-durum">Durum</label>
+                        <select id="inv-durum">
+                            <option value="Beklemede">Beklemede</option>
+                            <option value="Gönderildi">Gönderildi</option>
+                            <option value="İade edildi">İade edildi</option>
+                            <option value="Kabul edildi">Kabul edildi</option>
+                            <option value="İtiraz edildi">İtiraz edildi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inv-kabul">Kabul Durumu</label>
+                        <select id="inv-kabul">
+                            <option value="">— Seçiniz —</option>
+                            <option value="Evet">Evet</option>
+                            <option value="Hayır">Hayır</option>
+                            <option value="Kısmi kabul">Kısmi kabul</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inv-iade-tutar">İade Tutarı</label>
+                        <input type="number" id="inv-iade-tutar" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inv-iade-date">İade Tarihi</label>
+                        <input type="date" id="inv-iade-date">
+                    </div>
+                    <div class="form-group span-2">
+                        <label class="form-label" for="inv-kesinti">Kesinti Sebebi / Not</label>
+                        <input type="text" id="inv-kesinti" placeholder="Kesinti gerekçesi veya finansal notlar…">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn-secondary" onclick="closeInvoiceModal()">Kapat</button>
-                    <button class="btn-primary" onclick="saveInvoice()">Faturayı Kaydet</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeInvoiceModal()">Kapat</button>
+                <button class="btn-primary" onclick="saveInvoice()">Faturayı Kaydet</button>
             </div>
         </div>
+    </div>
 
-        <div class="modal-overlay" id="detail-modal-overlay">
-            <div class="modal">
-                <div class="modal-header">
-                    <h2 id="detail-modal-title">Kart Detayı</h2>
-                    <button class="modal-close" onclick="closeDetailModal()">&times;</button>
-                </div>
-                <div class="modal-body" id="detail-modal-body"></div>
-                <div class="modal-footer">
-                    <button class="btn-secondary" onclick="closeDetailModal()">Kapat</button>
-                </div>
+    <div class="modal-overlay" id="detail-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="detail-modal-title">Kart Detayı</h2>
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="detail-modal-body"></div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeDetailModal()">Kapat</button>
             </div>
         </div>
+    </div>
 
-        <div class="modal-overlay" id="login-modal">
-            <div class="login-card">
-                <div class="login-left">
+    <div class="modal-overlay" id="login-modal">
+        <div class="login-card">
+            <div class="login-left">
 
-                    <img src="logo.png" class="login-logo">
+                <img src="logo.png" class="login-logo">
 
-                    <h1>TRALVID CRM</h1>
+                <h1>TRALVID CRM</h1>
 
-                    <p>
-                        Şikayet Yönetimi ve<br>
-                        Muhasebe Takip Sistemi
-                    </p>
+                <p>
+                    Şikayet Yönetimi ve<br>
+                    Muhasebe Takip Sistemi
+                </p>
 
+            </div>
+            <div class="login-right">
+                <div class="user-icon">👤</div>
+                <h2>Giriş Yap</h2>
+                <p class="login-subtitle">Lütfen kullanıcı bilgilerinizi giriniz</p>
+                <div class="input-group">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" id="loginUser" placeholder="Kullanıcı adınızı giriniz">
                 </div>
-                <div class="login-right">
-                    <div class="user-icon">👤</div>
-                    <h2>Giriş Yap</h2>
-                    <p class="login-subtitle">Lütfen kullanıcı bilgilerinizi giriniz</p>
-                    <div class="input-group">
-                        <label>Kullanıcı Adı</label>
-                        <input type="text" id="loginUser" placeholder="Kullanıcı adınızı giriniz">
-                    </div>
-                    <div class="input-group">
-                        <label>Şifre</label>
-                        <input type="password" id="loginPass" placeholder="Şifrenizi giriniz">
-                    </div>
-                    <button class="btn-login" onclick="login()">Giriş Yap</button>
+                <div class="input-group">
+                    <label>Şifre</label>
+                    <input type="password" id="loginPass" placeholder="Şifrenizi giriniz">
                 </div>
+                <button class="btn-login" onclick="login()">Giriş Yap</button>
             </div>
         </div>
+    </div>
 
-        <div class="toast" id="toast"><span>&#10003; &nbsp;</span><span id="toast-msg"></span></div>
+    <div class="toast" id="toast"><span>&#10003; &nbsp;</span><span id="toast-msg"></span></div>
 
-            <script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
 
 </body>
 
