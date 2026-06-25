@@ -658,6 +658,146 @@ function initSessionTimeout() {
     resetSessionTimer();
 }
 
+// ======================================================
+// TRALVID MTR V2
+// FIELD MAPPING ENGINE
+// ======================================================
+
+const FIELD_MAP = {
+
+    bookingNumber: [
+        "Booking",
+        "Booking Number",
+        "Reservation",
+        "Reservation No",
+        "Voucher",
+        "Voucher Number",
+        "Master Voucher",
+        "Booking Ref",
+        "Rezervasyon No",
+        "Rez No"
+    ],
+
+    subBooking: [
+        "Sub Booking",
+        "SubBooking",
+        "Alt Rezervasyon",
+        "Alt Rezervasyon No",
+        "Sub Reservation"
+    ],
+
+    operator: [
+        "Operator",
+        "Tour Operator",
+        "Tur Operatörü",
+        "Operatör",
+        "Veranstalter"
+    ],
+
+    agency: [
+        "Agency",
+        "Acente"
+    ],
+
+    market: [
+        "Market",
+        "Source Market"
+    ],
+
+    hotel: [
+        "Hotel",
+        "Hotel Name",
+        "Otel",
+        "Accommodation"
+    ],
+
+    actualHotel: [
+        "Actual Hotel",
+        "Gerçek Otel"
+    ],
+
+    region: [
+        "Region",
+        "Bölge"
+    ],
+
+    airport: [
+        "Airport",
+        "Arrival Airport",
+        "Havalimanı"
+    ],
+
+    checkIn: [
+        "Check In",
+        "Check-In",
+        "Arrival Date",
+        "Giriş Tarihi"
+    ],
+
+    checkOut: [
+        "Check Out",
+        "Check-Out",
+        "Departure Date",
+        "Çıkış Tarihi"
+    ],
+
+    nights: [
+        "Night",
+        "Nights",
+        "Gece",
+        "Geceleme",
+        "Gün"
+    ],
+
+    board: [
+        "Board",
+        "Board Type",
+        "Pansiyon"
+    ],
+
+    roomType: [
+        "Room Type",
+        "Room Type Name",
+        "Oda Tipi",
+        "Oda Tipi Tanımı"
+    ],
+
+    roomNo: [
+        "Room",
+        "Room No",
+        "Oda"
+    ],
+
+    roomCount: [
+        "Room Count",
+        "Oda Sayısı"
+    ],
+
+    adult: [
+        "Adult",
+        "Adults",
+        "Yetişkin"
+    ],
+
+    child: [
+        "Child",
+        "Children",
+        "Çocuk"
+    ],
+
+    infant: [
+        "Infant",
+        "Bebek"
+    ],
+
+    transferType: [
+        "Transfer Type",
+        "Transfer",
+        "Transfer Türü"
+    ]
+
+};
+
 // ================= DATA ACTIONS =================
 
 function fillPassengerData() {
