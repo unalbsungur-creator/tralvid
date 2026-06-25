@@ -1483,39 +1483,62 @@
                 </div>
 
                 <div class="section-title">
-                    Bölüm 3: Misafir ve Uçuş Bilgileri
+                    Bölüm 3: Uçuş Bilgileri
                 </div>
 
                 <div class="form-grid">
 
                     <div class="form-group">
-                        <label>Misafir Adı</label>
-                        <input type="text" id="c-guestname" readonly>
+                        <label>Geliş Havayolu</label>
+                        <input type="text" id="c-arrairline" readonly>
                     </div>
 
                     <div class="form-group">
-                        <label>Yaş</label>
-                        <input type="text" id="c-age" readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Geliş Uçuşu</label>
+                        <label>Geliş Uçuş No</label>
                         <input type="text" id="c-arrflight" readonly>
                     </div>
 
                     <div class="form-group">
-                        <label>Dönüş Uçuşu</label>
+                        <label>Geliş Saati</label>
+                        <input type="text" id="c-arrtime" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nereden</label>
+                        <input type="text" id="c-arrfrom" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nereye</label>
+                        <input type="text" id="c-arrto" readonly>
+                    </div>
+
+                    <div class="form-group">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dönüş Havayolu</label>
+                        <input type="text" id="c-depairline" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dönüş Uçuş No</label>
                         <input type="text" id="c-depflight" readonly>
                     </div>
 
                     <div class="form-group">
-                        <label>Transfer Sağlayıcı</label>
-                        <input type="text" id="c-transferprovider" readonly>
+                        <label>Dönüş Saati</label>
+                        <input type="text" id="c-deptime" readonly>
                     </div>
 
                     <div class="form-group">
-                        <label>Transfer No</label>
-                        <input type="text" id="c-transferno" readonly>
+                        <label>Nereden</label>
+                        <input type="text" id="c-depfrom" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nereye</label>
+                        <input type="text" id="c-depto" readonly>
                     </div>
 
                 </div>
@@ -1554,6 +1577,10 @@
                             <label class="form-label" for="c-transfertype">
                                 Transfer Türü
                             </label>
+                            <div class="form-group">
+                                <label>Transfer Sağlayıcı</label>
+                                <input type="text" id="c-transferprovider" readonly>
+                            </div>
 
                             <select id="c-transfertype">
                                 <option value="Shuttle">Shuttle</option>
@@ -2712,6 +2739,9 @@
             document.getElementById('c-transfertype').value =
                 transferValue;
 
+            document.getElementById('c-transferprovider').value =
+                transfer.supplier || '';
+
             document.getElementById('c-subbooking').value =
                 String(pax.subBooking || '').trim();
 
@@ -2778,11 +2808,35 @@
 
             if (flight) {
 
+                document.getElementById('c-arrairline').value =
+                    flight.arrivalAirline || '';
+
                 document.getElementById('c-arrflight').value =
-                    (flight.arrivalFlightNo || '');
+                    flight.arrivalFlightNo || '';
+
+                document.getElementById('c-arrtime').value =
+                    flight.arrivalDepartureTime || '';
+
+                document.getElementById('c-arrfrom').value =
+                    flight.arrivalFrom || '';
+
+                document.getElementById('c-arrto').value =
+                    flight.arrivalTo || '';
+
+                document.getElementById('c-depairline').value =
+                    flight.departureAirline || '';
 
                 document.getElementById('c-depflight').value =
-                    (flight.departureFlightNo || '');
+                    flight.departureFlightNo || '';
+
+                document.getElementById('c-deptime').value =
+                    flight.departureDepartureTime || '';
+
+                document.getElementById('c-depfrom').value =
+                    flight.departureFrom || '';
+
+                document.getElementById('c-depto').value =
+                    flight.departureTo || '';
             }
 
             if (transfer) {
