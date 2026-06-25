@@ -676,6 +676,8 @@ const FIELD_MAP = {
         "Booking Ref",
         "Rezervasyon No",
         "Rez No"
+        "Buch.-Nr.",
+        "Asıl Voucher"
     ],
 
     subBooking: [
@@ -709,6 +711,7 @@ const FIELD_MAP = {
         "Hotel Name",
         "Otel",
         "Accommodation"
+        "Otel Adı"
     ],
 
     actualHotel: [
@@ -719,6 +722,7 @@ const FIELD_MAP = {
     region: [
         "Region",
         "Bölge"
+        "Hotel Region"
     ],
 
     airport: [
@@ -794,6 +798,7 @@ const FIELD_MAP = {
         "Transfer Type",
         "Transfer",
         "Transfer Türü"
+        "Transfer-Art"
     ],
 
     transferSupplier: [
@@ -885,6 +890,7 @@ const FIELD_MAP = {
     country: [
         "Hotel Land",
         "Country"
+        "Hotel Land"
     ],
 
     hotelCode: [
@@ -946,11 +952,19 @@ const IMPORT_PROFILES = {
 function detectImportProfile(headers) {
 
     var list =
-        headers.map(function (h) {
+        headers
+            .filter(function (h) {
 
-            return String(h).trim();
+                return h !== undefined &&
+                    h !== null &&
+                    String(h).trim() !== "";
 
-        });
+            })
+            .map(function (h) {
+
+                return String(h).trim();
+
+            });
 
     var bestProfile = null;
     var bestScore = 0;
@@ -985,9 +999,61 @@ function detectImportProfile(headers) {
 
     }
 
+    if (bestScore === 0) {
+
+        return null;
+
+    }
+
     return bestProfile;
 
 }
+
+// ======================================================
+// HEADER ROW DETECTOR
+// ======================================================
+
+function findHeaderRow(rows) {
+
+    var maxRows =
+        Math.min(rows.length, 15);
+
+    for (var i = 0; i < maxRows; i++) {
+
+        var row = rows[i];
+
+        if (!row || !row.length)
+            continue;
+
+        var profile =
+            detectImportProfile(row);
+
+        if (profile) {
+
+            console.log(
+                "HEADER ROW:",
+                i,
+                "PROFILE:",
+                profile
+            );
+
+            return {
+
+                index: i,
+
+                profile: profile
+
+            };
+
+        }
+
+    }
+
+    return null;
+
+}
+
+
 
 // ======================================================
 // MTR FIELD FINDER
@@ -3482,7 +3548,16 @@ function importPassengerExcel(event) {
 
         var passengers = [];
 
-        for (var i = 2; i < rows.length; i++) {
+        for (
+
+            var i =
+                headerInfo.index + 1;
+
+            i < rows.length;
+
+            i++
+
+        ) {
 
             if (!rows[i]) continue;
 
@@ -3563,8 +3638,28 @@ function importOperationExcel(event) {
                 { header: 1 }
             );
 
+        var headerInfo =
+            findHeaderRow(rows);
+
+        if (!headerInfo) {
+
+            alert(
+                "Excel başlık satırı bulunamadı."
+            );
+
+            return;
+
+        }
+
         var headers =
-            rows[0];
+            rows[
+            headerInfo.index
+            ];
+
+        console.log(
+            "IMPORT PROFILE =",
+            headerInfo.profile
+        );
 
         var reservations = [];
         var profile =
@@ -3575,21 +3670,32 @@ function importOperationExcel(event) {
         var transfers = [];
         var passengers = [];
 
-        for (var i = 2; i < rows.length; i++) {
+        for (
+
+            var i =
+                headerInfo.index + 1;
+
+            i < rows.length;
+
+            i++
+
+        ) {
 
             var row = rows[i];
 
             if (!row || !row.length)
                 continue;
 
+            var mtr =
+                mapExcelRow(
+                    headers,
+                    row
+                );
+
             var booking =
                 String(
-                    row[1] || ''
+                    mtr.bookingNumber || ''
                 ).trim();
-
-            if (i === 2) {
-                console.log('TEST ROW', row);
-            }
 
             if (!booking)
                 continue;
@@ -3728,9 +3834,41 @@ function importReservationExcel(event) {
                 { header: 1 }
             );
 
+        var headerInfo =
+            findHeaderRow(rows);
+
+        if (!headerInfo) {
+
+            alert(
+                "Excel başlık satırı bulunamadı."
+            );
+
+            return;
+
+        }
+
+        var headers =
+            rows[
+            headerInfo.index
+            ];
+
+        console.log(
+            "IMPORT PROFILE =",
+            headerInfo.profile
+        );
+
         var reservations = [];
 
-        for (var i = 1; i < rows.length; i++) {
+        for (
+
+            var i =
+                headerInfo.index + 1;
+
+            i < rows.length;
+
+            i++
+
+        ) {
 
             var row = rows[i];
 
