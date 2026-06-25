@@ -537,107 +537,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* ===== COMPLAINT MODAL (GENİŞLETİLMİŞ) ===== */
-        .modal-wide {
-            width: 980px;
-        }
-
-        .form-grid-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .form-grid-4 {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .subsection-title {
-            font-size: 10.5px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin: 12px 0 8px;
-        }
-
-        .flight-block {
-            border: 0.5px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 12px;
-            background: var(--bg-secondary);
-        }
-
-        .flight-block+.flight-block {
-            margin-top: 10px;
-        }
-
-        .field-hidden {
-            display: none !important;
-        }
-
-        .table-wrap {
-            width: 100%;
-            overflow-x: auto;
-            border: 0.5px solid var(--border);
-            border-radius: var(--radius-md);
-        }
-
-        .guest-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12.5px;
-            min-width: 560px;
-        }
-
-        .guest-table th,
-        .guest-table td {
-            padding: 8px 10px;
-            text-align: left;
-            border-bottom: 0.5px solid var(--border);
-            white-space: nowrap;
-        }
-
-        .guest-table thead th {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-            font-size: 10.5px;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            position: sticky;
-            top: 0;
-        }
-
-        .guest-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .guest-table-empty {
-            padding: 14px;
-            text-align: center;
-            color: var(--text-hint);
-            font-size: 12px;
-        }
-
-        @media (max-width: 720px) {
-
-            .form-grid,
-            .form-grid-2,
-            .form-grid-4 {
-                grid-template-columns: 1fr;
-            }
-
-            .form-group.span-2 {
-                grid-column: 1 / -1;
-            }
-
-            .modal-wide {
-                width: 100%;
-            }
-        }
-
         /* ===== DETAY GÖRÜNÜM ===== */
         .detail-grid {
             display: grid;
@@ -1435,15 +1334,14 @@
     </div>
 
     <div class="modal-overlay" id="complaint-modal-overlay">
-        <div class="modal modal-wide">
+        <div class="modal">
             <div class="modal-header">
                 <h2>Yeni Şikayet Kaydı</h2>
                 <button class="modal-close" onclick="closeComplaintModal()">&times;</button>
             </div>
             <div class="modal-body">
-
                 <div class="section-title">Bölüm 1: Genel Bilgiler</div>
-                <div class="form-grid-4">
+                <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label" for="c-user">Kullanıcı</label>
                         <select id="c-user" disabled>
@@ -1456,9 +1354,16 @@
                         <label class="form-label" for="c-date">Kayıt Tarihi</label>
                         <input type="date" id="c-date" onchange="autoCalculateTimeFields()">
                     </div>
+
                     <div class="form-group">
                         <label class="form-label" for="c-kw">KW (Hafta)</label>
                         <input type="text" id="c-kw" placeholder="Tarihten otomatik hesaplanır" readonly
+                            style="background:var(--bg-secondary);">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="c-quarter">QUARTER (Çeyrek Dönem)</label>
+                        <input type="text" id="c-quarter" placeholder="Tarihten otomatik hesaplanır" readonly
                             style="background:var(--bg-secondary);">
                     </div>
                     <div class="form-group">
@@ -1466,285 +1371,335 @@
                         <input type="text" id="c-quarter" placeholder="Tarihten otomatik hesaplanır" readonly
                             style="background:var(--bg-secondary);">
                     </div>
-                </div>
 
-                <div class="section-title">Bölüm 2: Rezervasyon ve Misafir Bilgileri</div>
-                <div class="form-grid-4">
-                    <div class="form-group">
-                        <label class="form-label" for="c-booking">Rezervasyon No</label>
-                        <input type="text" id="c-booking" placeholder="Örn: 1283842" onchange="fillPassengerData()">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-subbooking">Alt Rezervasyon</label>
-                        <input type="text" id="c-subbooking">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-veranstalter">Operatör</label>
-                        <select id="c-veranstalter"></select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-voucher">Voucher</label>
-                        <input type="text" id="c-voucher" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-board">Board</label>
-                        <input type="text" id="c-board" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-nights">Nights</label>
-                        <input type="number" id="c-nights" readonly>
-                    </div>
-                    <div class="form-group span-2">
-                        <label class="form-label" for="c-roomtype">Room Type</label>
-                        <input type="text" id="c-roomtype" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-adult">Adult</label>
-                        <input type="number" id="c-adult">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-child">Child</label>
-                        <input type="number" id="c-child">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-infant">Infant</label>
-                        <input type="number" id="c-infant">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-adate">Arrival Date</label>
-                        <input type="date" id="c-adate">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-ddate">Departure Date</label>
-                        <input type="date" id="c-ddate">
-                    </div>
-                </div>
 
-                <div class="subsection-title">Rezervasyondaki Misafirler</div>
-                <div class="table-wrap">
-                    <table class="guest-table" id="c-guests-table">
-                        <thead>
-                            <tr>
-                                <th>Ünvan</th>
-                                <th>Ad Soyad</th>
-                                <th>Yaş</th>
-                                <th>Doğum Tarihi</th>
-                                <th>Şikayet Sahibi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="c-guests-tbody">
-                            <tr>
-                                <td colspan="5" class="guest-table-empty">Rezervasyon No girildiğinde misafirler otomatik listelenir.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <textarea id="c-guests" class="field-hidden" readonly></textarea>
+                    <div class="section-title">
+                        Bölüm 2: Rezervasyon ve Misafir Bilgileri
+                    </div>
 
-                <div class="section-title">Bölüm 3: Uçuş Bilgileri</div>
+                    <div class="form-grid">
 
-                <div class="subsection-title">Geliş</div>
-                <div class="flight-block">
-                    <div class="form-grid-2">
                         <div class="form-group">
-                            <label class="form-label" for="c-arrairline">Airline</label>
+                            <label>Rezervasyon No</label>
+                            <input type="text" id="c-booking" placeholder="Örn: 1283842" onchange="fillPassengerData()">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Alt Rezervasyon</label>
+                            <input type="text" id="c-subbooking">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tur Operatörü</label>
+                            <select id="c-veranstalter"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Voucher</label>
+                            <input type="text" id="c-voucher" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pansiyon</label>
+                            <input type="text" id="c-board" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Geceleme</label>
+                            <input type="number" id="c-nights" readonly>
+                        </div>
+
+                        <div class="form-group full">
+                            <label>Oda Tipi</label>
+                            <input type="text" id="c-roomtype" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Yetişkin</label>
+                            <input type="number" id="c-adult">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Çocuk</label>
+                            <input type="number" id="c-child">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Bebek</label>
+                            <input type="number" id="c-infant">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Geliş Tarihi</label>
+                            <input type="date" id="c-adate">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Dönüş Tarihi</label>
+                            <input type="date" id="c-ddate">
+                        </div>
+
+                    </div>
+
+                    <div style="margin-top:18px;">
+
+                        <label class="form-label">
+                            Rezervasyondaki Misafirler
+                        </label>
+
+                        <textarea id="c-guests" rows="6" readonly style="width:100%;
+                     resize:none;
+                     font-size:14px;"></textarea>
+
+                    </div>
+                    <div class="section-title">
+                        Bölüm 3: Uçuş Bilgileri
+                    </div>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>Geliş Havayolu</label>
                             <input type="text" id="c-arrairline" readonly>
                         </div>
+
                         <div class="form-group">
-                            <label class="form-label" for="c-arrflight">Flight No</label>
+                            <label>Geliş Uçuş No</label>
                             <input type="text" id="c-arrflight" readonly>
                         </div>
+
                         <div class="form-group">
-                            <label class="form-label" for="c-arrtime">Departure Time</label>
+                            <label>Geliş Saati</label>
                             <input type="text" id="c-arrtime" readonly>
                         </div>
+
                         <div class="form-group">
-                            <label class="form-label" for="c-arrarrtime">Arrival Time</label>
-                            <input type="text" id="c-arrarrtime" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="c-arrfrom">From</label>
+                            <label>Nereden</label>
                             <input type="text" id="c-arrfrom" readonly>
                         </div>
+
                         <div class="form-group">
-                            <label class="form-label" for="c-arrto">To</label>
+                            <label>Nereye</label>
                             <input type="text" id="c-arrto" readonly>
                         </div>
-                    </div>
-                </div>
 
-                <div class="subsection-title">Dönüş</div>
-                <div class="flight-block">
-                    <div class="form-grid-2">
                         <div class="form-group">
-                            <label class="form-label" for="c-depairline">Airline</label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Dönüş Havayolu</label>
                             <input type="text" id="c-depairline" readonly>
                         </div>
+
                         <div class="form-group">
-                            <label class="form-label" for="c-depflight">Flight No</label>
+                            <label>Dönüş Uçuş No</label>
                             <input type="text" id="c-depflight" readonly>
                         </div>
+
                         <div class="form-group">
-                            <label class="form-label" for="c-deptime">Departure Time</label>
+                            <label>Dönüş Saati</label>
                             <input type="text" id="c-deptime" readonly>
                         </div>
+
                         <div class="form-group">
-                            <label class="form-label" for="c-deparrtime">Arrival Time</label>
-                            <input type="text" id="c-deparrtime" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="c-depfrom">From</label>
+                            <label>Nereden</label>
                             <input type="text" id="c-depfrom" readonly>
                         </div>
+
                         <div class="form-group">
-                            <label class="form-label" for="c-depto">To</label>
+                            <label>Nereye</label>
                             <input type="text" id="c-depto" readonly>
                         </div>
-                    </div>
-                </div>
 
-                <input type="text" id="c-transferno" class="field-hidden" readonly>
-
-                <div class="section-title">Bölüm 4: Operasyonel Bilgiler</div>
-                <div class="form-grid-4">
-                    <div class="form-group">
-                        <label class="form-label" for="c-verursacher">Sorumlu taraf</label>
-                        <select id="c-verursacher">
-                            <option value="">Sorumlu taraf seçiniz...</option>
-                            <option value="Otel">Konaklama</option>
-                            <option value="Rehber">Rehberlik hizmeti</option>
-                            <option value="Transfer Sürücüsü">Transfer</option>
-                            <option value="Havalimanı Ekibi">Uçak</option>
-                            <option value="Acente Operasyon">Acente Operasyon</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-region">Region</label>
-                        <select id="c-region"></select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-airport">Airport</label>
-                        <select id="c-airport"></select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-transfertype">Transfer Type</label>
-                        <select id="c-transfertype">
-                            <option value="Shuttle">Shuttle</option>
-                        </select>
-                    </div>
-                    <div class="form-group span-2">
-                        <label class="form-label" for="c-hotel">Hotel / Partner</label>
-                        <input type="text" id="hotel-search" placeholder="Otel adı yazın..."
-                            onkeyup="filterHotels()" style="width:100%;margin-bottom:8px;padding:10px;">
-                        <select id="c-hotel"></select>
-                    </div>
-                    <div class="form-group span-2">
-                        <label class="form-label" for="c-transferprovider">Supplier</label>
-                        <input type="text" id="c-transferprovider" readonly>
-                    </div>
-                </div>
-
-                <div class="section-title">Bölüm 5: Şikayet ve Savunma</div>
-                <div class="form-grid-4">
-                    <div class="form-group">
-                        <label class="form-label" for="c-bdate">Complaint Date</label>
-                        <input type="date" id="c-bdate">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-deadline">Timeout</label>
-                        <select id="c-deadline" onchange="document.getElementById('c-timeout').value=this.value;"></select>
-                    </div>
-                    <input type="text" id="c-timeout" class="field-hidden" readonly>
-                    <div class="form-group">
-                        <label class="form-label" for="c-ptr">Complaint Subject 1</label>
-                        <select id="c-ptr"></select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-ptr2">Complaint Subject 2</label>
-                        <select id="c-ptr2"></select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-ptr3">Complaint Subject 3</label>
-                        <select id="c-ptr3"></select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-result">Result</label>
-                        <select id="c-result">
-                            <option value="">Şikayet sonucu seçiniz...</option>
-                            <option value="Beklemede">Beklemede</option>
-                            <option value="Savunma Bekleniyor">Savunma Bekleniyor</option>
-                            <option value="İncelemede">İncelemede</option>
-                            <option value="Haklı">Haklı</option>
-                            <option value="Kısmen Haklı">Kısmen Haklı</option>
-                            <option value="Haksız">Haksız</option>
-                        </select>
                     </div>
 
-                    <div id="compensation-area">
+                    <div class="section-title">Bölüm 4: Operasyonel Bilgiler</div>
+
+                    <div class="form-grid">
                         <div class="form-group">
-                            <label class="form-label" for="c-price">Tazminat Tutarı</label>
-                            <input type="number" id="c-price" min="0" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="c-currency">Döviz</label>
-                            <select id="c-currency">
-                                <option value="">Döviz seçiniz...</option>
-                                <option value="EUR">EUR</option>
-                                <option value="USD">USD</option>
-                                <option value="TRY">TRY</option>
+                            <label class="form-label" for="c-verursacher">Sorumlu taraf</label>
+                            <select id="c-verursacher">
+                                <option value="">Sorumlu taraf seçiniz...</option>
+                                <option value="Otel">Konaklama</option>
+                                <option value="Rehber">Rehberlik hizmeti</option>
+                                <option value="Transfer Sürücüsü">Transfer</option>
+                                <option value="Havalimanı Ekibi">Uçak</option>
+                                <option value="Acente Operasyon">Acente Operasyon</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label class="form-label" for="c-region">Bölge</label>
+                            <select id="c-region"></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="c-airport">Havalimanı</label>
+                            <select id="c-airport"></select>
+                        </div>
+                        <div class="form-group span-2">
+                            <label class="form-label" for="c-hotel">İlgili Otel / Partner</label>
+
+                            <input type="text" id="hotel-search" placeholder="Otel adı yazın..."
+                                onkeyup="filterHotels()" style="width:100%;margin-bottom:8px;padding:10px;">
+
+                            <select id="c-hotel"></select>
+
+                            <div style="margin-top:10px;">
+                                <label class="form-label" for="c-transfertype">
+                                    Transfer Türü
+                                </label>
+                                <div class="form-group">
+                                    <label>Transfer Sağlayıcı</label>
+                                    <input type="text" id="c-transferprovider" readonly>
+                                </div>
+
+                                <select id="c-transfertype">
+                                    <option value="Shuttle">Shuttle</option>
+                                </select>
+                            </div>
+
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label" for="c-defense-required">Defense Requested</label>
-                        <select id="c-defense-required" onchange="toggleDefenseUnit()">
-                            <option value="Hayır">Hayır</option>
-                            <option value="Evet">Evet</option>
-                        </select>
+                    <div class="section-title">
+                        Bölüm 4: Şikayet Konuları & Sonuç
                     </div>
-                    <select id="c-sn" class="field-hidden">
-                        <option value="Hayır">Hayır</option>
-                        <option value="Evet">Evet</option>
-                    </select>
+                    <div class="form-grid">
 
-                    <div class="form-group">
-                        <label class="form-label" for="c-defensefile">Defense Letter</label>
-                        <select id="c-defensefile"></select>
+                        <div class="form-group">
+                            <label>Şikayet Tarihi</label>
+                            <input type="date" id="c-bdate">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Cevap İçin Süre Aşımı</label>
+                            <select id="c-deadline"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Şikayet Konusu 1</label>
+                            <select id="c-ptr"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Şikayet Konusu 2</label>
+                            <select id="c-ptr2"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Şikayet Konusu 3</label>
+                            <select id="c-ptr3"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="c-result">Şikayet Sonucu</label>
+                            <select id="c-result">
+
+                                <option value="">
+                                    Şikayet sonucu seçiniz...
+                                </option>
+
+                                <option value="Beklemede">
+                                    Beklemede
+                                </option>
+
+                                <option value="Savunma Bekleniyor">
+                                    Savunma Bekleniyor
+                                </option>
+
+                                <option value="İncelemede">
+                                    İncelemede
+                                </option>
+
+                                <option value="Haklı">
+                                    Haklı
+                                </option>
+
+                                <option value="Kısmen Haklı">
+                                    Kısmen Haklı
+                                </option>
+
+                                <option value="Haksız">
+                                    Haksız
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div id="compensation-area">
+
+                            <div class="form-group">
+                                <label class="form-label" for="c-price">Tazminat Tutarı</label>
+                                <input type="number" id="c-price" min="0" value="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="c-currency">Döviz</label>
+                                <select id="c-currency">
+                                    <option value="">Döviz seçiniz...</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="USD">USD</option>
+                                    <option value="TRY">TRY</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="section-title">Savunma Süreci</div>
+
+                        <div class="form-grid">
+
+                            <div class="form-group full">
+                                <label class="form-label">
+                                    Savunma Talep Edildi mi?
+                                </label>
+
+                                <select id="c-defense-required" onchange="toggleDefenseUnit()">
+                                    <option value="Hayır">Hayır</option>
+                                    <option value="Evet">Evet</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full">
+                                <label>Savunma Yazısı</label>
+                                <select id="c-defensefile"></select>
+                            </div>
+
+                            <div class="form-group full" id="defense-unit-area" style="display:none;">
+
+                                <label class="form-label">
+                                    İlgili Birim
+                                </label>
+
+                                <select id="c-defense-unit">
+
+                                    <option value="">Seçiniz...</option>
+                                    <option value="Otel">Otel</option>
+                                    <option value="Tur">Tur</option>
+                                    <option value="Transfer">Transfer</option>
+                                    <option value="Rehberlik">Rehberlik</option>
+                                    <option value="Uçak">Uçak</option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <div class="section-title">OPERASYON NOTLARI</div>
+                        <div class="form-grid">
+                            <div class="form-group full">
+                                <label class="form-label" for="c-notes">Notlar</label>
+                                <textarea id="c-notes"
+                                    placeholder="Şikayet süreciyle ilgili notlarınızı yazın..."></textarea>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="form-group full" id="defense-unit-area" style="display:none;">
-                        <label class="form-label" for="c-defense-unit">İlgili Birim</label>
-                        <select id="c-defense-unit">
-                            <option value="">Seçiniz...</option>
-                            <option value="Otel">Otel</option>
-                            <option value="Tur">Tur</option>
-                            <option value="Transfer">Transfer</option>
-                            <option value="Rehberlik">Rehberlik</option>
-                            <option value="Uçak">Uçak</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group full" id="defense-file-area" style="display:none;">
-                        <label class="form-label">Defense Attachments</label>
-                        <input type="file" id="c-defense-files" multiple onchange="handleDefenseFileInputChange(this)">
-                        <div id="defense-file-list" style="margin-top:8px;font-size:12px;"></div>
-                    </div>
-
-                    <div class="form-group full">
-                        <label class="form-label" for="c-notes">Notes</label>
-                        <textarea id="c-notes"
-                            placeholder="Şikayet süreciyle ilgili notlarınızı yazın..."></textarea>
+                    <div class="modal-footer">
+                        <button class="btn-secondary" onclick="closeComplaintModal()">Vazgeç</button>
+                        <button class="btn-primary" onclick="saveComplaint()">Şikayet Kartını Kaydet</button>
                     </div>
                 </div>
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeComplaintModal()">Vazgeç</button>
-                <button class="btn-primary" onclick="saveComplaint()">Şikayet Kartını Kaydet</button>
             </div>
         </div>
-    </div>
 
         <div class="modal-overlay" id="invoice-modal-overlay">
             <div class="modal">
@@ -2133,10 +2088,6 @@
 
                 toggleDefenseUnit();
 
-                if (document.getElementById('c-timeout')) {
-                    document.getElementById('c-timeout').value = '';
-                }
-
                 document.getElementById('complaint-modal-overlay')
                     .classList.add('open');
             }
@@ -2309,24 +2260,12 @@
                 var area =
                     document.getElementById('defense-unit-area');
 
+                if (!area) return;
+
                 var value =
                     document.getElementById(
                         'c-defense-required'
                     ).value;
-
-                if (document.getElementById('c-sn')) {
-                    document.getElementById('c-sn').value = value;
-                }
-
-                var fileArea =
-                    document.getElementById('defense-file-area');
-
-                if (fileArea) {
-                    fileArea.style.display =
-                        value === 'Evet' ? 'block' : 'none';
-                }
-
-                if (!area) return;
 
                 if (value === 'Evet') {
 
@@ -2632,7 +2571,7 @@
                     });
 
                 console.log('GUESTS =', guests);
-                console.log('GUEST=', guests);
+                console.log('GUEST=', guest);
                 console.log('FLIGHT=', flight);
                 console.log('TRANSFER=', transfer);
 
@@ -2868,46 +2807,6 @@
                 document.getElementById('c-guests').value =
                     guestText.trim();
 
-                var guestsTbody =
-                    document.getElementById('c-guests-tbody');
-
-                if (guestsTbody) {
-
-                    if (!guests.length) {
-
-                        guestsTbody.innerHTML =
-                            '<tr><td colspan="5" class="guest-table-empty">' +
-                            'Bu rezervasyon için misafir kaydı bulunamadı.' +
-                            '</td></tr>';
-
-                    } else {
-
-                        var guestsHtml = '';
-
-                        guests.forEach(function (g, index) {
-
-                            guestsHtml +=
-                                '<tr>' +
-                                '<td>' + (g.title || '') + '</td>' +
-                                '<td>' +
-                                ((g.firstName || '') + ' ' + (g.lastName || '')).trim() +
-                                '</td>' +
-                                '<td>' + (g.age || '') + '</td>' +
-                                '<td>' + (g.birthDate || '') + '</td>' +
-                                '<td>' +
-                                '<input type="radio" name="c-guest-complainant" value="' +
-                                index + '"' +
-                                (index === 0 ? ' checked' : '') +
-                                '>' +
-                                '</td>' +
-                                '</tr>';
-
-                        });
-
-                        guestsTbody.innerHTML = guestsHtml;
-                    }
-                }
-
                 if (flight) {
 
                     document.getElementById('c-arrairline').value =
@@ -2918,11 +2817,6 @@
 
                     document.getElementById('c-arrtime').value =
                         flight.arrivalDepartureTime || '';
-
-                    if (document.getElementById('c-arrarrtime')) {
-                        document.getElementById('c-arrarrtime').value =
-                            flight.arrivalArrivalTime || '';
-                    }
 
                     document.getElementById('c-arrfrom').value =
                         flight.arrivalFrom || '';
@@ -2938,11 +2832,6 @@
 
                     document.getElementById('c-deptime').value =
                         flight.departureDepartureTime || '';
-
-                    if (document.getElementById('c-deparrtime')) {
-                        document.getElementById('c-deparrtime').value =
-                            flight.departureArrivalTime || '';
-                    }
 
                     document.getElementById('c-depfrom').value =
                         flight.departureFrom || '';
@@ -2964,35 +2853,6 @@
                     'PAX bilgileri yüklendi:',
                     pax
                 );
-            }
-
-            function handleDefenseFileInputChange(input) {
-
-                Array.from(input.files).forEach(function (file) {
-
-                    pendingAttachments.push(file);
-
-                });
-
-                var html = '';
-
-                pendingAttachments.forEach(function (file, index) {
-
-                    html +=
-                        (index + 1) +
-                        '. 📎 ' +
-                        file.name +
-                        ' <button type="button" onclick="removePendingFile(' +
-                        index +
-                        ')">❌</button><br>';
-
-                });
-
-                document
-                    .getElementById('defense-file-list')
-                    .innerHTML = html;
-
-                input.value = '';
             }
 
             function removePendingFile(index) {
