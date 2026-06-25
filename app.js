@@ -893,6 +893,84 @@ transferSupplier: [
                                                                                 "Otel"
                                                                             ]
 
+};
+
+// ======================================================
+// TRALVID IMPORT PROFILES
+// ======================================================
+
+const IMPORT_PROFILES = {
+
+    operation: {
+
+        requiredHeaders: [
+
+            "Buch.-Nr.",
+            "Transfer-Art",
+            "Hotel",
+            "Hinflug",
+            "Rückflug"
+
+        ]
+
+    },
+
+    reservation: {
+
+        requiredHeaders: [
+
+            "Asıl Voucher",
+            "Otel Adı",
+            "Pansiyon",
+            "Oda Tipi Tanmı"
+
+        ]
+
+    }
+
+};
+
+// ======================================================
+// IMPORT PROFILE DETECTOR
+// ======================================================
+
+function detectImportProfile(headers) {
+
+    var list =
+        headers.map(function (h) {
+
+            return String(h).trim();
+
+        });
+
+    for (var profile in IMPORT_PROFILES) {
+
+        var ok = true;
+
+        IMPORT_PROFILES[profile]
+            .requiredHeaders
+            .forEach(function (field) {
+
+                if (!list.includes(field)) {
+
+                    ok = false;
+
+                }
+
+            });
+
+        if (ok) {
+
+            return profile;
+
+        }
+
+    }
+
+    return null;
+
+}
+
 // ======================================================
 // MTR FIELD FINDER
 // ======================================================
