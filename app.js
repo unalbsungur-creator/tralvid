@@ -798,6 +798,123 @@ const FIELD_MAP = {
 
 };
 
+// ======================================================
+// MTR FIELD FINDER
+// ======================================================
+
+function getMappedField(header) {
+
+    if (!header) return null;
+
+    var search =
+        String(header)
+            .trim()
+            .toUpperCase();
+
+    for (var field in FIELD_MAP) {
+
+        var aliases =
+            FIELD_MAP[field];
+
+        for (var i = 0; i < aliases.length; i++) {
+
+            if (
+
+                aliases[i]
+                    .toUpperCase()
+                    .trim() === search
+
+            ) {
+
+                return field;
+
+            }
+
+        }
+
+    }
+
+    return null;
+
+}
+
+// ======================================================
+// MTR ROW MAPPER
+// Excel Satırını TRALVID MTR Formatına Çevirir
+// ======================================================
+
+function mapExcelRow(headers, row) {
+
+    var mappedRow = {};
+
+    headers.forEach(function (header, index) {
+
+        var field =
+            getMappedField(header);
+
+        if (field) {
+
+            mappedRow[field] = row[index];
+
+        }
+
+    });
+
+    return mappedRow;
+
+}
+
+// ======================================================
+// EXCEL -> TRALVID MTR CONVERTER
+// ======================================================
+
+function convertExcelToMTR(worksheet) {
+
+    var rows =
+        XLSX.utils.sheet_to_json(
+            worksheet,
+            {
+                header: 1,
+                defval: ''
+            }
+        );
+
+    if (!rows.length) {
+
+        return [];
+
+    }
+
+    var headers =
+        rows[0];
+
+    var result = [];
+
+    for (var i = 1; i < rows.length; i++) {
+
+        var row =
+            rows[i];
+
+        if (!row || row.length === 0) {
+
+            continue;
+
+        }
+
+        var mtr =
+            mapExcelRow(
+                headers,
+                row
+            );
+
+        result.push(mtr);
+
+    }
+
+    return result;
+
+}
+
 // ================= DATA ACTIONS =================
 
 function fillPassengerData() {
