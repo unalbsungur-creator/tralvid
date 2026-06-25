@@ -3937,14 +3937,30 @@ function viewAttachment(id) {
 
         if (file.type.indexOf('image/') === 0) {
 
+            if (
+                file.type === 'image/heic' ||
+                file.type === 'image/heif'
+            ) {
+
+                alert(
+                    'HEIC formatı tarayıcı tarafından görüntülenemiyor. Lütfen "İndir" butonunu kullanın.'
+                );
+
+                return;
+
+            }
+
             var win = window.open();
 
             win.document.write(
-                '<html><body style="margin:0">' +
+                '<html>' +
+                '<head><title>' + file.name + '</title></head>' +
+                '<body style="margin:0;background:#222;text-align:center;">' +
                 '<img src="' +
                 file.content +
-                '" style="max-width:100%">' +
-                '</body></html>'
+                '" style="max-width:100%;max-height:100vh;">' +
+                '</body>' +
+                '</html>'
             );
 
             return;
