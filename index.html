@@ -2787,8 +2787,30 @@
                 console.log('Nights  :', reservation.nights);
                 console.log('RoomType:', reservation.roomType);
 
-                document.getElementById('c-region').value =
-                    (reservation.region || '').trim();
+                loadSimpleDropdown('c-region', 'regions');
+
+                setTimeout(function () {
+
+                    var regionSelect =
+                        document.getElementById('c-region');
+
+                    Array.from(regionSelect.options)
+                        .forEach(function (opt) {
+
+                            if (
+                                opt.value.toUpperCase() ===
+                                String(reservation.region || '')
+                                    .trim()
+                                    .toUpperCase()
+                            ) {
+
+                                regionSelect.value = opt.value;
+
+                            }
+
+                        });
+
+                }, 100);
 
                 document.getElementById('c-adate').value =
                     excelDateToInputDate(reservation.checkIn);
@@ -2843,6 +2865,38 @@
 
             document.getElementById('c-transfertype').value =
                 transferValue;
+
+            loadSimpleDropdown(
+                'c-airport',
+                'airports'
+            );
+
+            setTimeout(function () {
+
+                var airportSelect =
+                    document.getElementById('c-airport');
+
+                var airportValue =
+                    String(pax.airport || '')
+                        .trim()
+                        .toUpperCase();
+
+                Array.from(airportSelect.options)
+                    .forEach(function (opt) {
+
+                        if (
+                            opt.value
+                                .toUpperCase() === airportValue
+                        ) {
+
+                            airportSelect.value =
+                                opt.value;
+
+                        }
+
+                    });
+
+            }, 100);
 
             document.getElementById('c-transferprovider').value =
                 transfer.supplier || '';
