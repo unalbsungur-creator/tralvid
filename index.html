@@ -2107,7 +2107,11 @@
             var today = new Date().toISOString().split('T')[0];
 
             document.getElementById('c-date').value = today;
-            document.getElementById('c-bdate').value = today;
+
+            if (document.getElementById('c-bdate')) {
+                document.getElementById('c-bdate').value = today;
+            }
+
             document.getElementById('c-adate').value = today;
             document.getElementById('c-ddate').value = today;
 
