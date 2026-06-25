@@ -3931,85 +3931,59 @@ function viewAttachment(id) {
     getAttachment(id).then(function (file) {
 
         if (!file) {
-            alert('Dosya bulunamadı');
+            alert('Dosya bulunamadı.');
             return;
         }
 
-        if (file.type.indexOf('image/') === 0) {
+        var type = (file.type || '').toLowerCase();
+
+        // ---------- RESİMLER ----------
+        if (type.indexOf('image/') === 0) {
 
             if (
-                file.type === 'image/heic' ||
-                file.type === 'image/heif'
+                type === 'image/heic' ||
+                type === 'image/heif'
             ) {
 
-                alert(
-                    'HEIC formatı tarayıcı tarafından görüntülenemiyor. Lütfen "İndir" butonunu kullanın.'
-                );
+                if (confirm(
+                    'HEIC dosyaları tarayıcıda görüntülenemiyor.\n\nİndirmek ister misiniz?'
+                )) {
+
+                    downloadAttachment(id);
+
+                }
 
                 return;
-
             }
 
-            var win = window.open();
+            var win = window.open('', '_blank');
 
             win.document.write(
-                '<html>' +
-                '<head><title>' + file.name + '</title></head>' +
-                '<body style="margin:0;background:#222;text-align:center;">' +
-                '<img src="' +
-                file.content +
-                '" style="max-width:100%;max-height:100vh;">' +
-                '</body>' +
-                '</html>'
+                '<html><head><title>' + file.name + '</title></head>' +
+                '<body style="margin:0;background:#111;display:flex;justify-content:center;align-items:center;height:100vh;">' +
+                '<img src="' + file.content + '" style="max-width:100%;max-height:100%;">' +
+                '</body></html>'
             );
 
             return;
         }
 
-        if (file.type === 'application/pdf') {
+        // ---------- PDF ----------
+        if (type === 'application/pdf') {
 
-            var byteString =
-                atob(
-                    file.content.split(',')[1]
-                );
-
-            var arrayBuffer =
-                new ArrayBuffer(byteString.length);
-
-            var uintArray =
-                new Uint8Array(arrayBuffer);
-
-            for (
-                var i = 0;
-                i < byteString.length;
-                i++
-            ) {
-                uintArray[i] =
-                    byteString.charCodeAt(i);
-            }
-
-            var blob =
-                new Blob(
-                    [uintArray],
-                    {
-                        type: 'application/pdf'
-                    }
-                );
-
-            var url =
-                URL.createObjectURL(blob);
-
-            window.open(
-                url,
-                '_blank'
-            );
+            window.open(file.content, '_blank');
 
             return;
         }
 
-        alert(
-            'Bu dosya türü tarayıcıda önizlenemiyor. İndir butonunu kullanın.'
-        );
+        // ---------- Diğer Dosyalar ----------
+        if (confirm(
+            'Bu dosya tarayıcıda görüntülenemiyor.\n\nİndirmek ister misiniz?'
+        )) {
+
+            downloadAttachment(id);
+
+        }
 
     });
 
