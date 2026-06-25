@@ -1423,65 +1423,85 @@
                     </div>
                 </div>
 
-                <div class="section-title">Bölüm 2: Rezervasyon Detayları</div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label" for="c-booking">Rezervasyon Numarası</label>
-                        <input type="text" id="c-booking" placeholder="Örn: 1283842" onchange="fillPassengerData()">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-subbooking">Alt Rezervasyon No</label>
-                        <input type="text" id="c-subbooking" placeholder="Örn: 1283945">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-veranstalter">Tur Operatörü</label>
-                        <select id="c-veranstalter"></select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-adult">Yetişkin</label>
-                        <input type="number" id="c-adult" min="0" value="2">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-child">Çocuk</label>
-                        <input type="number" id="c-child" min="0" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-infant">Bebek</label>
-                        <input type="number" id="c-infant" min="0" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-bdate">Şikayet Tarihi</label>
-                        <input type="date" id="c-bdate">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-adate">Geliş Tarihi</label>
-                        <input type="date" id="c-adate">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-ddate">Dönüş Tarihi</label>
-                        <input type="date" id="c-ddate">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="c-voucher">Voucher</label>
-                        <input type="text" id="c-voucher">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="c-board">Pansiyon</label>
-                        <input type="text" id="c-board">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="c-nights">Geceleme</label>
-                        <input type="number" id="c-nights">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="c-roomtype">Oda Tipi</label>
-                        <input type="text" id="c-roomtype">
-                    </div>
+                <div class="section-title">
+                    Bölüm 2: Rezervasyon ve Misafir Bilgileri
                 </div>
 
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>Rezervasyon No</label>
+                        <input type="text" id="c-booking" placeholder="Örn: 1283842" onchange="fillPassengerData()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Alt Rezervasyon</label>
+                        <input type="text" id="c-subbooking">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tur Operatörü</label>
+                        <select id="c-veranstalter"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Voucher</label>
+                        <input type="text" id="c-voucher" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pansiyon</label>
+                        <input type="text" id="c-board" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Geceleme</label>
+                        <input type="number" id="c-nights" readonly>
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Oda Tipi</label>
+                        <input type="text" id="c-roomtype" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Yetişkin</label>
+                        <input type="number" id="c-adult">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Çocuk</label>
+                        <input type="number" id="c-child">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bebek</label>
+                        <input type="number" id="c-infant">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Geliş Tarihi</label>
+                        <input type="date" id="c-adate">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dönüş Tarihi</label>
+                        <input type="date" id="c-ddate">
+                    </div>
+
+                </div>
+
+                <div style="margin-top:18px;">
+
+                    <label class="form-label">
+                        Rezervasyondaki Misafirler
+                    </label>
+
+                    <textarea id="c-guests" rows="6" readonly style="width:100%;
+                     resize:none;
+                     font-size:14px;"></textarea>
+
+                </div>
                 <div class="section-title">
                     Bölüm 3: Uçuş Bilgileri
                 </div>
@@ -2570,8 +2590,8 @@
 
                 });
 
-            var guest =
-                passengerData.find(function (item) {
+            var guests =
+                passengerData.filter(function (item) {
 
                     return (
                         String(item.booking).trim() ===
@@ -2580,6 +2600,7 @@
 
                 });
 
+            console.log('GUESTS =', guests);
             console.log('GUEST=', guest);
             console.log('FLIGHT=', flight);
             console.log('TRANSFER=', transfer);
@@ -2791,20 +2812,30 @@
             }, 300);
 
             console.log('BOOKING=', bookingNo);
-            console.log('GUEST=', guest);
+            console.log('GUESTS=', guests);
             console.log('FLIGHT=', flight);
             console.log('TRANSFER=', transfer);
 
-            if (guest) {
+            var guestText = '';
 
-                document.getElementById('c-guestname').value =
-                    (guest.firstName || '') +
-                    ' ' +
-                    (guest.lastName || '');
+            guests.forEach(function (g, index) {
 
-                document.getElementById('c-age').value =
-                    guest.age || '';
-            }
+                guestText +=
+                    (index + 1) + '. ' +
+                    (g.title || '') + ' ' +
+                    (g.firstName || '') + ' ' +
+                    (g.lastName || '');
+
+                if (g.age) {
+                    guestText += ' (' + g.age + ')';
+                }
+
+                guestText += '\n';
+
+            });
+
+            document.getElementById('c-guests').value =
+                guestText.trim();
 
             if (flight) {
 
