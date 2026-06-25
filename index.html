@@ -1461,6 +1461,25 @@
                         <label class="form-label" for="c-ddate">Dönüş Tarihi</label>
                         <input type="date" id="c-ddate">
                     </div>
+                    <div class="form-group">
+                        <label class="form-label" for="c-voucher">Voucher</label>
+                        <input type="text" id="c-voucher">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="c-board">Pansiyon</label>
+                        <input type="text" id="c-board">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="c-nights">Geceleme</label>
+                        <input type="number" id="c-nights">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="c-roomtype">Oda Tipi</label>
+                        <input type="text" id="c-roomtype">
+                    </div>
                 </div>
 
                 <div class="section-title">
@@ -2637,6 +2656,18 @@
 
                 document.getElementById('c-ddate').value =
                     reservation.checkOut || '';
+
+                document.getElementById('c-voucher').value =
+                    reservation.voucher || '';
+
+                document.getElementById('c-board').value =
+                    reservation.board || '';
+
+                document.getElementById('c-nights').value =
+                    reservation.nights || '';
+
+                document.getElementById('c-roomtype').value =
+                    reservation.roomType || '';
 
             } else {
 
