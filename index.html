@@ -1472,7 +1472,7 @@
                 <div class="form-grid-4">
                     <div class="form-group">
                         <label class="form-label" for="c-booking">Rezervasyon No</label>
-                        <input type="text" id="c-booking" placeholder="Örn: 1283842" oninput="debounceBooking()" onkeydown="if(event.key==='Enter') fillPassengerData()">
+                        <input type="text" id="c-booking" placeholder="Örn: 1283842" onchange="fillPassengerData()">
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="c-subbooking">Alt Rezervasyon</label>
@@ -4818,7 +4818,7 @@
                     '3 = Havalimanı\n' +
                     '4 = Servis\n' +
                     '5 = Şikayet Konuları\n' +
-                    '6 = Operasyon Exceli (V2)\n' +
+                    '6 = MTR Formatı (Akıllı Eşleştirme)\n' +
                     '7 = Konaklama Exceli (V2)'
                 );
 
@@ -4993,164 +4993,265 @@
 
             }
 
-            function importOperationExcel(event) {
+            
+            // ==== MTR FIELD MAP ====
+            var MTR_FIELD_MAP = {
+                booking:           ['booking','booking no','booking number','reservation','rez no','reference','ref','rezervasyon no','alt rezervasyon no','voucher'],
+                voucher:           ['voucher','voucher no','voucher number','asıl voucher'],
+                operator:          ['operator','tour operator','to','operatör','tur operatörü'],
+                agency:            ['agency','travel agency','acente'],
+                market:            ['market','country of sale','pazar'],
+                hotel:             ['hotel','hotel name','accommodation','otel','otel adı','gerçek otel'],
+                region:            ['region','resort','bölge'],
+                country:           ['country','ülke'],
+                supplier:          ['supplier','hotel supplier','tedarikçi'],
+                checkIn:           ['check-in','giriş tarihi','check-in'],
+                checkOut:          ['check-out','çıkış tarihi','check-out'],
+                nights:            ['night','nights','gece','gün','geceleme'],
+                roomType:          ['room type','room','oda tipi','oda tipi tanmı'],
+                board:             ['board','meal','pension','pansiyon','konaklama'],
+                adults:            ['adult','adults','yetişkin'],
+                children:          ['child','children','çocuk'],
+                infants:           ['infant','infants','bebek'],
+                arrivalFlightNo:   ['arrival flight','arrival flight no','geliş uçuşu','arrival flight number'],
+                arrivalAirport:    ['arrival airport','airport','havalimanı'],
+                arrivalDate:       ['arrival date','geliş tarihi'],
+                arrivalTime:       ['arrival time','geliş saati'],
+                departureFlightNo: ['departure flight','departure flight no','dönüş uçuşu','departure flight number'],
+                departureAirport:  ['departure airport'],
+                departureDate:     ['departure date','dönüş tarihi'],
+                departureTime:     ['departure time','dönüş saati'],
+                transferType:      ['transfer type','transfer','transfer tipi','hds otel + transfer'],
+                transferSupplier:  ['transfer supplier'],
+                firstName:         ['first name','name','ad'],
+                lastName:          ['last name','surname','soyad'],
+                title:             ['title','unvan'],
+                nationality:       ['nationality','uyruk'],
+                birthDate:         ['birth date','date of birth','doğum tarihi'],
+                passportNo:        ['passport no','passport number','pasaport no'],
+                identityNo:        ['identity no','tc no','tc kimlik'],
+                phone:             ['phone','mobile','telefon'],
+                email:             ['email','e-mail','e-posta'],
+                ageType:           ['age type','pax type','adult/child/infant']
+            };
 
+            function buildMTRColumnIndex(headers) {
+                var index = {};
+                var normalizedHeaders = headers.map(function(h) {
+                    return String(h || '').toLowerCase().trim();
+                });
+                Object.keys(MTR_FIELD_MAP).forEach(function(field) {
+                    var aliases = MTR_FIELD_MAP[field];
+                    for (var i = 0; i < aliases.length; i++) {
+                        var aliasLower = aliases[i].toLowerCase().trim();
+                        for (var j = 0; j < normalizedHeaders.length; j++) {
+                            if (normalizedHeaders[j] === aliasLower) {
+                                if (index[field] === undefined) {
+                                    index[field] = j;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                });
+                return index;
+            }
+
+            function getMTRCol(row, colIndex, field) {
+                if (colIndex[field] === undefined) return '';
+                var val = row[colIndex[field]];
+                return val !== undefined && val !== null ? String(val).trim() : '';
+            }
+
+            function excelDateToStr(val) {
+                if (!val) return '';
+                if (typeof val === 'string' && val.match(/\d{4}-\d{2}-\d{2}/)) return val;
+                if (typeof val === 'number') {
+                    var d = new Date((val - 25569) * 86400 * 1000);
+                    return d.toISOString().split('T')[0];
+                }
+                return String(val);
+            }
+
+            function importMTRExcel(event) {
                 var file = event.target.files[0];
-
                 if (!file) return;
 
                 var reader = new FileReader();
+                reader.onload = function(e) {
+                    var data = new Uint8Array(e.target.result);
+                    var workbook = XLSX.read(data, { type: 'array', cellDates: false });
+                    var sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    var rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
 
-                reader.onload = function (e) {
-
-                    var data =
-                        new Uint8Array(
-                            e.target.result
-                        );
-
-                    var workbook =
-                        XLSX.read(data, {
-                            type: 'array'
-                        });
-
-                    var sheet =
-                        workbook.Sheets[
-                        workbook.SheetNames[0]
-                        ];
-
-                    var rows =
-                        XLSX.utils.sheet_to_json(
-                            sheet,
-                            { header: 1 }
-                        );
-
-
-                    var reservations = [];
-                    var flights = [];
-                    var transfers = [];
-                    var passengers = [];
-
-                    for (var i = 2; i < rows.length; i++) {
-
-                        var row = rows[i];
-
-                        if (!row || !row.length)
-                            continue;
-
-                        var booking =
-                            String(
-                                row[1] || ''
-                            ).trim();
-
-                        if (i === 2) {
-                            console.log('TEST ROW', row);
-                        }
-
-                        if (!booking)
-                            continue;
-
-                        reservations.push({
-
-                            booking: booking,
-
-                            hotel: row[23] || '',
-                            region: row[24] || '',
-                            operator: row[29] || '',
-
-                            checkIn: row[3] || '',
-
-                            checkOut: row[4] || '',
-
-                            adult: Number(row[35] || 0),
-
-                            child: Number(row[36] || 0),
-
-                            infant: Number(row[37] || 0)
-
-                        });
-
-                        flights.push({
-
-                            booking: booking,
-
-                            arrivalAirline: row[11] || '',
-                            arrivalFlightNo: row[12] || '',
-                            arrivalFrom: row[8] || '',
-                            arrivalTo: row[9] || '',
-                            arrivalDepartureTime: row[13] || '',
-                            arrivalArrivalTime: row[14] || '',
-
-                            departureAirline: row[19] || '',
-                            departureFlightNo: row[20] || '',
-                            departureFrom: row[16] || '',
-                            departureTo: row[17] || '',
-                            departureDepartureTime: row[21] || '',
-                            departureArrivalTime: row[22] || ''
-
-                        });
-
-                        transfers.push({
-
-                            booking: booking,
-
-                            supplier: row[29] || '',
-                            transferNo: row[30] || '',
-                            transferType: row[31] || ''
-
-                        });
-
-                        passengers.push({
-
-                            booking: booking,
-
-                            title: row[32] || '',
-                            lastName: row[33] || '',
-                            firstName: row[34] || '',
-                            age: row[35] || '',
-                            adult: Number(row[36] || 0),
-                            child: Number(row[37] || 0),
-                            infant: Number(row[38] || 0)
-
-                        });
-
+                    if (!rows || rows.length < 2) {
+                        alert('Excel dosyası boş veya geçersiz.');
+                        return;
                     }
 
-                    localStorage.setItem(
-                        'reservations',
-                        JSON.stringify(reservations)
-                    );
+                    // Header satırını bul (ilk dolu satır)
+                    var headerRowIndex = 0;
+                    for (var h = 0; h < Math.min(5, rows.length); h++) {
+                        if (rows[h].some(function(c) { return c && String(c).trim(); })) {
+                            headerRowIndex = h;
+                            break;
+                        }
+                    }
 
-                    localStorage.setItem(
-                        'flights',
-                        JSON.stringify(flights)
-                    );
+                    var headers = rows[headerRowIndex];
+                    var colIndex = buildMTRColumnIndex(headers);
 
-                    localStorage.setItem(
-                        'transfers',
-                        JSON.stringify(transfers)
-                    );
+                    var matchedFields = Object.keys(colIndex);
+                    var unmatchedFields = Object.keys(MTR_FIELD_MAP).filter(function(f) {
+                        return colIndex[f] === undefined;
+                    });
 
-                    localStorage.setItem(
-                        'passengers',
-                        JSON.stringify(passengers)
-                    );
+                    var reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+                    var flights = JSON.parse(localStorage.getItem('flights') || '[]');
+                    var transfers = JSON.parse(localStorage.getItem('transfers') || '[]');
+                    var passengers = JSON.parse(localStorage.getItem('passengers') || '[]');
 
-                    alert(
-                        'V2 Operasyon Verisi Yüklendi\n\n' +
-                        'Rezervasyon : ' +
-                        reservations.length +
-                        '\nUçuş : ' +
-                        flights.length +
-                        '\nTransfer : ' +
-                        transfers.length +
-                        '\nYolcu : ' +
-                        passengers.length
-                    );
+                    var operators = JSON.parse(localStorage.getItem('operators') || '[]');
+                    var hotels = JSON.parse(localStorage.getItem('hotelPartners') || '[]');
+                    var regions = JSON.parse(localStorage.getItem('regions') || '[]');
+                    var airports = JSON.parse(localStorage.getItem('airports') || '[]');
 
+                    var newRes = 0, newFlight = 0, newTransfer = 0, newPax = 0;
+
+                    for (var i = headerRowIndex + 1; i < rows.length; i++) {
+                        var row = rows[i];
+                        if (!row || !row.some(function(c) { return c && String(c).trim(); })) continue;
+
+                        var booking = getMTRCol(row, colIndex, 'booking');
+                        var voucher = getMTRCol(row, colIndex, 'voucher');
+                        if (!booking && !voucher) continue;
+
+                        var operator = getMTRCol(row, colIndex, 'operator');
+                        var hotel    = getMTRCol(row, colIndex, 'hotel');
+                        var region   = getMTRCol(row, colIndex, 'region');
+                        var airport  = getMTRCol(row, colIndex, 'arrivalAirport');
+
+                        // Master listeleri güncelle
+                        if (operator && operators.indexOf(operator) === -1) operators.push(operator);
+                        if (hotel && hotels.indexOf(hotel) === -1) hotels.push(hotel);
+                        if (region && regions.indexOf(region) === -1) regions.push(region);
+                        if (airport && airports.indexOf(airport) === -1) airports.push(airport);
+
+                        // Rezervasyon
+                        var existingResIdx = reservations.findIndex(function(r) {
+                            return r.booking === booking || r.voucher === voucher;
+                        });
+                        var resObj = {
+                            booking:      booking,
+                            voucher:      voucher,
+                            operator:     operator,
+                            agency:       getMTRCol(row, colIndex, 'agency'),
+                            market:       getMTRCol(row, colIndex, 'market'),
+                            hotel:        hotel,
+                            region:       region,
+                            country:      getMTRCol(row, colIndex, 'country'),
+                            supplier:     getMTRCol(row, colIndex, 'supplier'),
+                            checkIn:      excelDateToStr(row[colIndex['checkIn']]),
+                            checkOut:     excelDateToStr(row[colIndex['checkOut']]),
+                            nights:       getMTRCol(row, colIndex, 'nights'),
+                            roomType:     getMTRCol(row, colIndex, 'roomType'),
+                            board:        getMTRCol(row, colIndex, 'board'),
+                            adult:        parseInt(getMTRCol(row, colIndex, 'adults') || 0),
+                            child:        parseInt(getMTRCol(row, colIndex, 'children') || 0),
+                            infant:       parseInt(getMTRCol(row, colIndex, 'infants') || 0),
+                            transferType: getMTRCol(row, colIndex, 'transferType')
+                        };
+                        if (existingResIdx > -1) {
+                            reservations[existingResIdx] = resObj;
+                        } else {
+                            reservations.push(resObj);
+                            newRes++;
+                        }
+
+                        // Uçuş
+                        var flightObj = {
+                            booking:             booking,
+                            arrivalFlightNo:     getMTRCol(row, colIndex, 'arrivalFlightNo'),
+                            arrivalAirport:      airport,
+                            arrivalDate:         excelDateToStr(row[colIndex['arrivalDate']]),
+                            arrivalTime:         getMTRCol(row, colIndex, 'arrivalTime'),
+                            departureFlightNo:   getMTRCol(row, colIndex, 'departureFlightNo'),
+                            departureAirport:    getMTRCol(row, colIndex, 'departureAirport'),
+                            departureDate:       excelDateToStr(row[colIndex['departureDate']]),
+                            departureTime:       getMTRCol(row, colIndex, 'departureTime')
+                        };
+                        var existingFlightIdx = flights.findIndex(function(f) { return f.booking === booking; });
+                        if (existingFlightIdx > -1) {
+                            flights[existingFlightIdx] = flightObj;
+                        } else {
+                            flights.push(flightObj);
+                            newFlight++;
+                        }
+
+                        // Transfer
+                        var transferObj = {
+                            booking:          booking,
+                            transferType:     getMTRCol(row, colIndex, 'transferType'),
+                            transferSupplier: getMTRCol(row, colIndex, 'transferSupplier')
+                        };
+                        var existingTransferIdx = transfers.findIndex(function(t) { return t.booking === booking; });
+                        if (existingTransferIdx > -1) {
+                            transfers[existingTransferIdx] = transferObj;
+                        } else {
+                            transfers.push(transferObj);
+                            newTransfer++;
+                        }
+
+                        // Yolcu
+                        var paxObj = {
+                            booking:     booking,
+                            title:       getMTRCol(row, colIndex, 'title'),
+                            firstName:   getMTRCol(row, colIndex, 'firstName'),
+                            lastName:    getMTRCol(row, colIndex, 'lastName'),
+                            nationality: getMTRCol(row, colIndex, 'nationality'),
+                            birthDate:   excelDateToStr(row[colIndex['birthDate']]),
+                            ageType:     getMTRCol(row, colIndex, 'ageType'),
+                            passportNo:  getMTRCol(row, colIndex, 'passportNo'),
+                            identityNo:  getMTRCol(row, colIndex, 'identityNo'),
+                            phone:       getMTRCol(row, colIndex, 'phone'),
+                            email:       getMTRCol(row, colIndex, 'email'),
+                            adult:       parseInt(getMTRCol(row, colIndex, 'adults') || 0),
+                            child:       parseInt(getMTRCol(row, colIndex, 'children') || 0),
+                            infant:      parseInt(getMTRCol(row, colIndex, 'infants') || 0)
+                        };
+                        passengers.push(paxObj);
+                        newPax++;
+                    }
+
+                    localStorage.setItem('reservations', JSON.stringify(reservations));
+                    localStorage.setItem('flights', JSON.stringify(flights));
+                    localStorage.setItem('transfers', JSON.stringify(transfers));
+                    localStorage.setItem('passengers', JSON.stringify(passengers));
+                    localStorage.setItem('operators', JSON.stringify(operators));
+                    localStorage.setItem('hotelPartners', JSON.stringify(hotels));
+                    localStorage.setItem('regions', JSON.stringify(regions));
+                    localStorage.setItem('airports', JSON.stringify(airports));
+
+                    var msg = 'MTR Excel Yüklendi ✅\n\n';
+                    msg += '📋 Eşleşen Alanlar (' + matchedFields.length + '): ' + matchedFields.join(', ') + '\n\n';
+                    if (unmatchedFields.length) {
+                        msg += '⚠️ Eşleşmeyen Alanlar (' + unmatchedFields.length + '): ' + unmatchedFields.join(', ') + '\n\n';
+                    }
+                    msg += '✅ Rezervasyon: ' + newRes + ' yeni\n';
+                    msg += '✅ Uçuş: ' + newFlight + ' yeni\n';
+                    msg += '✅ Transfer: ' + newTransfer + ' yeni\n';
+                    msg += '✅ Yolcu: ' + newPax + ' yeni\n';
+                    msg += '🏨 Otel listesi: ' + hotels.length + ' kayıt\n';
+                    msg += '🏢 Operatör listesi: ' + operators.length + ' kayıt';
+
+                    alert(msg);
+                    showToast('MTR verisi başarıyla yüklendi.');
+                    renderDashboard();
                 };
-
                 reader.readAsArrayBuffer(file);
             }
+
+            function importOperationExcel(event) { importMTRExcel(event); }
 
             function importReservationExcel(event) {
 
@@ -7061,16 +7162,7 @@
 
         </script>
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js">
-        // ==== DEBOUNCE BOOKING ====
-        var bookingDebounceTimer;
-        function debounceBooking() {
-            clearTimeout(bookingDebounceTimer);
-            bookingDebounceTimer = setTimeout(function() {
-                fillPassengerData();
-            }, 600);
-        }
-</script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </body>
 
