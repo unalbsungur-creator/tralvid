@@ -3549,6 +3549,10 @@ function importOperationExcel(event) {
             rows[0];
 
         var reservations = [];
+        var profile =
+            detectImportProfile(headers);
+
+        console.log("IMPORT PROFILE =", profile);
         var flights = [];
         var transfers = [];
         var passengers = [];
