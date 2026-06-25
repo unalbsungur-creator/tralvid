@@ -1108,7 +1108,123 @@
         }
     </style>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+        // ==== DEBOUNCE BOOKING ====
+        var bookingTimeout;
+        function debounceBooking() {
+            clearTimeout(bookingTimeout);
+            bookingTimeout = setTimeout(fillPassengerData, 400);
+        }
+
+        // ==== IMPORT OPERATION EXCEL (AKILLI VERSİYON) ====
+        function importOperationExcel(event) {
+            var file = event.target.files ? event.target.files[0] : null;
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+                var sheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[sheetName];
+                var rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                if (rows.length < 2) {
+                    alert('Excel dosyası boş veya başlık satırı eksik!');
+                    return;
+                }
+
+                var MTR_FIELD_MAP = {
+                    booking:      ['Booking','Booking No','Booking Number','Rezervasyon','Rez No','Reference','Ref'],
+                    voucher:      ['Voucher','Voucher No','Voucher Number','Asıl Voucher'],
+                    operator:     ['Operator','Tour Operator','TO','Operatör','Veranstalter'],
+                    hotel:        ['Hotel','Hotel Name','Accommodation','Otel','Otel Adı','Gerçek Otel'],
+                    region:       ['Region','Resort','Bölge'],
+                    airport:      ['Arrival Airport','Airport','Havalimanı','Havaalanı'],
+                    checkIn:      ['Check-in','Check in','Arrival Date','Giriş Tarihi'],
+                    checkOut:     ['Check-out','Check out','Departure Date','Çıkış Tarihi'],
+                    adult:        ['Adult','Adults','Yetişkin','Adl'],
+                    child:        ['Child','Children','Çocuk','Chd'],
+                    infant:       ['Infant','Infants','Bebek','Inf'],
+                    roomType:     ['Room Type','Room','Oda Tipi','Oda Tipi Tanmı'],
+                    board:        ['Board','Meal','Pension','Pansiyon','Konaklama'],
+                    nights:       ['Night','Nights','Gece','Gün'],
+                    transferType: ['Transfer Type','Transfer','Transfer Tipi'],
+                    supplier:     ['Supplier','Hotel Supplier','Tedarikçi','Provider']
+                };
+
+                function buildColumnIndex(headerRow) {
+                    var idx = {};
+                    headerRow.forEach(function(cell, colIdx) {
+                        if (!cell) return;
+                        var cellStr = String(cell).trim().toLowerCase();
+                        Object.keys(MTR_FIELD_MAP).forEach(function(field) {
+                            MTR_FIELD_MAP[field].forEach(function(alias) {
+                                if (alias.toLowerCase() === cellStr) idx[field] = colIdx;
+                            });
+                        });
+                    });
+                    return idx;
+                }
+
+                var headers = rows[0];
+                var colIdx  = buildColumnIndex(headers);
+
+                var getCol = function(row, field) {
+                    var i = colIdx[field];
+                    return (i !== undefined && row[i] !== undefined) ? String(row[i]).trim() : '';
+                };
+
+                var reservations   = [];
+                var masterOps      = new Set(JSON.parse(localStorage.getItem('operators')     || '[]'));
+                var masterHotels   = new Set(JSON.parse(localStorage.getItem('hotelPartners') || '[]'));
+                var masterRegions  = new Set(JSON.parse(localStorage.getItem('regions')       || '[]'));
+                var masterAirports = new Set(JSON.parse(localStorage.getItem('airports')      || '[]'));
+
+                for (var i = 1; i < rows.length; i++) {
+                    var row     = rows[i];
+                    var booking = getCol(row, 'booking');
+                    if (!booking) continue;
+
+                    var resObj = {
+                        booking:      booking,
+                        voucher:      getCol(row, 'voucher'),
+                        operator:     getCol(row, 'operator'),
+                        hotel:        getCol(row, 'hotel'),
+                        region:       getCol(row, 'region'),
+                        airport:      getCol(row, 'airport'),
+                        checkIn:      row[colIdx['checkIn']]  || '',
+                        checkOut:     row[colIdx['checkOut']] || '',
+                        adult:        parseInt(getCol(row, 'adult'))  || 0,
+                        child:        parseInt(getCol(row, 'child'))  || 0,
+                        infant:       parseInt(getCol(row, 'infant')) || 0,
+                        roomType:     getCol(row, 'roomType'),
+                        board:        getCol(row, 'board'),
+                        nights:       parseInt(getCol(row, 'nights')) || 0,
+                        transferType: getCol(row, 'transferType'),
+                        supplier:     getCol(row, 'supplier')
+                    };
+
+                    reservations.push(resObj);
+                    if (resObj.operator) masterOps.add(resObj.operator);
+                    if (resObj.hotel)    masterHotels.add(resObj.hotel);
+                    if (resObj.region)   masterRegions.add(resObj.region);
+                    if (resObj.airport)  masterAirports.add(resObj.airport);
+                }
+
+                localStorage.setItem('reservations',   JSON.stringify(reservations));
+                localStorage.setItem('operators',      JSON.stringify(Array.from(masterOps)));
+                localStorage.setItem('hotelPartners',  JSON.stringify(Array.from(masterHotels)));
+                localStorage.setItem('regions',        JSON.stringify(Array.from(masterRegions)));
+                localStorage.setItem('airports',       JSON.stringify(Array.from(masterAirports)));
+
+                alert(reservations.length + ' adet rezervasyon başarıyla içe aktarıldı ve master listeler güncellendi.');
+                if (typeof renderDashboard === 'function') renderDashboard();
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+    </script>
 
 </head>
 
@@ -3067,7 +3183,7 @@
             if (transfer) {
 
                 document.getElementById('c-transferprovider').value =
-                    transfer.supplier || '';
+                    transfer ? (transfer.supplier || '') : '';
 
                 document.getElementById('c-transferno').value =
                     transfer.transferNo || '';
