@@ -794,15 +794,13 @@ const FIELD_MAP = {
         "Transfer Type",
         "Transfer",
         "Transfer Türü"
-    ]
+    ],
 
-};
-
-transferSupplier: [
-    "Transfer Veranstalter",
-    "Transfer Supplier",
-    "Supplier"
-],
+    transferSupplier: [
+        "Transfer Veranstalter",
+        "Transfer Supplier",
+        "Supplier"
+    ],
 
     transferBookingNumber: [
         "Transfer Vorgangs-Nr.",
@@ -810,88 +808,88 @@ transferSupplier: [
         "Transfer Ref"
     ],
 
-        title: [
-            "Anrede",
-            "Title"
-        ],
+    title: [
+        "Anrede",
+        "Title"
+    ],
 
-            lastName: [
-                "Name",
-                "Last Name",
-                "Surname"
-            ],
+    lastName: [
+        "Name",
+        "Last Name",
+        "Surname"
+    ],
 
-                firstName: [
-                    "Vorname",
-                    "First Name"
-                ],
+    firstName: [
+        "Vorname",
+        "First Name"
+    ],
 
-                    age: [
-                        "Alter",
-                        "Age"
-                    ],
+    age: [
+        "Alter",
+        "Age"
+    ],
 
-                        arrivalAirline: [
-                            "Hinflug Flugges.",
-                            "Arrival Airline"
-                        ],
+    arrivalAirline: [
+        "Hinflug Flugges.",
+        "Arrival Airline"
+    ],
 
-                            arrivalFlightNo: [
-                                "Hinflug Flug-Nr.",
-                                "Arrival Flight"
-                            ],
+    arrivalFlightNo: [
+        "Hinflug Flug-Nr.",
+        "Arrival Flight"
+    ],
 
-                                arrivalAirportFrom: [
-                                    "Hinflug Von",
-                                    "Arrival From"
-                                ],
+    arrivalAirportFrom: [
+        "Hinflug Von",
+        "Arrival From"
+    ],
 
-                                    arrivalAirportTo: [
-                                        "Hinflug Nach",
-                                        "Arrival To"
-                                    ],
+    arrivalAirportTo: [
+        "Hinflug Nach",
+        "Arrival To"
+    ],
 
-                                        arrivalDepartureTime: [
-                                            "Hinflug Abflugzeit"
-                                        ],
+    arrivalDepartureTime: [
+        "Hinflug Abflugzeit"
+    ],
 
-                                            arrivalArrivalTime: [
-                                                "Hinflug Ankunftszeit"
-                                            ],
+    arrivalArrivalTime: [
+        "Hinflug Ankunftszeit"
+    ],
 
-                                                departureAirline: [
-                                                    "Rückflug Flugges.",
-                                                    "Departure Airline"
-                                                ],
+    departureAirline: [
+        "Rückflug Flugges.",
+        "Departure Airline"
+    ],
 
-                                                    departureFlightNo: [
-                                                        "Rückflug Flug-Nr."
-                                                    ],
+    departureFlightNo: [
+        "Rückflug Flug-Nr."
+    ],
 
-                                                        departureAirportFrom: [
-                                                            "Rückflug Von"
-                                                        ],
+    departureAirportFrom: [
+        "Rückflug Von"
+    ],
 
-                                                            departureAirportTo: [
-                                                                "Rückflug Nach"
-                                                            ],
+    departureAirportTo: [
+        "Rückflug Nach"
+    ],
 
-                                                                departureDepartureTime: [
-                                                                    "Rückflug Abflugzeit"
-                                                                ],
+    departureDepartureTime: [
+        "Rückflug Abflugzeit"
+    ],
 
-                                                                    departureArrivalTime: [
-                                                                        "Rückflug Ankunftszeit"
-                                                                    ],
+    departureArrivalTime: [
+        "Rückflug Ankunftszeit"
+    ],
 
-                                                                        country: [
-                                                                            "Hotel Land",
-                                                                            "Country"
-                                                                        ],
+    country: [
+        "Hotel Land",
+        "Country"
+    ],
 
-                                                                            hotelCode: [
-                                                                                "Otel"
-                                                                            ]
+    hotelCode: [
+        "Otel"
+    ]
 
 };
 
