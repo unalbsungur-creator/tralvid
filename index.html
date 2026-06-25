@@ -2646,7 +2646,14 @@
                 select.value
             );
 
+            console.log('RESERVATION =', reservation);
+
             if (reservation) {
+
+                console.log('Voucher :', reservation.voucher);
+                console.log('Board   :', reservation.board);
+                console.log('Nights  :', reservation.nights);
+                console.log('RoomType:', reservation.roomType);
 
                 document.getElementById('c-region').value =
                     (reservation.region || '').trim();
