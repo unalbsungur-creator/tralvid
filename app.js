@@ -798,6 +798,101 @@ const FIELD_MAP = {
 
 };
 
+transferSupplier: [
+    "Transfer Veranstalter",
+    "Transfer Supplier",
+    "Supplier"
+],
+
+    transferBookingNumber: [
+        "Transfer Vorgangs-Nr.",
+        "Transfer Booking Number",
+        "Transfer Ref"
+    ],
+
+        title: [
+            "Anrede",
+            "Title"
+        ],
+
+            lastName: [
+                "Name",
+                "Last Name",
+                "Surname"
+            ],
+
+                firstName: [
+                    "Vorname",
+                    "First Name"
+                ],
+
+                    age: [
+                        "Alter",
+                        "Age"
+                    ],
+
+                        arrivalAirline: [
+                            "Hinflug Flugges.",
+                            "Arrival Airline"
+                        ],
+
+                            arrivalFlightNo: [
+                                "Hinflug Flug-Nr.",
+                                "Arrival Flight"
+                            ],
+
+                                arrivalAirportFrom: [
+                                    "Hinflug Von",
+                                    "Arrival From"
+                                ],
+
+                                    arrivalAirportTo: [
+                                        "Hinflug Nach",
+                                        "Arrival To"
+                                    ],
+
+                                        arrivalDepartureTime: [
+                                            "Hinflug Abflugzeit"
+                                        ],
+
+                                            arrivalArrivalTime: [
+                                                "Hinflug Ankunftszeit"
+                                            ],
+
+                                                departureAirline: [
+                                                    "Rückflug Flugges.",
+                                                    "Departure Airline"
+                                                ],
+
+                                                    departureFlightNo: [
+                                                        "Rückflug Flug-Nr."
+                                                    ],
+
+                                                        departureAirportFrom: [
+                                                            "Rückflug Von"
+                                                        ],
+
+                                                            departureAirportTo: [
+                                                                "Rückflug Nach"
+                                                            ],
+
+                                                                departureDepartureTime: [
+                                                                    "Rückflug Abflugzeit"
+                                                                ],
+
+                                                                    departureArrivalTime: [
+                                                                        "Rückflug Ankunftszeit"
+                                                                    ],
+
+                                                                        country: [
+                                                                            "Hotel Land",
+                                                                            "Country"
+                                                                        ],
+
+                                                                            hotelCode: [
+                                                                                "Otel"
+                                                                            ]
+
 // ======================================================
 // MTR FIELD FINDER
 // ======================================================
@@ -845,7 +940,7 @@ function getMappedField(header) {
 
 function mapExcelRow(headers, row) {
 
-    var mappedRow = {};
+    var mtr = createEmptyMTR();
 
     headers.forEach(function (header, index) {
 
@@ -854,66 +949,17 @@ function mapExcelRow(headers, row) {
 
         if (field) {
 
-            mappedRow[field] = row[index];
+            mtr[field] = row[index];
 
         }
 
     });
 
-    return mappedRow;
+    return mtr;
 
 }
 
-// ======================================================
-// EXCEL -> TRALVID MTR CONVERTER
-// ======================================================
 
-function convertExcelToMTR(worksheet) {
-
-    var rows =
-        XLSX.utils.sheet_to_json(
-            worksheet,
-            {
-                header: 1,
-                defval: ''
-            }
-        );
-
-    if (!rows.length) {
-
-        return [];
-
-    }
-
-    var headers =
-        rows[0];
-
-    var result = [];
-
-    for (var i = 1; i < rows.length; i++) {
-
-        var row =
-            rows[i];
-
-        if (!row || row.length === 0) {
-
-            continue;
-
-        }
-
-        var mtr =
-            mapExcelRow(
-                headers,
-                row
-            );
-
-        result.push(mtr);
-
-    }
-
-    return result;
-
-}
 
 // ================= DATA ACTIONS =================
 
@@ -3421,6 +3467,8 @@ function importOperationExcel(event) {
                 { header: 1 }
             );
 
+        var headers =
+            rows[0];
 
         var reservations = [];
         var flights = [];
@@ -3589,9 +3637,15 @@ function importReservationExcel(event) {
             if (!row || !row.length)
                 continue;
 
+            var mtr =
+                mapExcelRow(
+                    headers,
+                    row
+                );
+
             var booking =
                 String(
-                    row[4] || ''
+                    mtr.bookingNumber || ''
                 ).trim();
 
             if (!booking)
@@ -3599,49 +3653,47 @@ function importReservationExcel(event) {
 
             reservations.push({
 
-                booking: booking,
+                booking:
+                    booking,
 
                 operator:
-                    row[3] || '',
-
-                masterVoucher:
-                    row[4] || '',
-
-                voucher:
-                    row[5] || '',
+                    mtr.operator,
 
                 hotel:
-                    row[1] || '',
+                    mtr.hotel,
 
                 roomNo:
-                    row[6] || '',
+                    mtr.roomNo,
 
                 roomType:
-                    row[7] || '',
+                    mtr.roomType,
 
                 checkIn:
-                    row[8] || '',
+                    mtr.checkIn,
 
                 checkOut:
-                    row[9] || '',
+                    mtr.checkOut,
 
                 nights:
-                    row[10] || '',
+                    Number(mtr.nights || 0),
 
                 board:
-                    row[11] || '',
+                    mtr.board,
 
                 adult:
-                    Number(row[13] || 0),
+                    Number(mtr.adult || 0),
 
                 child:
-                    Number(row[15] || 0),
+                    Number(mtr.child || 0),
 
                 infant:
-                    Number(row[16] || 0),
+                    Number(mtr.infant || 0),
 
                 roomCount:
-                    Number(row[17] || 0)
+                    Number(mtr.roomCount || 0),
+
+                serviceScope:
+                    "OA"
 
             });
 
