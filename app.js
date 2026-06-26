@@ -710,7 +710,7 @@ const FIELD_MAP = {
         "Hotel",
         "Hotel Name",
         "Otel",
-        "Accommodation"
+        "Accommodation",
         "Otel Adı"
     ],
 
