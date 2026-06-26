@@ -1210,13 +1210,46 @@ function mapExcelRow(headers, row) {
 // BUILD TRALVID COLLECTIONS FROM MTR
 // ======================================================
 
+// ======================================================
+// DETERMINE SERVICE SCOPE
+// ======================================================
+
+function determineServiceScope(mtr) {
+
+    var hasHotel =
+        String(
+            mtr.hotel || ""
+        ).trim() !== "";
+
+    var hasTransfer =
+        String(
+            mtr.transferBookingNumber || ""
+        ).trim() !== "";
+
+    if (hasHotel && hasTransfer)
+        return "AT";
+
+    if (hasHotel)
+        return "OA";
+
+    if (hasTransfer)
+        return "OT";
+
+    return "";
+
+}
+
 function buildCollectionsFromMTR(mtr) {
 
     return {
 
         reservation: {
 
-            booking: mtr.bookingNumber,
+            serviceScope:
+                determineServiceScope(mtr),
+
+            booking:
+                mtr.bookingNumber,
             subBooking: mtr.subBooking,
 
             operator: mtr.operator,
@@ -3894,9 +3927,6 @@ function importOperationExcel(event) {
 
             var collections =
                 buildCollectionsFromMTR(mtr);
-
-            collections.reservation.serviceScope =
-                "AT";
 
             reservations.push(
                 collections.reservation
