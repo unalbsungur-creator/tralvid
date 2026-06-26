@@ -3754,26 +3754,15 @@ function importOperationExcel(event) {
                     row
                 );
 
-            var mtr =
-                mapExcelRow(
-                    headers,
-                    row
-                );
+            console.log("HEADERLAR", headers);
+            console.log("MTR", mtr);
 
             var booking =
                 String(
                     mtr.bookingNumber || ''
                 ).trim();
 
-            if (i === headerInfo.index + 1) {
-
-                console.log(
-                    "İLK MTR KAYDI",
-                    mtr
-                );
-
-            }
-
+            console.log("BOOKING =", booking);
             if (!booking)
                 continue;
 
