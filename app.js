@@ -1206,7 +1206,100 @@ function mapExcelRow(headers, row) {
 
 }
 
+// ======================================================
+// BUILD TRALVID COLLECTIONS FROM MTR
+// ======================================================
 
+function buildCollectionsFromMTR(mtr) {
+
+    return {
+
+        reservation: {
+
+            booking: mtr.bookingNumber,
+            subBooking: mtr.subBooking,
+
+            operator: mtr.operator,
+
+            hotel: mtr.hotel,
+            actualHotel: mtr.actualHotel,
+            hotelCode: mtr.hotelCode,
+
+            region: mtr.region,
+            country: mtr.country,
+
+            checkIn: mtr.checkIn,
+            checkOut: mtr.checkOut,
+
+            nights: Number(mtr.nights || 0),
+
+            board: mtr.board,
+
+            roomNo: mtr.roomNo,
+            roomType: mtr.roomType,
+            roomCount: Number(mtr.roomCount || 0),
+
+            adult: Number(mtr.adult || 0),
+            child: Number(mtr.child || 0),
+            infant: Number(mtr.infant || 0)
+
+        },
+
+        flight: {
+
+            booking: mtr.bookingNumber,
+
+            arrivalAirline: mtr.arrivalAirline,
+            arrivalFlightNo: mtr.arrivalFlightNo,
+            arrivalFrom: mtr.arrivalAirportFrom,
+            arrivalTo: mtr.arrivalAirportTo,
+            arrivalDepartureTime: mtr.arrivalDepartureTime,
+            arrivalArrivalTime: mtr.arrivalArrivalTime,
+
+            departureAirline: mtr.departureAirline,
+            departureFlightNo: mtr.departureFlightNo,
+            departureFrom: mtr.departureAirportFrom,
+            departureTo: mtr.departureAirportTo,
+            departureDepartureTime: mtr.departureDepartureTime,
+            departureArrivalTime: mtr.departureArrivalTime
+
+        },
+
+        transfer: {
+
+            booking: mtr.bookingNumber,
+
+            supplier: mtr.transferSupplier,
+
+            transferNo: mtr.transferBookingNumber,
+
+            transferType: mtr.transferType
+
+        },
+
+        passenger: {
+
+            booking: mtr.bookingNumber,
+
+            title: mtr.title,
+
+            firstName: mtr.firstName,
+
+            lastName: mtr.lastName,
+
+            age: Number(mtr.age || 0),
+
+            adult: Number(mtr.adult || 0),
+
+            child: Number(mtr.child || 0),
+
+            infant: Number(mtr.infant || 0)
+
+        }
+
+    };
+
+}
 
 // ================= DATA ACTIONS =================
 
@@ -3799,164 +3892,27 @@ function importOperationExcel(event) {
             if (!booking)
                 continue;
 
-            reservations.push({
+            var collections =
+                buildCollectionsFromMTR(mtr);
 
-                booking:
-                    mtr.bookingNumber,
+            collections.reservation.serviceScope =
+                "AT";
 
-                subBooking:
-                    mtr.subBooking,
+            reservations.push(
+                collections.reservation
+            );
 
-                operator:
-                    mtr.operator,
+            flights.push(
+                collections.flight
+            );
 
-                hotel:
-                    mtr.hotel,
+            transfers.push(
+                collections.transfer
+            );
 
-                actualHotel:
-                    mtr.actualHotel,
-
-                hotelCode:
-                    mtr.hotelCode,
-
-                region:
-                    mtr.region,
-
-                country:
-                    mtr.country,
-
-                checkIn:
-                    mtr.checkIn,
-
-                checkOut:
-                    mtr.checkOut,
-
-                nights:
-                    Number(
-                        mtr.nights || 0
-                    ),
-
-                board:
-                    mtr.board,
-
-                roomNo:
-                    mtr.roomNo,
-
-                roomType:
-                    mtr.roomType,
-
-                roomCount:
-                    Number(
-                        mtr.roomCount || 0
-                    ),
-
-                adult:
-                    Number(
-                        mtr.adult || 0
-                    ),
-
-                child:
-                    Number(
-                        mtr.child || 0
-                    ),
-
-                infant:
-                    Number(
-                        mtr.infant || 0
-                    ),
-
-                serviceScope:
-                    "AT"
-
-            });
-
-            flights.push({
-
-                booking:
-                    mtr.bookingNumber,
-
-                arrivalAirline:
-                    mtr.arrivalAirline,
-
-                arrivalFlightNo:
-                    mtr.arrivalFlightNo,
-
-                arrivalFrom:
-                    mtr.arrivalAirportFrom,
-
-                arrivalTo:
-                    mtr.arrivalAirportTo,
-
-                arrivalDepartureTime:
-                    mtr.arrivalDepartureTime,
-
-                arrivalArrivalTime:
-                    mtr.arrivalArrivalTime,
-
-                departureAirline:
-                    mtr.departureAirline,
-
-                departureFlightNo:
-                    mtr.departureFlightNo,
-
-                departureFrom:
-                    mtr.departureAirportFrom,
-
-                departureTo:
-                    mtr.departureAirportTo,
-
-                departureDepartureTime:
-                    mtr.departureDepartureTime,
-
-                departureArrivalTime:
-                    mtr.departureArrivalTime
-
-            });
-
-            transfers.push({
-
-                booking:
-                    mtr.bookingNumber,
-
-                supplier:
-                    mtr.transferSupplier,
-
-                transferNo:
-                    mtr.transferBookingNumber,
-
-                transferType:
-                    mtr.transferType
-
-            });
-
-            passengers.push({
-
-                booking:
-                    mtr.bookingNumber,
-
-                title:
-                    mtr.title,
-
-                lastName:
-                    mtr.lastName,
-
-                firstName:
-                    mtr.firstName,
-
-                age:
-                    Number(mtr.age || 0),
-
-                adult:
-                    Number(mtr.adult || 0),
-
-                child:
-                    Number(mtr.child || 0),
-
-                infant:
-                    Number(mtr.infant || 0)
-
-            });
-
+            passengers.push(
+                collections.passenger
+            );
         }
 
         localStorage.setItem(
