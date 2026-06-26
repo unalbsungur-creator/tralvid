@@ -675,7 +675,7 @@ const FIELD_MAP = {
         "Master Voucher",
         "Booking Ref",
         "Rezervasyon No",
-        "Rez No"
+        "Rez No",
         "Buch.-Nr.",
         "Asıl Voucher"
     ],
