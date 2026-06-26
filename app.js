@@ -3718,6 +3718,16 @@ function importOperationExcel(event) {
             headerInfo.index
             ];
 
+        console.table(headers);
+
+        console.log(
+            rows[headerInfo.index]
+        );
+
+        console.log(
+            rows[headerInfo.index + 1]
+        );
+
         console.log(
             "IMPORT PROFILE =",
             headerInfo.profile
