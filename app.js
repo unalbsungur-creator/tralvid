@@ -1015,6 +1015,88 @@ function detectImportProfile(headers) {
 }
 
 // ======================================================
+// DETECT DATA GROUPS
+// ======================================================
+
+function detectDataGroups(headers) {
+
+    var groups = {
+
+        reservation: false,
+
+        flight: false,
+
+        transfer: false,
+
+        passenger: false
+
+    };
+
+    headers.forEach(function (header) {
+
+        var field =
+            getMappedField(header);
+
+        switch (field) {
+
+            // ---------------- Reservation ----------------
+
+            case "hotel":
+            case "checkIn":
+            case "checkOut":
+            case "board":
+            case "roomType":
+            case "roomNo":
+            case "roomCount":
+            case "region":
+            case "country":
+
+                groups.reservation = true;
+                break;
+
+            // ---------------- Flight ----------------
+
+            case "arrivalFlightNo":
+            case "departureFlightNo":
+            case "arrivalAirline":
+            case "departureAirline":
+
+                groups.flight = true;
+                break;
+
+            // ---------------- Transfer ----------------
+
+            case "transferType":
+            case "transferSupplier":
+            case "transferBookingNumber":
+
+                groups.transfer = true;
+                break;
+
+            // ---------------- Passenger ----------------
+
+            case "title":
+            case "firstName":
+            case "lastName":
+            case "age":
+
+                groups.passenger = true;
+                break;
+
+        }
+
+    });
+
+    console.log(
+        "DATA GROUPS",
+        groups
+    );
+
+    return groups;
+
+}
+
+// ======================================================
 // HEADER ROW DETECTOR
 // ======================================================
 
@@ -3869,6 +3951,10 @@ function importOperationExcel(event) {
         console.log(
             "IMPORT PROFILE =",
             headerInfo.profile
+        );
+
+        console.log(
+            detectDataGroups(headers)
         );
 
         var reservations = [];
