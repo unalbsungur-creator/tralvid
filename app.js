@@ -3915,11 +3915,17 @@ function importOperationExcel(event) {
 
             transfers.push({
 
-                booking: booking,
+                booking:
+                    mtr.bookingNumber,
 
-                supplier: row[29] || '',
-                transferNo: row[30] || '',
-                transferType: row[31] || ''
+                supplier:
+                    mtr.transferSupplier,
+
+                transferNo:
+                    mtr.transferBookingNumber,
+
+                transferType:
+                    mtr.transferType
 
             });
 
