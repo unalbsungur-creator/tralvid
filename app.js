@@ -3801,21 +3801,72 @@ function importOperationExcel(event) {
 
             reservations.push({
 
-                booking: booking,
+                booking:
+                    mtr.bookingNumber,
 
-                hotel: row[23] || '',
-                region: row[24] || '',
-                operator: row[29] || '',
+                subBooking:
+                    mtr.subBooking,
 
-                checkIn: row[3] || '',
+                operator:
+                    mtr.operator,
 
-                checkOut: row[4] || '',
+                hotel:
+                    mtr.hotel,
 
-                adult: Number(row[35] || 0),
+                actualHotel:
+                    mtr.actualHotel,
 
-                child: Number(row[36] || 0),
+                hotelCode:
+                    mtr.hotelCode,
 
-                infant: Number(row[37] || 0)
+                region:
+                    mtr.region,
+
+                country:
+                    mtr.country,
+
+                checkIn:
+                    mtr.checkIn,
+
+                checkOut:
+                    mtr.checkOut,
+
+                nights:
+                    Number(
+                        mtr.nights || 0
+                    ),
+
+                board:
+                    mtr.board,
+
+                roomNo:
+                    mtr.roomNo,
+
+                roomType:
+                    mtr.roomType,
+
+                roomCount:
+                    Number(
+                        mtr.roomCount || 0
+                    ),
+
+                adult:
+                    Number(
+                        mtr.adult || 0
+                    ),
+
+                child:
+                    Number(
+                        mtr.child || 0
+                    ),
+
+                infant:
+                    Number(
+                        mtr.infant || 0
+                    ),
+
+                serviceScope:
+                    "AT"
 
             });
 
