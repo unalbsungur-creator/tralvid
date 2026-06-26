@@ -666,6 +666,7 @@ function initSessionTimeout() {
 const FIELD_MAP = {
 
     bookingNumber: [
+
         "Booking",
         "Booking Number",
         "Reservation",
@@ -676,8 +677,11 @@ const FIELD_MAP = {
         "Booking Ref",
         "Rezervasyon No",
         "Rez No",
+
+        "Bu.-Nr.",
         "Buch.-Nr.",
         "Asıl Voucher"
+
     ],
 
     subBooking: [
@@ -735,14 +739,16 @@ const FIELD_MAP = {
         "Check In",
         "Check-In",
         "Arrival Date",
-        "Giriş Tarihi"
+        "Giriş Tarihi",
+        "Hinreise"
     ],
 
     checkOut: [
         "Check Out",
         "Check-Out",
         "Departure Date",
-        "Çıkış Tarihi"
+        "Çıkış Tarihi",
+        "Rückreise"
     ],
 
     nights: [
@@ -1058,14 +1064,31 @@ function findHeaderRow(rows) {
 // MTR FIELD FINDER
 // ======================================================
 
+// ======================================================
+// HEADER NORMALIZER
+// ======================================================
+
+function normalizeHeader(text) {
+
+    if (!text)
+        return "";
+
+    return String(text)
+        .toUpperCase()
+        .replace(/\./g, "")
+        .replace(/-/g, "")
+        .replace(/\s+/g, "")
+        .trim();
+
+}
+
 function getMappedField(header) {
 
-    if (!header) return null;
+    if (!header)
+        return null;
 
     var search =
-        String(header)
-            .trim()
-            .toUpperCase();
+        normalizeHeader(header);
 
     for (var field in FIELD_MAP) {
 
@@ -1076,9 +1099,9 @@ function getMappedField(header) {
 
             if (
 
-                aliases[i]
-                    .toUpperCase()
-                    .trim() === search
+                normalizeHeader(
+                    aliases[i]
+                ) === search
 
             ) {
 
