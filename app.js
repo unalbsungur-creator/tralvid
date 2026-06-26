@@ -1099,6 +1099,69 @@ function getMappedField(header) {
 // Excel Satırını TRALVID MTR Formatına Çevirir
 // ======================================================
 
+// ======================================================
+// EMPTY MTR OBJECT
+// ======================================================
+
+function createEmptyMTR() {
+
+    return {
+
+        bookingNumber: "",
+        subBooking: "",
+
+        operator: "",
+        agency: "",
+        market: "",
+
+        hotel: "",
+        actualHotel: "",
+        hotelCode: "",
+
+        region: "",
+        country: "",
+        airport: "",
+
+        checkIn: "",
+        checkOut: "",
+        nights: "",
+        board: "",
+
+        roomNo: "",
+        roomType: "",
+        roomCount: "",
+
+        adult: 0,
+        child: 0,
+        infant: 0,
+
+        transferType: "",
+        transferSupplier: "",
+        transferBookingNumber: "",
+
+        title: "",
+        firstName: "",
+        lastName: "",
+        age: "",
+
+        arrivalAirline: "",
+        arrivalFlightNo: "",
+        arrivalAirportFrom: "",
+        arrivalAirportTo: "",
+        arrivalDepartureTime: "",
+        arrivalArrivalTime: "",
+
+        departureAirline: "",
+        departureFlightNo: "",
+        departureAirportFrom: "",
+        departureAirportTo: "",
+        departureDepartureTime: "",
+        departureArrivalTime: ""
+
+    };
+
+}
+
 function mapExcelRow(headers, row) {
 
     var mtr = createEmptyMTR();
