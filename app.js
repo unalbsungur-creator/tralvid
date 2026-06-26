@@ -721,7 +721,7 @@ const FIELD_MAP = {
 
     region: [
         "Region",
-        "Bölge"
+        "Bölge",
         "Hotel Region"
     ],
 
@@ -797,7 +797,7 @@ const FIELD_MAP = {
     transferType: [
         "Transfer Type",
         "Transfer",
-        "Transfer Türü"
+        "Transfer Türü",
         "Transfer-Art"
     ],
 
@@ -890,7 +890,6 @@ const FIELD_MAP = {
     country: [
         "Hotel Land",
         "Country"
-        "Hotel Land"
     ],
 
     hotelCode: [
