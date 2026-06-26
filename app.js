@@ -3931,15 +3931,29 @@ function importOperationExcel(event) {
 
             passengers.push({
 
-                booking: booking,
+                booking:
+                    mtr.bookingNumber,
 
-                title: row[32] || '',
-                lastName: row[33] || '',
-                firstName: row[34] || '',
-                age: row[35] || '',
-                adult: Number(row[36] || 0),
-                child: Number(row[37] || 0),
-                infant: Number(row[38] || 0)
+                title:
+                    mtr.title,
+
+                lastName:
+                    mtr.lastName,
+
+                firstName:
+                    mtr.firstName,
+
+                age:
+                    Number(mtr.age || 0),
+
+                adult:
+                    Number(mtr.adult || 0),
+
+                child:
+                    Number(mtr.child || 0),
+
+                infant:
+                    Number(mtr.infant || 0)
 
             });
 
