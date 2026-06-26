@@ -3872,21 +3872,44 @@ function importOperationExcel(event) {
 
             flights.push({
 
-                booking: booking,
+                booking:
+                    mtr.bookingNumber,
 
-                arrivalAirline: row[11] || '',
-                arrivalFlightNo: row[12] || '',
-                arrivalFrom: row[8] || '',
-                arrivalTo: row[9] || '',
-                arrivalDepartureTime: row[13] || '',
-                arrivalArrivalTime: row[14] || '',
+                arrivalAirline:
+                    mtr.arrivalAirline,
 
-                departureAirline: row[19] || '',
-                departureFlightNo: row[20] || '',
-                departureFrom: row[16] || '',
-                departureTo: row[17] || '',
-                departureDepartureTime: row[21] || '',
-                departureArrivalTime: row[22] || ''
+                arrivalFlightNo:
+                    mtr.arrivalFlightNo,
+
+                arrivalFrom:
+                    mtr.arrivalAirportFrom,
+
+                arrivalTo:
+                    mtr.arrivalAirportTo,
+
+                arrivalDepartureTime:
+                    mtr.arrivalDepartureTime,
+
+                arrivalArrivalTime:
+                    mtr.arrivalArrivalTime,
+
+                departureAirline:
+                    mtr.departureAirline,
+
+                departureFlightNo:
+                    mtr.departureFlightNo,
+
+                departureFrom:
+                    mtr.departureAirportFrom,
+
+                departureTo:
+                    mtr.departureAirportTo,
+
+                departureDepartureTime:
+                    mtr.departureDepartureTime,
+
+                departureArrivalTime:
+                    mtr.departureArrivalTime
 
             });
 
