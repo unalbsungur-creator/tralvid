@@ -3692,10 +3692,25 @@ function importOperationExcel(event) {
                     row
                 );
 
+            var mtr =
+                mapExcelRow(
+                    headers,
+                    row
+                );
+
             var booking =
                 String(
                     mtr.bookingNumber || ''
                 ).trim();
+
+            if (i === headerInfo.index + 1) {
+
+                console.log(
+                    "İLK MTR KAYDI",
+                    mtr
+                );
+
+            }
 
             if (!booking)
                 continue;
