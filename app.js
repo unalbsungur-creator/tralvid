@@ -1222,8 +1222,21 @@ function determineServiceScope(mtr) {
         ).trim() !== "";
 
     var hasTransfer =
+
         String(
             mtr.transferBookingNumber || ""
+        ).trim() !== ""
+
+        ||
+
+        String(
+            mtr.transferType || ""
+        ).trim() !== ""
+
+        ||
+
+        String(
+            mtr.transferSupplier || ""
         ).trim() !== "";
 
     if (hasHotel && hasTransfer)
@@ -1387,20 +1400,7 @@ function fillPassengerData() {
 
         });
 
-    var passengers =
-        JSON.parse(
-            localStorage.getItem('passengerStats') || '[]'
-        );
-
-    var pax =
-        passengers.find(function (item) {
-
-            return (
-                String(item.booking).trim() ===
-                String(bookingNo).trim()
-            );
-
-        });
+    var pax = null;
 
     var flightData =
         JSON.parse(
@@ -1483,19 +1483,8 @@ function fillPassengerData() {
 
     loadTransferTypeDropdown();
 
-    if (!pax) {
-        pax = {
-            subBooking: '',
-            operator: reservation ? reservation.operator : '',
-            region: reservation ? reservation.region : '',
-            hotel: reservation ? reservation.hotel : '',
-            airport: '',
-            transferType: '',
-            adult: reservation ? reservation.adult : 0,
-            child: reservation ? reservation.child : 0,
-            infant: reservation ? reservation.infant : 0
-        };
-    }
+    pax = reservation || {};
+
     document.getElementById('c-subbooking').value =
         String(pax.subBooking || '').trim();
 
