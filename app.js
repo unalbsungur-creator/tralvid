@@ -1612,7 +1612,8 @@ function fillPassengerData() {
         String(pax.subBooking || '').trim();
 
     var op =
-        (pax.operator || '').trim();
+        String(pax.operator || '')
+            .trim();
 
     console.log(
         'PAX OPERATOR:',
@@ -1632,8 +1633,7 @@ function fillPassengerData() {
 
             if (
                 opt.value.toUpperCase() ===
-                String(reservation.operator || '')
-                    .toUpperCase()
+                op.toUpperCase()
             ) {
 
                 opSelect.value = opt.value;
