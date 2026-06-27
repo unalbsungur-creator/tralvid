@@ -489,7 +489,7 @@ function closeDetailModal() {
 
 var fileDB = null;
 
-var request = indexedDB.open('TRALVID_FILES', 1);
+var request = indexedDB.open('TRALVID_FILES', 2);
 
 request.onupgradeneeded = function (event) {
 
