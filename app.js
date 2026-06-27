@@ -1431,6 +1431,103 @@ function buildCollectionsFromMTR(mtr) {
 
 // ================= DATA ACTIONS =================
 
+// ======================================================
+// GET BOOKING DATA
+// ======================================================
+
+function getBookingData(bookingNo) {
+
+    var search =
+        String(bookingNo)
+            .trim()
+            .toUpperCase();
+
+    var reservations =
+        JSON.parse(
+            localStorage.getItem('reservations') || '[]'
+        );
+
+    var flights =
+        JSON.parse(
+            localStorage.getItem('flights') || '[]'
+        );
+
+    var transfers =
+        JSON.parse(
+            localStorage.getItem('transfers') || '[]'
+        );
+
+    var passengers =
+        JSON.parse(
+            localStorage.getItem('passengers') || '[]'
+        );
+
+    var reservation =
+        reservations.find(function (r) {
+
+            return (
+                String(r.booking || '')
+                    .trim()
+                    .toUpperCase() === search ||
+
+                String(r.voucher || '')
+                    .trim()
+                    .toUpperCase() === search ||
+
+                String(r.masterVoucher || '')
+                    .trim()
+                    .toUpperCase() === search
+            );
+
+        }) || null;
+
+    var flight =
+        flights.find(function (f) {
+
+            return (
+                String(f.booking || '')
+                    .trim()
+                    .toUpperCase() === search
+            );
+
+        }) || null;
+
+    var transfer =
+        transfers.find(function (t) {
+
+            return (
+                String(t.booking || '')
+                    .trim()
+                    .toUpperCase() === search
+            );
+
+        }) || null;
+
+    var guestList =
+        passengers.filter(function (p) {
+
+            return (
+                String(p.booking || '')
+                    .trim()
+                    .toUpperCase() === search
+            );
+
+        });
+
+    return {
+
+        reservation: reservation,
+
+        flight: flight,
+
+        transfer: transfer,
+
+        passengers: guestList
+
+    };
+
+}
+
 function fillPassengerData() {
 
     function excelDateToInputDate(excelDate) {
