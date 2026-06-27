@@ -1572,6 +1572,123 @@ function getBookingData(bookingNo) {
 
 }
 
+
+// ======================================================
+// SAVE RESERVATIONS TO INDEXEDDB
+// ======================================================
+
+function saveReservationsToIndexedDB(data, callback) {
+
+    var tx =
+        fileDB.transaction(
+            ['reservations'],
+            'readwrite'
+        );
+
+    var store =
+        tx.objectStore('reservations');
+
+    data.forEach(function (item) {
+
+        store.put(item);
+
+    });
+
+    tx.oncomplete = function () {
+
+        console.log(
+            data.length +
+            " reservation IndexedDB'ye kaydedildi."
+        );
+
+        if (callback)
+            callback();
+
+    };
+
+}
+
+// ======================================================
+// SAVE OPERATION DATA TO INDEXEDDB
+// ======================================================
+
+function saveOperationData(data, callback) {
+
+    var tx =
+        fileDB.transaction(
+
+            [
+                'reservations',
+                'flights',
+                'transfers',
+                'passengers'
+            ],
+
+            'readwrite'
+
+        );
+
+    var reservationStore =
+        tx.objectStore('reservations');
+
+    var flightStore =
+        tx.objectStore('flights');
+
+    var transferStore =
+        tx.objectStore('transfers');
+
+    var passengerStore =
+        tx.objectStore('passengers');
+
+    data.reservations.forEach(function (item) {
+
+        reservationStore.put(item);
+
+    });
+
+    data.flights.forEach(function (item) {
+
+        flightStore.put(item);
+
+    });
+
+    data.transfers.forEach(function (item) {
+
+        transferStore.put(item);
+
+    });
+
+    data.passengers.forEach(function (item) {
+
+        passengerStore.put(item);
+
+    });
+
+    tx.oncomplete = function () {
+
+        console.log(
+            "Operation data IndexedDB'ye kaydedildi."
+        );
+
+        if (callback)
+            callback();
+
+    };
+
+    tx.onerror = function (e) {
+
+        console.error(
+            "IndexedDB kayıt hatası",
+            e
+        );
+
+    };
+
+}
+
+
+// ================= DATA ACTIONS =================
+
 function fillPassengerData() {
 
     function excelDateToInputDate(excelDate) {
@@ -4125,1982 +4242,1986 @@ function importOperationExcel(event) {
 
             }
 
-            localStorage.setItem(
-                'reservations',
-                JSON.stringify(reservations)
-            );
+            saveOperationData(
 
-            localStorage.setItem(
-                'flights',
-                JSON.stringify(flights)
-            );
+                {
 
-            localStorage.setItem(
-                'transfers',
-                JSON.stringify(transfers)
-            );
+                    reservations: reservations,
 
-            localStorage.setItem(
-                'passengers',
-                JSON.stringify(passengers)
-            );
+                    flights: flights,
 
-            alert(
-                'V2 Operasyon Verisi Yüklendi\n\n' +
-                'Rezervasyon : ' +
-                reservations.length +
-                '\nUçuş : ' +
-                flights.length +
-                '\nTransfer : ' +
-                transfers.length +
-                '\nYolcu : ' +
-                passengers.length
+                    transfers: transfers,
+
+                    passengers: passengers
+
+                },
+
+                function () {
+
+                    alert(
+                        'V2 Operasyon Verisi Yüklendi\n\n' +
+                        'Rezervasyon : ' +
+                        reservations.length +
+                        '\nUçuş : ' +
+                        flights.length +
+                        '\nTransfer : ' +
+                        transfers.length +
+                        '\nYolcu : ' +
+                        passengers.length
+                    );
+
+                }
+
             );
 
         };
 
         reader.readAsArrayBuffer(file);
+
     }
 
-}
+    function importReservationExcel(event) {
 
-function importReservationExcel(event) {
+        reader.readAsArrayBuffer(file);
+    }
 
-    var file = event.target.files[0];
+    function importReservationExcel(event) {
 
-    if (!file) return;
+        var file = event.target.files[0];
 
-    var reader = new FileReader();
+        if (!file) return;
 
-    reader.onload = function (e) {
+        var reader = new FileReader();
 
-        var data =
-            new Uint8Array(
-                e.target.result
-            );
+        reader.onload = function (e) {
 
-        var workbook =
-            XLSX.read(data, {
-                type: 'array'
-            });
-
-        var sheet =
-            workbook.Sheets[
-            workbook.SheetNames[0]
-            ];
-
-        var rows =
-            XLSX.utils.sheet_to_json(
-                sheet,
-                { header: 1 }
-            );
-
-        var headerInfo =
-            findHeaderRow(rows);
-
-        if (!headerInfo) {
-
-            alert(
-                "Excel başlık satırı bulunamadı."
-            );
-
-            return;
-
-        }
-
-        var headers =
-            rows[
-            headerInfo.index
-            ];
-
-        console.log(
-            "IMPORT PROFILE =",
-            headerInfo.profile
-        );
-
-        var groups =
-            detectDataGroups(headers);
-
-        console.log(
-            "DATA GROUPS =",
-            groups
-        );
-
-        var reservations = [];
-
-        for (
-
-            var i =
-                headerInfo.index + 1;
-
-            i < rows.length;
-
-            i++
-
-        ) {
-
-            var row = rows[i];
-
-            if (!row || !row.length)
-                continue;
-
-            var mtr =
-                mapExcelRow(
-                    headers,
-                    row
+            var data =
+                new Uint8Array(
+                    e.target.result
                 );
 
-            var booking =
-                String(
-                    mtr.bookingNumber || ''
-                ).trim();
+            var workbook =
+                XLSX.read(data, {
+                    type: 'array'
+                });
 
-            if (!booking)
-                continue;
+            var sheet =
+                workbook.Sheets[
+                workbook.SheetNames[0]
+                ];
 
-            reservations.push({
+            var rows =
+                XLSX.utils.sheet_to_json(
+                    sheet,
+                    { header: 1 }
+                );
 
-                booking:
-                    booking,
+            var headerInfo =
+                findHeaderRow(rows);
 
-                operator:
-                    mtr.operator,
+            if (!headerInfo) {
 
-                hotel:
-                    mtr.hotel,
+                alert(
+                    "Excel başlık satırı bulunamadı."
+                );
 
-                roomNo:
-                    mtr.roomNo,
+                return;
 
-                roomType:
-                    mtr.roomType,
+            }
 
-                checkIn:
-                    mtr.checkIn,
+            var headers =
+                rows[
+                headerInfo.index
+                ];
 
-                checkOut:
-                    mtr.checkOut,
+            console.log(
+                "IMPORT PROFILE =",
+                headerInfo.profile
+            );
 
-                nights:
-                    Number(mtr.nights || 0),
+            var groups =
+                detectDataGroups(headers);
 
-                board:
-                    mtr.board,
+            console.log(
+                "DATA GROUPS =",
+                groups
+            );
 
-                adult:
-                    Number(mtr.adult || 0),
+            var reservations = [];
 
-                child:
-                    Number(mtr.child || 0),
+            for (
 
-                infant:
-                    Number(mtr.infant || 0),
+                var i =
+                    headerInfo.index + 1;
 
-                roomCount:
-                    Number(mtr.roomCount || 0),
+                i < rows.length;
 
-                serviceScope:
-                    "OA"
+                i++
 
-            });
+            ) {
 
-        }
+                var row = rows[i];
 
-        localStorage.setItem(
-            'reservations',
-            JSON.stringify(reservations)
-        );
+                if (!row || !row.length)
+                    continue;
 
-        alert(
-            reservations.length +
-            ' rezervasyon yüklendi.'
-        );
-
-    };
-
-    reader.readAsArrayBuffer(file);
-
-}
-
-function deleteHotel(index) {
-
-    let hotels =
-        JSON.parse(
-            localStorage.getItem('hotelPartners')
-        ) || [];
-
-    if (
-        !confirm(
-            hotels[index] +
-            '\n\nSilinsin mi?'
-        )
-    ) {
-        return;
-    }
-
-    hotels.splice(index, 1);
-
-    localStorage.setItem(
-        'hotelPartners',
-        JSON.stringify(hotels)
-    );
-
-    openDataManager('hotels');
-
-    showToast('Kayıt silindi.');
-}
-
-
-function editHotel(index) {
-
-    let hotels =
-        JSON.parse(
-            localStorage.getItem('hotelPartners')
-        ) || [];
-
-    let yeniDeger =
-        prompt(
-            'Yeni değer:',
-            hotels[index]
-        );
-
-    if (!yeniDeger) return;
-
-    hotels[index] = yeniDeger;
-
-    localStorage.setItem(
-        'hotelPartners',
-        JSON.stringify(hotels)
-    );
-
-    openDataManager('hotels');
-
-    showToast('Kayıt güncellendi.');
-}
-
-
-function addDataItem(type) {
-
-    var config = {
-        hotels: 'hotelPartners',
-        regions: 'regions',
-        airports: 'airports',
-        services: 'services',
-        reasons: 'reasons',
-        operators: 'operators',
-        transferTypes: 'transferTypes'
-    };
-
-    var input =
-        document.getElementById('new-item');
-
-    if (!input) return;
-
-    var value = input.value.trim();
-
-    if (!value) {
-        alert('Değer giriniz');
-        return;
-    }
-
-    var items =
-        JSON.parse(
-            localStorage.getItem(
-                config[type]
-            )
-        ) || [];
-
-    items.push(value);
-
-    localStorage.setItem(
-        config[type],
-        JSON.stringify(items)
-    );
-
-    openDataManager(type);
-
-    showToast('Kayıt eklendi');
-}
-
-
-
-function editDataItem(type, index) {
-
-    var config = {
-        hotels: 'hotelPartners',
-        regions: 'regions',
-        airports: 'airports',
-        services: 'services',
-        reasons: 'reasons'
-    };
-
-    var items =
-        JSON.parse(
-            localStorage.getItem(
-                config[type]
-            )
-        ) || [];
-
-    var yeniDeger =
-        prompt(
-            'Yeni değer:',
-            items[index]
-        );
-
-    if (!yeniDeger) return;
-
-    items[index] = yeniDeger;
-
-    localStorage.setItem(
-        config[type],
-        JSON.stringify(items)
-    );
-
-    openDataManager(type);
-
-    showToast('Kayıt güncellendi');
-}
-
-
-
-function deleteDataItem(type, index) {
-
-    var config = {
-        hotels: 'hotelPartners',
-        regions: 'regions',
-        airports: 'airports',
-        services: 'services',
-        reasons: 'reasons'
-    };
-
-    var items =
-        JSON.parse(
-            localStorage.getItem(
-                config[type]
-            )
-        ) || [];
-
-    if (
-        !confirm(
-            items[index] +
-            '\n\nSilinsin mi?'
-        )
-    ) {
-        return;
-    }
-
-    items.splice(index, 1);
-
-    localStorage.setItem(
-        config[type],
-        JSON.stringify(items)
-    );
-
-    openDataManager(type);
-
-    showToast('Kayıt silindi');
-}
-
-function openUserModal() {
-    let username = prompt("Kullanıcı adı:");
-    if (!username) return;
-
-    if (USERS[username]) {
-        alert("Bu kullanıcı zaten mevcut.");
-        return;
-    }
-
-    let password = prompt("Şifre:");
-    if (!password) return;
-
-    let role = prompt("Yetki (admin/user):", "user");
-    if (!role) role = "user";
-
-    let language = prompt(
-        "Dil (TR/DE/EN):",
-        "TR"
-    );
-
-    if (!language) language = "TR";
-
-    language =
-        language.toUpperCase();
-
-    USERS[username] = {
-        password: password,
-        role: role,
-        language: language
-    };
-
-    localStorage.setItem(
-        'tralvid_users',
-        JSON.stringify(USERS)
-    );
-
-    renderUsers();
-    showToast("Kullanıcı oluşturuldu.");
-}
-function deleteUser(username) {
-
-    if (username === 'admin') {
-        alert('Admin kullanıcısı silinemez!');
-        return;
-    }
-
-    if (!confirm(username + ' kullanıcısını silmek istiyor musunuz?')) {
-        return;
-    }
-
-    delete USERS[username];
-
-    localStorage.setItem(
-        'tralvid_users',
-        JSON.stringify(USERS)
-    );
-
-    renderUsers();
-
-    showToast('Kullanıcı silindi.');
-
-    if (
-        currentUser &&
-        currentUser.username === username
-    ) {
-        sessionStorage.removeItem('currentUser');
-        location.reload();
-    }
-}
-// ==================== DETAY ANALİZ MODALLARI ====================
-function openComplaintDetail(id) {
-    var r = complaints.find(function (o) { return o.id === id; }); if (!r) return;
-    document.getElementById('detail-modal-title').innerHTML =
-        'Müşteri Kartı : ' + r.booking +
-
-        (
-            currentUser.role === 'admin'
-                ? (
-                    !complaintEditMode
-
-                        ? ' <button class="btn btn-primary" ' +
-                        'style="margin-left:15px;" ' +
-                        'onclick="enableComplaintEdit(' + r.id + ')">' +
-                        '✏ Düzenle</button>'
-
-                        : ' <button class="btn btn-success" ' +
-                        'style="margin-left:15px;" ' +
-                        'onclick="saveComplaintChanges(' + r.id + ')">' +
-                        '💾 Kaydet</button>' +
-
-                        ' <button class="btn" ' +
-                        'style="margin-left:8px;background:#9e9e9e;color:#fff;" ' +
-                        'onclick="cancelComplaintEdit(' + r.id + ')">' +
-                        '❌ Vazgeç</button>'
-                )
-                : ''
-        );
-
-    document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
-        '<div class="detail-item"><span class="detail-lbl">Hafta No (KW) / Quarter (Çeyrek)</span><span class="detail-val">' + r.kw + ' / ' + r.quarter + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Kullanıcı</span><span class="detail-val">' + r.user + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Tarih</span><span class="detail-val">' + r.date + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Cevap Süresi / Savunma Yazısı</span><span class="detail-val">' + r.timeout + ' / ' + r.sn + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Rezervasyon No</span><span class="detail-val">' + r.booking + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Alt Rezervasyon No</span><span class="detail-val">' + (r.subbooking || '—') + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Pax (Yetişkin / Çocuk / Bebek)</span><span class="detail-val">' + r.adult + ' Y / ' + r.child + ' Ç / ' + r.infant + ' B</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Şikayet Tarihi</span><span class="detail-val">' + r.bdate + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Geliş Tarihi</span><span class="detail-val">' + r.adate + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Dönüş Tarihi</span><span class="detail-val">' + r.ddate + '</span></div>' +
-
-        '<div class="detail-item">' +
-        '<span class="detail-lbl">Tur Operatörü</span>' +
-
-        (
-            complaintEditMode
-
-                ?
-
-                '<select id="edit-veranstalter" style="width:100%;padding:6px;"></select>'
-
-                :
-
-                '<span class="detail-val">' +
-                r.veranstalter +
-                '</span>'
-        ) +
-
-        '</div>' +
-
-        '<div class="detail-item"><span class="detail-lbl">Sorumlu taraf</span><span class="detail-val">' + r.Verursacher + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Bölge / Havalimanı</span><span class="detail-val">' + r.region + ' / ' + r.airport + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Transfer Türü</span><span class="detail-val">' + (r.transfertype || '-') + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">İlgili Otel</span><span class="detail-val">' + (r.hotel || '-') + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Şikayet Sonucu / Tazminat</span><span class="detail-val">' + r.result + ' — ' + fmt(r.price) + ' ' + r.currency + '</span></div>' +
-        '<div class="detail-item full">' +
-        '<span class="detail-lbl">Şikayet Konuları</span>' +
-        '<span class="detail-val">' +
-
-        (r.ptr ? '1. ' + r.ptr : '') +
-
-        (r.ptr2 ? '<br>2. ' + r.ptr2 : '') +
-
-        (r.ptr3 ? '<br>3. ' + r.ptr3 : '') +
-
-        '</span>' +
-        '</div>' +
-        '<div class="detail-item full"><span class="detail-lbl">Not</span><div class="note-box">' + (r.notes || 'Açıklama girilmedi.') + '</div></div>' +
-        '<div class="detail-item full">' +
-        '<span class="detail-lbl">Ek Dosyalar</span>' +
-        '<div class="note-box">' +
-        '<div class="detail-item">' +
-        '<span class="detail-lbl">Savunma Gerekli</span>' +
-        '<span class="detail-val">' +
-        (r.defenseRequired || 'Hayır') +
-        '</span></div>' +
-
-        '<div class="detail-item">' +
-        '<span class="detail-lbl">İlgili Birim</span>' +
-        '<span class="detail-val">' +
-        (r.defenseUnit || '-') +
-        '</span></div>' +
-
-        '<div class="detail-item">' +
-        '<span class="detail-lbl">Savunma Durumu</span>' +
-
-        '<span class="detail-val">' +
-
-        '<select id="defense-status-select" ' +
-        'style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;" ' +
-        'onchange="updateDefenseStatus(' + r.id + ', this.value)">' +
-
-        '<option value="Bekleniyor" ' +
-        ((r.defenseStatus === 'Bekleniyor') ? 'selected' : '') +
-        '>🟡 Bekleniyor</option>' +
-
-        '<option value="Savunma Geldi" ' +
-        ((r.defenseStatus === 'Savunma Geldi') ? 'selected' : '') +
-        '>🔵 Savunma Geldi</option>' +
-
-        '<option value="Eksik Dosya" ' +
-        ((r.defenseStatus === 'Eksik Dosya') ? 'selected' : '') +
-        '>🔴 Eksik Dosya</option>' +
-
-        '<option value="Tamamlandı" ' +
-        ((r.defenseStatus === 'Tamamlandı') ? 'selected' : '') +
-        '>🟢 Tamamlandı</option>' +
-
-        '</select>' +
-
-        '</span>' +
-        '</div>' +
-
-        '<div class="detail-item">' +
-        '<span class="detail-lbl">Talep Tarihi</span>' +
-        '<span class="detail-val">' +
-        (r.defenseRequestedAt
-            ? new Date(r.defenseRequestedAt)
-                .toLocaleString("tr-TR")
-            : '-') +
-        '</span></div>' +
-
-        '<div class="detail-item">' +
-        '<span class="detail-lbl">Tamamlanma Tarihi</span>' +
-        '<span class="detail-val">' +
-        (r.defenseCompletedAt
-            ? new Date(r.defenseCompletedAt)
-                .toLocaleString("tr-TR")
-            : '-') +
-        '</span></div>' +
-
-        (
-            r.defenseRequired === 'Evet' &&
-                r.defenseStatus === 'Bekleniyor'
-
-                ?
-
-                '<div class="detail-item full">' +
-                '<button class="btn btn-success" ' +
-                'onclick="completeDefense(' + r.id + ')">' +
-                '✅ Savunma Geldi' +
-                '</button>' +
-                '</div>'
-
-                :
-
-                ''
-        )
-        +
-
-        (
-            r.attachments && r.attachments.length > 0
-
-                ?
-
-                r.attachments.map(function (file, index) {
-
-                    return (
-
-                        (
-                            file.type.indexOf('image/') === 0
-                                ? '🖼️ '
-
-                                : file.type === 'application/pdf'
-                                    ? '📄 '
-
-                                    : file.name.match(/\.(doc|docx)$/i)
-                                        ? '📝 '
-
-                                        : file.name.match(/\.(xls|xlsx)$/i)
-                                            ? '📊 '
-
-                                            : file.name.match(/\.(ppt|pptx)$/i)
-                                                ? '📈 '
-
-                                                : file.name.match(/\.(zip|rar|7z)$/i)
-                                                    ? '📦 '
-
-                                                    : file.name.match(/\.(eml|msg)$/i)
-                                                        ? '📧 '
-
-                                                        : '📎 '
-                        )
-
-                        +
-
-                        (index + 1) + '. ' +
-
-                        file.name +
-
-                        ' (' +
-
-                        Math.round(file.size / 1024) +
-
-                        ' KB)' +
-
-                        ' <button onclick="viewAttachment(\'' +
-
-                        file.id +
-
-                        '\')">👁 Görüntüle</button>' +
-
-                        ' <button onclick="downloadAttachment(\'' +
-
-                        file.id +
-
-                        '\')">⬇ İndir</button>'
-
+                var mtr =
+                    mapExcelRow(
+                        headers,
+                        row
                     );
 
-                }).join('<br>')
+                var booking =
+                    String(
+                        mtr.bookingNumber || ''
+                    ).trim();
 
-                :
+                if (!booking)
+                    continue;
 
-                'Dosya bulunmuyor'
+                reservations.push({
 
-        ) +
+                    booking:
+                        booking,
 
-        '</div></div>';
+                    operator:
+                        mtr.operator,
 
-    document.getElementById('detail-modal-overlay')
-        .classList.add('open');
+                    hotel:
+                        mtr.hotel,
 
-    if (complaintEditMode) {
+                    roomNo:
+                        mtr.roomNo,
 
-        console.log(
-            'EDIT MODE AKTİF'
-        );
+                    roomType:
+                        mtr.roomType,
 
-        loadSimpleDropdown(
-            'edit-veranstalter',
-            'operators',
-            'Operatör seçiniz...'
-        );
+                    checkIn:
+                        mtr.checkIn,
 
-        var operatorSelect =
-            document.getElementById('edit-veranstalter');
+                    checkOut:
+                        mtr.checkOut,
 
-        console.log(
-            'SELECT BULUNDU:',
-            operatorSelect
-        );
+                    nights:
+                        Number(mtr.nights || 0),
 
-        console.log(
-            'OPTION SAYISI:',
-            operatorSelect
-                ? operatorSelect.options.length
-                : 0
-        );
+                    board:
+                        mtr.board,
 
-        if (operatorSelect) {
+                    adult:
+                        Number(mtr.adult || 0),
 
-            operatorSelect.value =
-                r.veranstalter || '';
+                    child:
+                        Number(mtr.child || 0),
 
-        }
+                    infant:
+                        Number(mtr.infant || 0),
+
+                    roomCount:
+                        Number(mtr.roomCount || 0),
+
+                    serviceScope:
+                        "OA"
+
+                });
+
+            }
+
+            localStorage.setItem(
+                'reservations',
+                JSON.stringify(reservations)
+            );
+
+            alert(
+                reservations.length +
+                ' rezervasyon yüklendi.'
+            );
+
+        };
+
+        reader.readAsArrayBuffer(file);
 
     }
 
+    function deleteHotel(index) {
 
-}
+        let hotels =
+            JSON.parse(
+                localStorage.getItem('hotelPartners')
+            ) || [];
 
-function viewAttachment(id) {
-
-    getAttachment(id).then(function (file) {
-
-        if (!file) {
-            alert('Dosya bulunamadı.');
+        if (
+            !confirm(
+                hotels[index] +
+                '\n\nSilinsin mi?'
+            )
+        ) {
             return;
         }
 
-        var type = (file.type || '').toLowerCase();
+        hotels.splice(index, 1);
 
-        // ---------- RESİMLER ----------
-        if (type.indexOf('image/') === 0) {
+        localStorage.setItem(
+            'hotelPartners',
+            JSON.stringify(hotels)
+        );
 
-            if (
-                type === 'image/heic' ||
-                type === 'image/heif'
-            ) {
+        openDataManager('hotels');
 
-                if (confirm(
-                    'HEIC dosyaları tarayıcıda görüntülenemiyor.\n\nİndirmek ister misiniz?'
-                )) {
+        showToast('Kayıt silindi.');
+    }
 
-                    downloadAttachment(id);
 
+    function editHotel(index) {
+
+        let hotels =
+            JSON.parse(
+                localStorage.getItem('hotelPartners')
+            ) || [];
+
+        let yeniDeger =
+            prompt(
+                'Yeni değer:',
+                hotels[index]
+            );
+
+        if (!yeniDeger) return;
+
+        hotels[index] = yeniDeger;
+
+        localStorage.setItem(
+            'hotelPartners',
+            JSON.stringify(hotels)
+        );
+
+        openDataManager('hotels');
+
+        showToast('Kayıt güncellendi.');
+    }
+
+
+    function addDataItem(type) {
+
+        var config = {
+            hotels: 'hotelPartners',
+            regions: 'regions',
+            airports: 'airports',
+            services: 'services',
+            reasons: 'reasons',
+            operators: 'operators',
+            transferTypes: 'transferTypes'
+        };
+
+        var input =
+            document.getElementById('new-item');
+
+        if (!input) return;
+
+        var value = input.value.trim();
+
+        if (!value) {
+            alert('Değer giriniz');
+            return;
+        }
+
+        var items =
+            JSON.parse(
+                localStorage.getItem(
+                    config[type]
+                )
+            ) || [];
+
+        items.push(value);
+
+        localStorage.setItem(
+            config[type],
+            JSON.stringify(items)
+        );
+
+        openDataManager(type);
+
+        showToast('Kayıt eklendi');
+    }
+
+
+
+    function editDataItem(type, index) {
+
+        var config = {
+            hotels: 'hotelPartners',
+            regions: 'regions',
+            airports: 'airports',
+            services: 'services',
+            reasons: 'reasons'
+        };
+
+        var items =
+            JSON.parse(
+                localStorage.getItem(
+                    config[type]
+                )
+            ) || [];
+
+        var yeniDeger =
+            prompt(
+                'Yeni değer:',
+                items[index]
+            );
+
+        if (!yeniDeger) return;
+
+        items[index] = yeniDeger;
+
+        localStorage.setItem(
+            config[type],
+            JSON.stringify(items)
+        );
+
+        openDataManager(type);
+
+        showToast('Kayıt güncellendi');
+    }
+
+
+
+    function deleteDataItem(type, index) {
+
+        var config = {
+            hotels: 'hotelPartners',
+            regions: 'regions',
+            airports: 'airports',
+            services: 'services',
+            reasons: 'reasons'
+        };
+
+        var items =
+            JSON.parse(
+                localStorage.getItem(
+                    config[type]
+                )
+            ) || [];
+
+        if (
+            !confirm(
+                items[index] +
+                '\n\nSilinsin mi?'
+            )
+        ) {
+            return;
+        }
+
+        items.splice(index, 1);
+
+        localStorage.setItem(
+            config[type],
+            JSON.stringify(items)
+        );
+
+        openDataManager(type);
+
+        showToast('Kayıt silindi');
+    }
+
+    function openUserModal() {
+        let username = prompt("Kullanıcı adı:");
+        if (!username) return;
+
+        if (USERS[username]) {
+            alert("Bu kullanıcı zaten mevcut.");
+            return;
+        }
+
+        let password = prompt("Şifre:");
+        if (!password) return;
+
+        let role = prompt("Yetki (admin/user):", "user");
+        if (!role) role = "user";
+
+        let language = prompt(
+            "Dil (TR/DE/EN):",
+            "TR"
+        );
+
+        if (!language) language = "TR";
+
+        language =
+            language.toUpperCase();
+
+        USERS[username] = {
+            password: password,
+            role: role,
+            language: language
+        };
+
+        localStorage.setItem(
+            'tralvid_users',
+            JSON.stringify(USERS)
+        );
+
+        renderUsers();
+        showToast("Kullanıcı oluşturuldu.");
+    }
+    function deleteUser(username) {
+
+        if (username === 'admin') {
+            alert('Admin kullanıcısı silinemez!');
+            return;
+        }
+
+        if (!confirm(username + ' kullanıcısını silmek istiyor musunuz?')) {
+            return;
+        }
+
+        delete USERS[username];
+
+        localStorage.setItem(
+            'tralvid_users',
+            JSON.stringify(USERS)
+        );
+
+        renderUsers();
+
+        showToast('Kullanıcı silindi.');
+
+        if (
+            currentUser &&
+            currentUser.username === username
+        ) {
+            sessionStorage.removeItem('currentUser');
+            location.reload();
+        }
+    }
+    // ==================== DETAY ANALİZ MODALLARI ====================
+    function openComplaintDetail(id) {
+        var r = complaints.find(function (o) { return o.id === id; }); if (!r) return;
+        document.getElementById('detail-modal-title').innerHTML =
+            'Müşteri Kartı : ' + r.booking +
+
+            (
+                currentUser.role === 'admin'
+                    ? (
+                        !complaintEditMode
+
+                            ? ' <button class="btn btn-primary" ' +
+                            'style="margin-left:15px;" ' +
+                            'onclick="enableComplaintEdit(' + r.id + ')">' +
+                            '✏ Düzenle</button>'
+
+                            : ' <button class="btn btn-success" ' +
+                            'style="margin-left:15px;" ' +
+                            'onclick="saveComplaintChanges(' + r.id + ')">' +
+                            '💾 Kaydet</button>' +
+
+                            ' <button class="btn" ' +
+                            'style="margin-left:8px;background:#9e9e9e;color:#fff;" ' +
+                            'onclick="cancelComplaintEdit(' + r.id + ')">' +
+                            '❌ Vazgeç</button>'
+                    )
+                    : ''
+            );
+
+        document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
+            '<div class="detail-item"><span class="detail-lbl">Hafta No (KW) / Quarter (Çeyrek)</span><span class="detail-val">' + r.kw + ' / ' + r.quarter + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Kullanıcı</span><span class="detail-val">' + r.user + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Tarih</span><span class="detail-val">' + r.date + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Cevap Süresi / Savunma Yazısı</span><span class="detail-val">' + r.timeout + ' / ' + r.sn + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Rezervasyon No</span><span class="detail-val">' + r.booking + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Alt Rezervasyon No</span><span class="detail-val">' + (r.subbooking || '—') + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Pax (Yetişkin / Çocuk / Bebek)</span><span class="detail-val">' + r.adult + ' Y / ' + r.child + ' Ç / ' + r.infant + ' B</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Şikayet Tarihi</span><span class="detail-val">' + r.bdate + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Geliş Tarihi</span><span class="detail-val">' + r.adate + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Dönüş Tarihi</span><span class="detail-val">' + r.ddate + '</span></div>' +
+
+            '<div class="detail-item">' +
+            '<span class="detail-lbl">Tur Operatörü</span>' +
+
+            (
+                complaintEditMode
+
+                    ?
+
+                    '<select id="edit-veranstalter" style="width:100%;padding:6px;"></select>'
+
+                    :
+
+                    '<span class="detail-val">' +
+                    r.veranstalter +
+                    '</span>'
+            ) +
+
+            '</div>' +
+
+            '<div class="detail-item"><span class="detail-lbl">Sorumlu taraf</span><span class="detail-val">' + r.Verursacher + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Bölge / Havalimanı</span><span class="detail-val">' + r.region + ' / ' + r.airport + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Transfer Türü</span><span class="detail-val">' + (r.transfertype || '-') + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">İlgili Otel</span><span class="detail-val">' + (r.hotel || '-') + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Şikayet Sonucu / Tazminat</span><span class="detail-val">' + r.result + ' — ' + fmt(r.price) + ' ' + r.currency + '</span></div>' +
+            '<div class="detail-item full">' +
+            '<span class="detail-lbl">Şikayet Konuları</span>' +
+            '<span class="detail-val">' +
+
+            (r.ptr ? '1. ' + r.ptr : '') +
+
+            (r.ptr2 ? '<br>2. ' + r.ptr2 : '') +
+
+            (r.ptr3 ? '<br>3. ' + r.ptr3 : '') +
+
+            '</span>' +
+            '</div>' +
+            '<div class="detail-item full"><span class="detail-lbl">Not</span><div class="note-box">' + (r.notes || 'Açıklama girilmedi.') + '</div></div>' +
+            '<div class="detail-item full">' +
+            '<span class="detail-lbl">Ek Dosyalar</span>' +
+            '<div class="note-box">' +
+            '<div class="detail-item">' +
+            '<span class="detail-lbl">Savunma Gerekli</span>' +
+            '<span class="detail-val">' +
+            (r.defenseRequired || 'Hayır') +
+            '</span></div>' +
+
+            '<div class="detail-item">' +
+            '<span class="detail-lbl">İlgili Birim</span>' +
+            '<span class="detail-val">' +
+            (r.defenseUnit || '-') +
+            '</span></div>' +
+
+            '<div class="detail-item">' +
+            '<span class="detail-lbl">Savunma Durumu</span>' +
+
+            '<span class="detail-val">' +
+
+            '<select id="defense-status-select" ' +
+            'style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;" ' +
+            'onchange="updateDefenseStatus(' + r.id + ', this.value)">' +
+
+            '<option value="Bekleniyor" ' +
+            ((r.defenseStatus === 'Bekleniyor') ? 'selected' : '') +
+            '>🟡 Bekleniyor</option>' +
+
+            '<option value="Savunma Geldi" ' +
+            ((r.defenseStatus === 'Savunma Geldi') ? 'selected' : '') +
+            '>🔵 Savunma Geldi</option>' +
+
+            '<option value="Eksik Dosya" ' +
+            ((r.defenseStatus === 'Eksik Dosya') ? 'selected' : '') +
+            '>🔴 Eksik Dosya</option>' +
+
+            '<option value="Tamamlandı" ' +
+            ((r.defenseStatus === 'Tamamlandı') ? 'selected' : '') +
+            '>🟢 Tamamlandı</option>' +
+
+            '</select>' +
+
+            '</span>' +
+            '</div>' +
+
+            '<div class="detail-item">' +
+            '<span class="detail-lbl">Talep Tarihi</span>' +
+            '<span class="detail-val">' +
+            (r.defenseRequestedAt
+                ? new Date(r.defenseRequestedAt)
+                    .toLocaleString("tr-TR")
+                : '-') +
+            '</span></div>' +
+
+            '<div class="detail-item">' +
+            '<span class="detail-lbl">Tamamlanma Tarihi</span>' +
+            '<span class="detail-val">' +
+            (r.defenseCompletedAt
+                ? new Date(r.defenseCompletedAt)
+                    .toLocaleString("tr-TR")
+                : '-') +
+            '</span></div>' +
+
+            (
+                r.defenseRequired === 'Evet' &&
+                    r.defenseStatus === 'Bekleniyor'
+
+                    ?
+
+                    '<div class="detail-item full">' +
+                    '<button class="btn btn-success" ' +
+                    'onclick="completeDefense(' + r.id + ')">' +
+                    '✅ Savunma Geldi' +
+                    '</button>' +
+                    '</div>'
+
+                    :
+
+                    ''
+            )
+            +
+
+            (
+                r.attachments && r.attachments.length > 0
+
+                    ?
+
+                    r.attachments.map(function (file, index) {
+
+                        return (
+
+                            (
+                                file.type.indexOf('image/') === 0
+                                    ? '🖼️ '
+
+                                    : file.type === 'application/pdf'
+                                        ? '📄 '
+
+                                        : file.name.match(/\.(doc|docx)$/i)
+                                            ? '📝 '
+
+                                            : file.name.match(/\.(xls|xlsx)$/i)
+                                                ? '📊 '
+
+                                                : file.name.match(/\.(ppt|pptx)$/i)
+                                                    ? '📈 '
+
+                                                    : file.name.match(/\.(zip|rar|7z)$/i)
+                                                        ? '📦 '
+
+                                                        : file.name.match(/\.(eml|msg)$/i)
+                                                            ? '📧 '
+
+                                                            : '📎 '
+                            )
+
+                            +
+
+                            (index + 1) + '. ' +
+
+                            file.name +
+
+                            ' (' +
+
+                            Math.round(file.size / 1024) +
+
+                            ' KB)' +
+
+                            ' <button onclick="viewAttachment(\'' +
+
+                            file.id +
+
+                            '\')">👁 Görüntüle</button>' +
+
+                            ' <button onclick="downloadAttachment(\'' +
+
+                            file.id +
+
+                            '\')">⬇ İndir</button>'
+
+                        );
+
+                    }).join('<br>')
+
+                    :
+
+                    'Dosya bulunmuyor'
+
+            ) +
+
+            '</div></div>';
+
+        document.getElementById('detail-modal-overlay')
+            .classList.add('open');
+
+        if (complaintEditMode) {
+
+            console.log(
+                'EDIT MODE AKTİF'
+            );
+
+            loadSimpleDropdown(
+                'edit-veranstalter',
+                'operators',
+                'Operatör seçiniz...'
+            );
+
+            var operatorSelect =
+                document.getElementById('edit-veranstalter');
+
+            console.log(
+                'SELECT BULUNDU:',
+                operatorSelect
+            );
+
+            console.log(
+                'OPTION SAYISI:',
+                operatorSelect
+                    ? operatorSelect.options.length
+                    : 0
+            );
+
+            if (operatorSelect) {
+
+                operatorSelect.value =
+                    r.veranstalter || '';
+
+            }
+
+        }
+
+
+    }
+
+    function viewAttachment(id) {
+
+        getAttachment(id).then(function (file) {
+
+            if (!file) {
+                alert('Dosya bulunamadı.');
+                return;
+            }
+
+            var type = (file.type || '').toLowerCase();
+
+            // ---------- RESİMLER ----------
+            if (type.indexOf('image/') === 0) {
+
+                if (
+                    type === 'image/heic' ||
+                    type === 'image/heif'
+                ) {
+
+                    if (confirm(
+                        'HEIC dosyaları tarayıcıda görüntülenemiyor.\n\nİndirmek ister misiniz?'
+                    )) {
+
+                        downloadAttachment(id);
+
+                    }
+
+                    return;
                 }
+
+                var win = window.open('', '_blank');
+
+                win.document.write(
+                    '<html><head><title>' + file.name + '</title></head>' +
+                    '<body style="margin:0;background:#111;display:flex;justify-content:center;align-items:center;height:100vh;">' +
+                    '<img src="' + file.content + '" style="max-width:100%;max-height:100%;">' +
+                    '</body></html>'
+                );
 
                 return;
             }
 
-            var win = window.open('', '_blank');
+            // ---------- PDF ----------
+            if (type === 'application/pdf') {
 
-            win.document.write(
-                '<html><head><title>' + file.name + '</title></head>' +
-                '<body style="margin:0;background:#111;display:flex;justify-content:center;align-items:center;height:100vh;">' +
-                '<img src="' + file.content + '" style="max-width:100%;max-height:100%;">' +
-                '</body></html>'
+                window.open(file.content, '_blank');
+
+                return;
+            }
+
+            // ---------- Diğer Dosyalar ----------
+            if (confirm(
+                'Bu dosya tarayıcıda görüntülenemiyor.\n\nİndirmek ister misiniz?'
+            )) {
+
+                downloadAttachment(id);
+
+            }
+
+        });
+
+    }
+
+    function downloadAttachment(id) {
+
+        console.log('DOWNLOAD ID=', id);
+
+        getAttachment(id).then(function (file) {
+
+            console.log('DOWNLOAD FILE=', file);
+
+            if (!file) {
+                alert('Dosya bulunamadı');
+                return;
+            }
+
+            var a = document.createElement('a');
+
+            a.href = file.content;
+            a.download = file.name;
+
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+        });
+
+    }
+
+    function enableComplaintEdit(id) {
+
+        complaintEditMode = true;
+        editingComplaintId = id;
+
+        openComplaintDetail(id);
+
+    }
+
+    function cancelComplaintEdit(id) {
+
+        complaintEditMode = false;
+
+        openComplaintDetail(id);
+
+    }
+
+    function saveComplaintChanges(id) {
+
+        var r = complaints.find(function (o) {
+            return o.id === id;
+        });
+
+        if (!r) return;
+
+        var operatorSelect =
+            document.getElementById(
+                'edit-veranstalter'
             );
 
-            return;
-        }
+        if (operatorSelect) {
 
-        // ---------- PDF ----------
-        if (type === 'application/pdf') {
-
-            window.open(file.content, '_blank');
-
-            return;
-        }
-
-        // ---------- Diğer Dosyalar ----------
-        if (confirm(
-            'Bu dosya tarayıcıda görüntülenemiyor.\n\nİndirmek ister misiniz?'
-        )) {
-
-            downloadAttachment(id);
+            r.veranstalter =
+                operatorSelect.value;
 
         }
 
-    });
+        syncStorage();
 
-}
+        complaintEditMode = false;
 
-function downloadAttachment(id) {
-
-    console.log('DOWNLOAD ID=', id);
-
-    getAttachment(id).then(function (file) {
-
-        console.log('DOWNLOAD FILE=', file);
-
-        if (!file) {
-            alert('Dosya bulunamadı');
-            return;
-        }
-
-        var a = document.createElement('a');
-
-        a.href = file.content;
-        a.download = file.name;
-
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-    });
-
-}
-
-function enableComplaintEdit(id) {
-
-    complaintEditMode = true;
-    editingComplaintId = id;
-
-    openComplaintDetail(id);
-
-}
-
-function cancelComplaintEdit(id) {
-
-    complaintEditMode = false;
-
-    openComplaintDetail(id);
-
-}
-
-function saveComplaintChanges(id) {
-
-    var r = complaints.find(function (o) {
-        return o.id === id;
-    });
-
-    if (!r) return;
-
-    var operatorSelect =
-        document.getElementById(
-            'edit-veranstalter'
+        showToast(
+            'Değişiklikler kaydedildi.'
         );
 
-    if (operatorSelect) {
-
-        r.veranstalter =
-            operatorSelect.value;
+        openComplaintDetail(id);
 
     }
 
-    syncStorage();
+    function openInvoiceDetail(id) {
+        var r = invoices.find(function (o) { return o.id === id; }); if (!r) return;
+        document.getElementById('detail-modal-title').textContent = 'Fatura Finans Kart Detayı: ' + r.faturaNo;
 
-    complaintEditMode = false;
+        document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
+            '<div class="detail-item"><span class="detail-lbl">Fatura Numarası</span><span class="detail-val">' + r.faturaNo + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Fatura Tarihi</span><span class="detail-val">' + r.tarih + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Partner (Kime Gönderildi)</span><span class="detail-val">' + r.partner + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">İlgili Rezervasyon (Booking)</span><span class="detail-val">' + r.booking + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Gönderilen Tutar</span><span class="detail-val">' + fmt(r.tutar) + ' ' + r.doviz + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Durum</span><span class="detail-val">' + r.durum + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">Kabul Durumu</span><span class="detail-val">' + (r.kabul || 'Beklemede') + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">İade / Tahsil Edilen Tutar</span><span class="detail-val">' + fmt(r.iadeTutar) + ' ' + r.doviz + '</span></div>' +
+            '<div class="detail-item"><span class="detail-lbl">İade / Tahsilat Tarihi</span><span class="detail-val">' + (r.iadeDate || '—') + '</span></div>' +
+            '<div class="detail-item full"><span class="detail-lbl">Kesinti Sebebi Gerekçesi / Finans Notu</span><div class="note-box">' + (r.kesinti || '—') + '</div></div>' +
+            '</div>';
 
-    showToast(
-        'Değişiklikler kaydedildi.'
-    );
+        document.getElementById('detail-modal-overlay')
+            .classList.add('open');
 
-    openComplaintDetail(id);
-
-}
-
-function openInvoiceDetail(id) {
-    var r = invoices.find(function (o) { return o.id === id; }); if (!r) return;
-    document.getElementById('detail-modal-title').textContent = 'Fatura Finans Kart Detayı: ' + r.faturaNo;
-
-    document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
-        '<div class="detail-item"><span class="detail-lbl">Fatura Numarası</span><span class="detail-val">' + r.faturaNo + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Fatura Tarihi</span><span class="detail-val">' + r.tarih + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Partner (Kime Gönderildi)</span><span class="detail-val">' + r.partner + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">İlgili Rezervasyon (Booking)</span><span class="detail-val">' + r.booking + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Gönderilen Tutar</span><span class="detail-val">' + fmt(r.tutar) + ' ' + r.doviz + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Durum</span><span class="detail-val">' + r.durum + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">Kabul Durumu</span><span class="detail-val">' + (r.kabul || 'Beklemede') + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">İade / Tahsil Edilen Tutar</span><span class="detail-val">' + fmt(r.iadeTutar) + ' ' + r.doviz + '</span></div>' +
-        '<div class="detail-item"><span class="detail-lbl">İade / Tahsilat Tarihi</span><span class="detail-val">' + (r.iadeDate || '—') + '</span></div>' +
-        '<div class="detail-item full"><span class="detail-lbl">Kesinti Sebebi Gerekçesi / Finans Notu</span><div class="note-box">' + (r.kesinti || '—') + '</div></div>' +
-        '</div>';
-
-    document.getElementById('detail-modal-overlay')
-        .classList.add('open');
-
-}
-
-// ==================== SİLME MEKANİZMALARI ====================
-function deleteComplaint(id) {
-    if (!confirm('Bu şikayet kaydını kalıcı olarak silmek istiyor musunuz?')) return;
-    complaints = complaints.filter(function (o) { return o.id !== id; }); syncStorage();
-    renderRecordsTable(); renderDashboard(); showToast('Kayıt silindi.');
-}
-function deleteInvoice(id) {
-    if (!confirm('Bu fatura takip kaydını kalıcı olarak silmek istiyor musunuz?')) return;
-    invoices = invoices.filter(function (o) { return o.id !== id; }); syncStorage();
-    renderAccounting(); renderDashboard(); showToast('Fatura silindi.');
-}
-
-// ==================== DASHBOARD VE CSS GRAPHICS ====================
-function getDefenseInfo(record) {
-
-    if (record.defenseStatus === 'Tamamlandı') {
-
-        return {
-            status: 'Tamamlandı',
-            color: '#4caf50',
-            remaining: ''
-        };
     }
 
-    if (record.defenseStatus === 'Eksik Dosya') {
-
-        return {
-            status: 'Eksik Dosya',
-            color: '#e74c3c',
-            remaining: ''
-        };
+    // ==================== SİLME MEKANİZMALARI ====================
+    function deleteComplaint(id) {
+        if (!confirm('Bu şikayet kaydını kalıcı olarak silmek istiyor musunuz?')) return;
+        complaints = complaints.filter(function (o) { return o.id !== id; }); syncStorage();
+        renderRecordsTable(); renderDashboard(); showToast('Kayıt silindi.');
+    }
+    function deleteInvoice(id) {
+        if (!confirm('Bu fatura takip kaydını kalıcı olarak silmek istiyor musunuz?')) return;
+        invoices = invoices.filter(function (o) { return o.id !== id; }); syncStorage();
+        renderAccounting(); renderDashboard(); showToast('Fatura silindi.');
     }
 
-    if (record.defenseStatus === 'Savunma Geldi') {
+    // ==================== DASHBOARD VE CSS GRAPHICS ====================
+    function getDefenseInfo(record) {
 
-        return {
-            status: 'Savunma Geldi',
-            color: '#2196f3',
-            remaining: ''
-        };
-    }
+        if (record.defenseStatus === 'Tamamlandı') {
 
-    if (record.defenseRequired !== 'Evet') {
+            return {
+                status: 'Tamamlandı',
+                color: '#4caf50',
+                remaining: ''
+            };
+        }
 
-        return {
-            status: 'Yok',
-            color: '#999',
-            remaining: ''
-        };
-    }
+        if (record.defenseStatus === 'Eksik Dosya') {
 
-    if (!record.defenseRequestedAt) {
+            return {
+                status: 'Eksik Dosya',
+                color: '#e74c3c',
+                remaining: ''
+            };
+        }
+
+        if (record.defenseStatus === 'Savunma Geldi') {
+
+            return {
+                status: 'Savunma Geldi',
+                color: '#2196f3',
+                remaining: ''
+            };
+        }
+
+        if (record.defenseRequired !== 'Evet') {
+
+            return {
+                status: 'Yok',
+                color: '#999',
+                remaining: ''
+            };
+        }
+
+        if (!record.defenseRequestedAt) {
+
+            return {
+                status: 'Bekleniyor',
+                color: '#f39c12',
+                remaining: ''
+            };
+        }
+
+        var requested =
+            new Date(record.defenseRequestedAt);
+
+        var now = new Date();
+
+        var diffHours =
+            (now - requested) / (1000 * 60 * 60);
+
+        var remaining =
+            Math.max(0, 48 - diffHours);
+
+        if (diffHours >= 48) {
+
+            return {
+                status: 'Süre Aşıldı',
+                color: '#e74c3c',
+                remaining: '0 saat'
+            };
+        }
+
+        if (diffHours >= 48) {
+
+            return {
+                status: 'Süre Aşıldı',
+                color: '#e74c3c',
+                remaining: '0 saat'
+            };
+        }
+
+        if (remaining <= 12) {
+
+            return {
+                status: 'Kritik',
+                color: '#c62828',
+                remaining:
+                    Math.floor(remaining) +
+                    ' saat'
+            };
+        }
+
+        if (remaining <= 24) {
+
+            return {
+                status: 'Yaklaşıyor',
+                color: '#ef6c00',
+                remaining:
+                    Math.floor(remaining) +
+                    ' saat'
+            };
+        }
 
         return {
             status: 'Bekleniyor',
-            color: '#f39c12',
-            remaining: ''
-        };
-    }
-
-    var requested =
-        new Date(record.defenseRequestedAt);
-
-    var now = new Date();
-
-    var diffHours =
-        (now - requested) / (1000 * 60 * 60);
-
-    var remaining =
-        Math.max(0, 48 - diffHours);
-
-    if (diffHours >= 48) {
-
-        return {
-            status: 'Süre Aşıldı',
-            color: '#e74c3c',
-            remaining: '0 saat'
-        };
-    }
-
-    if (diffHours >= 48) {
-
-        return {
-            status: 'Süre Aşıldı',
-            color: '#e74c3c',
-            remaining: '0 saat'
-        };
-    }
-
-    if (remaining <= 12) {
-
-        return {
-            status: 'Kritik',
-            color: '#c62828',
+            color: '#f1c40f',
             remaining:
                 Math.floor(remaining) +
                 ' saat'
         };
     }
 
-    if (remaining <= 24) {
+    function renderDashboard() {
 
-        return {
-            status: 'Yaklaşıyor',
-            color: '#ef6c00',
-            remaining:
-                Math.floor(remaining) +
-                ' saat'
-        };
-    }
-
-    return {
-        status: 'Bekleniyor',
-        color: '#f1c40f',
-        remaining:
-            Math.floor(remaining) +
-            ' saat'
-    };
-}
-
-function renderDashboard() {
-
-    var activeComplaints = complaints.filter(function (r) {
-        return !r.isDeleted;
-    });
-
-    var total = activeComplaints.length;
-
-    console.log(
-        'Toplam:',
-        complaints.length,
-        'Aktif:',
-        activeComplaints.length,
-        'Silinen:',
-        complaints.filter(x => x.isDeleted).length
-    );
-
-    var hakliCount = activeComplaints.filter(function (o) {
-        return o.result === 'Haklı';
-    }).length;
-
-    var activeInvs = invoices.length;
-
-    var deleteRequests = activeComplaints.filter(function (o) {
-        return o.deleteRequested === true && !o.isDeleted;
-    }).length;
-
-    var deletedCount = complaints.filter(function (r) {
-        return r.isDeleted === true;
-    }).length;
-
-    var defenseWaiting = activeComplaints.filter(function (r) {
-        return r.defenseStatus === 'Bekleniyor';
-    }).length;
-
-    var defenseReceived = activeComplaints.filter(function (r) {
-        return r.defenseStatus === 'Savunma Geldi';
-    }).length;
-
-    var defenseMissing = activeComplaints.filter(function (r) {
-        return r.defenseStatus === 'Eksik Dosya';
-    }).length;
-
-    var defenseCompleted = activeComplaints.filter(function (r) {
-        return r.defenseStatus === 'Tamamlandı';
-    }).length;
-
-    var totalDefenseRequests =
-        defenseWaiting +
-        defenseReceived +
-        defenseMissing +
-        defenseCompleted;
-
-    var completionRate =
-        totalDefenseRequests > 0
-            ? Math.round((defenseCompleted / totalDefenseRequests) * 100)
-            : 0;
-
-    var criticalDefenseCount = activeComplaints.filter(function (r) {
-
-        var info = getDefenseInfo(r);
-
-        return info.status === 'Kritik'
-            || info.status === 'Süre Aşıldı';
-
-
-
-        var info = getDefenseInfo(c);
-
-        return info.status === 'Süre Aşıldı';
-
-    }).length;
-    var paxData =
-        JSON.parse(
-            localStorage.getItem('reservations')
-        ) || [];
-
-    var totalAdult = 0;
-    var totalChild = 0;
-    var totalInfant = 0;
-
-    paxData.forEach(function (p) {
-
-        totalAdult += parseInt(p.adult || 0);
-
-        totalChild += parseInt(p.child || 0);
-
-        totalInfant += parseInt(p.infant || 0);
-
-    });
-
-    var totalPassengers =
-        totalAdult +
-        totalChild +
-        totalInfant;
-
-    var complaintRatio =
-        totalPassengers > 0
-            ? ((total / totalPassengers) * 100).toFixed(2)
-            : '0.00';
-
-    var operatorCounts = {};
-
-    activeComplaints.forEach(function (c) {
-
-        var op = c.veranstalter || 'Bilinmiyor';
-
-        operatorCounts[op] =
-            (operatorCounts[op] || 0) + 1;
-
-    });
-
-    var topOperator = '-';
-    var topOperatorCount = 0;
-
-    Object.keys(operatorCounts).forEach(function (op) {
-
-        if (operatorCounts[op] > topOperatorCount) {
-
-            topOperator = op;
-            topOperatorCount = operatorCounts[op];
-
-        }
-
-    });
-
-    document.getElementById('dash-stats').innerHTML =
-
-        '<div class="stat-card">' +
-        '<div class="s-lbl">TOPLAM YOLCU</div>' +
-        '<div class="s-val" style="color:#2196F3;font-size:34px;">' +
-        totalPassengers +
-        '</div>' +
-        '</div>' +
-
-        '<div class="stat-card">' +
-        '<div class="s-lbl">TOPLAM ŞİKAYET</div>' +
-        '<div class="s-val" style="color:#e53935;font-size:34px;">' +
-        total +
-        '</div>' +
-        '</div>' +
-
-        '<div class="stat-card">' +
-        '<div class="s-lbl">Şikayet Oranı %</div>' +
-        '<div class="s-val" style="color:#FF9800;">' +
-        complaintRatio +
-        '%</div>' +
-        '</div>' +
-
-        '<div class="stat-card">' +
-        '<div class="s-lbl">EN ÇOK ŞİKAYET ALAN OPERATÖR</div>' +
-        '<div class="s-val" style="color:#d32f2f;font-size:22px;">' +
-        topOperatorCount +
-        '</div>' +
-        '<div style="font-size:11px;color:#666;margin-top:4px;">' +
-        topOperator +
-        '</div>' +
-        '</div>' +
-
-
-        '<div class="stat-card"><div class="s-lbl">Haklı Bulunan Dosyalar</div><div class="s-val" style="color:#3B6D11;">' + hakliCount + '</div><div class="s-sub">%' + (total ? Math.round((hakliCount / total) * 100) : 0) + ' Mutabakat Oranı</div></div>' +
-        '<div class="stat-card">' +
-        '<div class="s-lbl">Yetişkin</div>' +
-        '<div class="s-val" style="color:#4CAF50;">' +
-        totalAdult +
-        '</div>' +
-        '</div>' +
-
-        '<div class="stat-card">' +
-        '<div class="s-lbl">Çocuk</div>' +
-        '<div class="s-val" style="color:#9C27B0;">' +
-        totalChild +
-        '</div>' +
-        '</div>' +
-
-        '<div class="stat-card">' +
-        '<div class="s-lbl">Bebek</div>' +
-        '<div class="s-val" style="color:#03A9F4;">' +
-        totalInfant +
-        '</div>' +
-        '</div>';
-
-
-    document.getElementById('dashboard-defense-panel').innerHTML =
-
-        '<div class="defense-dashboard-card">' +
-
-        '<h3>🛡️ Savunma Takip Merkezi</h3>' +
-
-        '<div class="defense-grid">' +
-
-        '<div class="defense-mini">' +
-        '<div>Bekleyen</div>' +
-        '<div class="val" style="color:#f59e0b;">' +
-        defenseWaiting +
-        '</div></div>' +
-
-        '<div class="defense-mini">' +
-        '<div>Savunma Geldi</div>' +
-        '<div class="val" style="color:#2563eb;">' +
-        defenseReceived +
-        '</div></div>' +
-
-        '<div class="defense-mini">' +
-        '<div>Eksik Dosya</div>' +
-        '<div class="val" style="color:#dc2626;">' +
-        defenseMissing +
-        '</div></div>' +
-
-        '<div class="defense-mini">' +
-        '<div>Tamamlandı</div>' +
-        '<div class="val" style="color:#16a34a;">' +
-        defenseCompleted +
-        '</div></div>' +
-
-        '<div class="defense-mini">' +
-        '<div>Kritik</div>' +
-        '<div class="val" style="color:#b91c1c;">' +
-        criticalDefenseCount +
-        '</div></div>' +
-
-        '</div>' +
-        '</div>';
-
-    var accBox =
-        document.getElementById('accounting-summary');
-
-    if (accBox) {
-
-        accBox.innerHTML =
-            activeInvs;
-
-    }
-
-    renderOperatorRatios();
-
-    renderDonutChart('chart-servis',
-        countBy(activeComplaints, 'servis'),
-        ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
-
-    renderDonutChart('chart-sonuc',
-        countBy(activeComplaints, 'result'),
-        ['#A32D2D', '#3B6D11']);
-
-    renderTrendChart('chart-kw',
-        countBy(activeComplaints, 'kw'));
-
-    renderServiceComplaints();
-
-    renderTopComplaintSubjects();
-}
-
-function renderDonutChart(containerId, data, colors) {
-    var el = document.getElementById(containerId); if (!el) return;
-    var labels = Object.keys(data), values = Object.values(data), total = values.reduce(function (a, b) { return a + b; }, 0);
-    if (!total) { el.innerHTML = '<div>Yeterli metrik yok</div>'; return; }
-
-    var legendHtml = '';
-    for (var i = 0; i < labels.length; i++) {
-        legendHtml += '<div class="donut-leg-item"><div class="donut-leg-dot" style="background:' + colors[i % colors.length] + ';"></div><span>' + labels[i] + ' (' + values[i] + ')</span></div>';
-    }
-    el.innerHTML = '<svg width="80" height="80" viewBox="0 0 120 120"><circle cx="60" cy="60" r="45" fill="none" stroke="#edede9" stroke-width="16"/><circle cx="60" cy="60" r="45" fill="none" stroke="' + colors[0] + '" stroke-width="16" stroke-dasharray="282.7" stroke-dashoffset="80"/><text x="60" y="66" text-anchor="middle" font-size="18" font-weight="bold" fill="currentColor">' + total + '</text></svg><div class="donut-legend">' + legendHtml + '</div>';
-}
-
-function renderTrendChart(containerId, kwData) {
-    var el = document.getElementById(containerId); if (!el) return;
-    var keys = Object.keys(kwData).sort(); var max = 0;
-    if (!keys.length) { el.innerHTML = '<div>Trend verisi yok</div>'; return; }
-
-    for (var i = 0; i < keys.length; i++) {
-        if (kwData[keys[i]] > max) max = kwData[keys[i]];
-    }
-
-    var html = '';
-    for (var j = 0; j < keys.length; j++) {
-        var h = Math.max(6, Math.round((kwData[keys[j]] / max) * 110));
-        html += '<div class="kw-col">' +
-            '<div style="font-size:11px;">' + kwData[keys[j]] + '</div>' +
-            '<div style="height:' + h + 'px; background:var(--blue); width:24px; border-radius:4px 4px 0 0;"></div>' +
-            '<div style="font-size:10px; color:var(--text-secondary);">' + keys[j] + '</div>' +
-            '</div>';
-    }
-    el.innerHTML = html;
-}
-function renderOperatorRatios() {
-
-    var activeComplaints = complaints.filter(function (r) {
-        return !r.isDeleted;
-    });
-
-    var paxData =
-        JSON.parse(
-            localStorage.getItem('passengerStats')
-        ) || [];
-
-    var stats = {};
-
-    paxData.forEach(function (p) {
-
-        var op =
-            p.veranstalter ||
-            p.operator ||
-            'Bilinmiyor';
-
-        if (!stats[op]) {
-            stats[op] = {
-                pax: 0,
-                complaints: 0
-            };
-        }
-
-        stats[op].pax +=
-            Number(p.adult || 0) +
-            Number(p.child || 0) +
-            Number(p.infant || 0);
-
-    });
-
-    activeComplaints.forEach(function (c) {
-
-        var op = c.veranstalter || 'Bilinmiyor';
-
-        if (!stats[op]) {
-            stats[op] = {
-                pax: 0,
-                complaints: 0
-            };
-        }
-
-        stats[op].complaints++;
-
-    });
-
-    var rows = [];
-
-    Object.keys(stats).forEach(function (op) {
-
-        var pax = stats[op].pax;
-
-        var comp = stats[op].complaints;
-
-        var ratio =
-            pax > 0
-                ? ((comp / pax) * 100).toFixed(2)
-                : 0;
-
-        var riskLevel = '🟢 Düşük';
-
-        if (ratio >= 7) {
-            riskLevel = '🔴 Yüksek';
-        }
-        else if (ratio >= 3) {
-            riskLevel = '🟡 Orta';
-        }
-
-        rows.push({
-            operator: op,
-            pax: pax,
-            complaints: comp,
-            ratio: Number(ratio),
-            risk: riskLevel
+        var activeComplaints = complaints.filter(function (r) {
+            return !r.isDeleted;
         });
 
-    });
+        var total = activeComplaints.length;
 
-    rows.sort(function (a, b) {
-        return b.ratio - a.ratio;
-    });
+        console.log(
+            'Toplam:',
+            complaints.length,
+            'Aktif:',
+            activeComplaints.length,
+            'Silinen:',
+            complaints.filter(x => x.isDeleted).length
+        );
 
-    console.table(rows);
+        var hakliCount = activeComplaints.filter(function (o) {
+            return o.result === 'Haklı';
+        }).length;
 
-    var html =
-        '<table class="table">' +
-        '<thead>' +
-        '<tr>' +
-        '<th>Operatör</th>' +
-        '<th>PAX</th>' +
-        '<th>Şikayet</th>' +
-        '<th>Oran %</th>' +
-        '<th>Risk</th>' +
-        '</tr>' +
-        '</thead><tbody>';
+        var activeInvs = invoices.length;
 
-    rows.forEach(function (r) {
+        var deleteRequests = activeComplaints.filter(function (o) {
+            return o.deleteRequested === true && !o.isDeleted;
+        }).length;
 
-        html +=
-            '<tr>' +
-            '<td>' + r.operator + '</td>' +
-            '<td>' + r.pax + '</td>' +
-            '<td>' + r.complaints + '</td>' +
-            '<td>' + r.ratio + '%</td>' +
-            '<td>' + r.risk + '</td>' +
-            '</tr>';
+        var deletedCount = complaints.filter(function (r) {
+            return r.isDeleted === true;
+        }).length;
 
-    });
+        var defenseWaiting = activeComplaints.filter(function (r) {
+            return r.defenseStatus === 'Bekleniyor';
+        }).length;
 
-    html += '</tbody></table>';
+        var defenseReceived = activeComplaints.filter(function (r) {
+            return r.defenseStatus === 'Savunma Geldi';
+        }).length;
 
-    document.getElementById('operator-ratio').innerHTML = html;
+        var defenseMissing = activeComplaints.filter(function (r) {
+            return r.defenseStatus === 'Eksik Dosya';
+        }).length;
 
-    var maxComplaint = 0;
+        var defenseCompleted = activeComplaints.filter(function (r) {
+            return r.defenseStatus === 'Tamamlandı';
+        }).length;
 
-    rows.forEach(function (r) {
+        var totalDefenseRequests =
+            defenseWaiting +
+            defenseReceived +
+            defenseMissing +
+            defenseCompleted;
 
-        if (r.complaints > maxComplaint) {
-            maxComplaint = r.complaints;
-        }
-
-    });
-
-    var chartHtml = '';
-
-    rows.forEach(function (r) {
-
-        var width =
-            maxComplaint > 0
-                ? (r.complaints / maxComplaint) * 100
+        var completionRate =
+            totalDefenseRequests > 0
+                ? Math.round((defenseCompleted / totalDefenseRequests) * 100)
                 : 0;
 
-        chartHtml +=
-            '<div class="operator-bar">' +
-            '<div class="operator-name">' +
-            r.operator +
+        var criticalDefenseCount = activeComplaints.filter(function (r) {
+
+            var info = getDefenseInfo(r);
+
+            return info.status === 'Kritik'
+                || info.status === 'Süre Aşıldı';
+
+
+
+            var info = getDefenseInfo(c);
+
+            return info.status === 'Süre Aşıldı';
+
+        }).length;
+        var paxData =
+            JSON.parse(
+                localStorage.getItem('reservations')
+            ) || [];
+
+        var totalAdult = 0;
+        var totalChild = 0;
+        var totalInfant = 0;
+
+        paxData.forEach(function (p) {
+
+            totalAdult += parseInt(p.adult || 0);
+
+            totalChild += parseInt(p.child || 0);
+
+            totalInfant += parseInt(p.infant || 0);
+
+        });
+
+        var totalPassengers =
+            totalAdult +
+            totalChild +
+            totalInfant;
+
+        var complaintRatio =
+            totalPassengers > 0
+                ? ((total / totalPassengers) * 100).toFixed(2)
+                : '0.00';
+
+        var operatorCounts = {};
+
+        activeComplaints.forEach(function (c) {
+
+            var op = c.veranstalter || 'Bilinmiyor';
+
+            operatorCounts[op] =
+                (operatorCounts[op] || 0) + 1;
+
+        });
+
+        var topOperator = '-';
+        var topOperatorCount = 0;
+
+        Object.keys(operatorCounts).forEach(function (op) {
+
+            if (operatorCounts[op] > topOperatorCount) {
+
+                topOperator = op;
+                topOperatorCount = operatorCounts[op];
+
+            }
+
+        });
+
+        document.getElementById('dash-stats').innerHTML =
+
+            '<div class="stat-card">' +
+            '<div class="s-lbl">TOPLAM YOLCU</div>' +
+            '<div class="s-val" style="color:#2196F3;font-size:34px;">' +
+            totalPassengers +
             '</div>' +
-            '<div class="operator-track">' +
-            '<div class="operator-fill" style="width:' +
-            width +
-            '%;">' +
-            r.complaints +
-            ' şikayet</div>' +
+            '</div>' +
+
+            '<div class="stat-card">' +
+            '<div class="s-lbl">TOPLAM ŞİKAYET</div>' +
+            '<div class="s-val" style="color:#e53935;font-size:34px;">' +
+            total +
+            '</div>' +
+            '</div>' +
+
+            '<div class="stat-card">' +
+            '<div class="s-lbl">Şikayet Oranı %</div>' +
+            '<div class="s-val" style="color:#FF9800;">' +
+            complaintRatio +
+            '%</div>' +
+            '</div>' +
+
+            '<div class="stat-card">' +
+            '<div class="s-lbl">EN ÇOK ŞİKAYET ALAN OPERATÖR</div>' +
+            '<div class="s-val" style="color:#d32f2f;font-size:22px;">' +
+            topOperatorCount +
+            '</div>' +
+            '<div style="font-size:11px;color:#666;margin-top:4px;">' +
+            topOperator +
+            '</div>' +
+            '</div>' +
+
+
+            '<div class="stat-card"><div class="s-lbl">Haklı Bulunan Dosyalar</div><div class="s-val" style="color:#3B6D11;">' + hakliCount + '</div><div class="s-sub">%' + (total ? Math.round((hakliCount / total) * 100) : 0) + ' Mutabakat Oranı</div></div>' +
+            '<div class="stat-card">' +
+            '<div class="s-lbl">Yetişkin</div>' +
+            '<div class="s-val" style="color:#4CAF50;">' +
+            totalAdult +
+            '</div>' +
+            '</div>' +
+
+            '<div class="stat-card">' +
+            '<div class="s-lbl">Çocuk</div>' +
+            '<div class="s-val" style="color:#9C27B0;">' +
+            totalChild +
+            '</div>' +
+            '</div>' +
+
+            '<div class="stat-card">' +
+            '<div class="s-lbl">Bebek</div>' +
+            '<div class="s-val" style="color:#03A9F4;">' +
+            totalInfant +
             '</div>' +
             '</div>';
 
-    });
 
-    document.getElementById('operator-chart').innerHTML =
-        chartHtml;
+        document.getElementById('dashboard-defense-panel').innerHTML =
 
-    var regionStats = {};
+            '<div class="defense-dashboard-card">' +
 
-    complaints.forEach(function (c) {
+            '<h3>🛡️ Savunma Takip Merkezi</h3>' +
 
-        var region = c.region || 'Bilinmiyor';
+            '<div class="defense-grid">' +
 
-        regionStats[region] =
-            (regionStats[region] || 0) + 1;
+            '<div class="defense-mini">' +
+            '<div>Bekleyen</div>' +
+            '<div class="val" style="color:#f59e0b;">' +
+            defenseWaiting +
+            '</div></div>' +
 
-    });
+            '<div class="defense-mini">' +
+            '<div>Savunma Geldi</div>' +
+            '<div class="val" style="color:#2563eb;">' +
+            defenseReceived +
+            '</div></div>' +
 
-    var maxRegion = 0;
+            '<div class="defense-mini">' +
+            '<div>Eksik Dosya</div>' +
+            '<div class="val" style="color:#dc2626;">' +
+            defenseMissing +
+            '</div></div>' +
 
-    Object.keys(regionStats).forEach(function (r) {
+            '<div class="defense-mini">' +
+            '<div>Tamamlandı</div>' +
+            '<div class="val" style="color:#16a34a;">' +
+            defenseCompleted +
+            '</div></div>' +
 
-        if (regionStats[r] > maxRegion) {
-            maxRegion = regionStats[r];
+            '<div class="defense-mini">' +
+            '<div>Kritik</div>' +
+            '<div class="val" style="color:#b91c1c;">' +
+            criticalDefenseCount +
+            '</div></div>' +
+
+            '</div>' +
+            '</div>';
+
+        var accBox =
+            document.getElementById('accounting-summary');
+
+        if (accBox) {
+
+            accBox.innerHTML =
+                activeInvs;
+
         }
 
-    });
+        renderOperatorRatios();
 
-    var regionHtml = '';
+        renderDonutChart('chart-servis',
+            countBy(activeComplaints, 'servis'),
+            ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
 
-    Object.keys(regionStats).forEach(function (r) {
+        renderDonutChart('chart-sonuc',
+            countBy(activeComplaints, 'result'),
+            ['#A32D2D', '#3B6D11']);
 
-        var width =
-            (regionStats[r] / maxRegion) * 100;
+        renderTrendChart('chart-kw',
+            countBy(activeComplaints, 'kw'));
 
-        regionHtml +=
-            '<div class="operator-bar">' +
-            '<div class="operator-name">' +
-            r +
-            '</div>' +
-            '<div class="operator-track">' +
-            '<div class="operator-fill" style="width:' +
-            width +
-            '%;">' +
-            regionStats[r] +
-            ' şikayet</div>' +
-            '</div>' +
-            '</div>';
+        renderServiceComplaints();
 
-    });
+        renderTopComplaintSubjects();
+    }
 
-    document.getElementById('region-chart').innerHTML =
-        regionHtml;
+    function renderDonutChart(containerId, data, colors) {
+        var el = document.getElementById(containerId); if (!el) return;
+        var labels = Object.keys(data), values = Object.values(data), total = values.reduce(function (a, b) { return a + b; }, 0);
+        if (!total) { el.innerHTML = '<div>Yeterli metrik yok</div>'; return; }
 
-}
+        var legendHtml = '';
+        for (var i = 0; i < labels.length; i++) {
+            legendHtml += '<div class="donut-leg-item"><div class="donut-leg-dot" style="background:' + colors[i % colors.length] + ';"></div><span>' + labels[i] + ' (' + values[i] + ')</span></div>';
+        }
+        el.innerHTML = '<svg width="80" height="80" viewBox="0 0 120 120"><circle cx="60" cy="60" r="45" fill="none" stroke="#edede9" stroke-width="16"/><circle cx="60" cy="60" r="45" fill="none" stroke="' + colors[0] + '" stroke-width="16" stroke-dasharray="282.7" stroke-dashoffset="80"/><text x="60" y="66" text-anchor="middle" font-size="18" font-weight="bold" fill="currentColor">' + total + '</text></svg><div class="donut-legend">' + legendHtml + '</div>';
+    }
 
-function renderServiceComplaints() {
+    function renderTrendChart(containerId, kwData) {
+        var el = document.getElementById(containerId); if (!el) return;
+        var keys = Object.keys(kwData).sort(); var max = 0;
+        if (!keys.length) { el.innerHTML = '<div>Trend verisi yok</div>'; return; }
 
-    var activeComplaints = complaints.filter(function (r) {
-        return !r.isDeleted;
-    });
+        for (var i = 0; i < keys.length; i++) {
+            if (kwData[keys[i]] > max) max = kwData[keys[i]];
+        }
 
-    var box = document.getElementById('service-complaint-chart');
-    if (!box) return;
+        var html = '';
+        for (var j = 0; j < keys.length; j++) {
+            var h = Math.max(6, Math.round((kwData[keys[j]] / max) * 110));
+            html += '<div class="kw-col">' +
+                '<div style="font-size:11px;">' + kwData[keys[j]] + '</div>' +
+                '<div style="height:' + h + 'px; background:var(--blue); width:24px; border-radius:4px 4px 0 0;"></div>' +
+                '<div style="font-size:10px; color:var(--text-secondary);">' + keys[j] + '</div>' +
+                '</div>';
+        }
+        el.innerHTML = html;
+    }
+    function renderOperatorRatios() {
 
-    var services = {};
+        var activeComplaints = complaints.filter(function (r) {
+            return !r.isDeleted;
+        });
 
-    activeComplaints.forEach(function (c) {
+        var paxData =
+            JSON.parse(
+                localStorage.getItem('passengerStats')
+            ) || [];
 
-        var service = c.ptr || 'Diğer';
+        var stats = {};
 
-        services[service] = (services[service] || 0) + 1;
+        paxData.forEach(function (p) {
 
-    });
-    var html = '';
+            var op =
+                p.veranstalter ||
+                p.operator ||
+                'Bilinmiyor';
 
-    Object.keys(services)
-        .sort(function (a, b) {
-            return services[b] - services[a];
-        })
-        .forEach(function (s) {
+            if (!stats[op]) {
+                stats[op] = {
+                    pax: 0,
+                    complaints: 0
+                };
+            }
+
+            stats[op].pax +=
+                Number(p.adult || 0) +
+                Number(p.child || 0) +
+                Number(p.infant || 0);
+
+        });
+
+        activeComplaints.forEach(function (c) {
+
+            var op = c.veranstalter || 'Bilinmiyor';
+
+            if (!stats[op]) {
+                stats[op] = {
+                    pax: 0,
+                    complaints: 0
+                };
+            }
+
+            stats[op].complaints++;
+
+        });
+
+        var rows = [];
+
+        Object.keys(stats).forEach(function (op) {
+
+            var pax = stats[op].pax;
+
+            var comp = stats[op].complaints;
+
+            var ratio =
+                pax > 0
+                    ? ((comp / pax) * 100).toFixed(2)
+                    : 0;
+
+            var riskLevel = '🟢 Düşük';
+
+            if (ratio >= 7) {
+                riskLevel = '🔴 Yüksek';
+            }
+            else if (ratio >= 3) {
+                riskLevel = '🟡 Orta';
+            }
+
+            rows.push({
+                operator: op,
+                pax: pax,
+                complaints: comp,
+                ratio: Number(ratio),
+                risk: riskLevel
+            });
+
+        });
+
+        rows.sort(function (a, b) {
+            return b.ratio - a.ratio;
+        });
+
+        console.table(rows);
+
+        var html =
+            '<table class="table">' +
+            '<thead>' +
+            '<tr>' +
+            '<th>Operatör</th>' +
+            '<th>PAX</th>' +
+            '<th>Şikayet</th>' +
+            '<th>Oran %</th>' +
+            '<th>Risk</th>' +
+            '</tr>' +
+            '</thead><tbody>';
+
+        rows.forEach(function (r) {
 
             html +=
-                '<div style="margin-bottom:12px;">' +
-                '<div style="display:flex;justify-content:space-between;">' +
-                '<span>' + s + '</span>' +
-                '<b>' + services[s] + '</b>' +
+                '<tr>' +
+                '<td>' + r.operator + '</td>' +
+                '<td>' + r.pax + '</td>' +
+                '<td>' + r.complaints + '</td>' +
+                '<td>' + r.ratio + '%</td>' +
+                '<td>' + r.risk + '</td>' +
+                '</tr>';
+
+        });
+
+        html += '</tbody></table>';
+
+        document.getElementById('operator-ratio').innerHTML = html;
+
+        var maxComplaint = 0;
+
+        rows.forEach(function (r) {
+
+            if (r.complaints > maxComplaint) {
+                maxComplaint = r.complaints;
+            }
+
+        });
+
+        var chartHtml = '';
+
+        rows.forEach(function (r) {
+
+            var width =
+                maxComplaint > 0
+                    ? (r.complaints / maxComplaint) * 100
+                    : 0;
+
+            chartHtml +=
+                '<div class="operator-bar">' +
+                '<div class="operator-name">' +
+                r.operator +
                 '</div>' +
-                '<div style="height:8px;background:#eee;border-radius:5px;">' +
-                '<div style="height:8px;background:#2563eb;border-radius:5px;width:' +
-                (services[s] * 20) +
-                '%;"></div>' +
+                '<div class="operator-track">' +
+                '<div class="operator-fill" style="width:' +
+                width +
+                '%;">' +
+                r.complaints +
+                ' şikayet</div>' +
                 '</div>' +
                 '</div>';
 
         });
 
-    box.innerHTML = html;
-}
+        document.getElementById('operator-chart').innerHTML =
+            chartHtml;
 
-function renderTopComplaintSubjects() {
+        var regionStats = {};
 
-    var activeComplaints = complaints.filter(function (r) {
-        return !r.isDeleted;
-    });
+        complaints.forEach(function (c) {
 
-    var box = document.getElementById('top-complaints-chart');
-    if (!box) return;
-    var topics = {};
+            var region = c.region || 'Bilinmiyor';
 
-    activeComplaints.forEach(function (c) {
-
-        [c.ptr, c.ptr2, c.ptr3].forEach(function (p) {
-
-            if (!p) return;
-
-            topics[p] = (topics[p] || 0) + 1;
+            regionStats[region] =
+                (regionStats[region] || 0) + 1;
 
         });
 
-    });
+        var maxRegion = 0;
 
-    var top =
-        Object.entries(topics)
-            .sort(function (a, b) {
-                return b[1] - a[1];
-            })
-            .slice(0, 5);
+        Object.keys(regionStats).forEach(function (r) {
 
-    var html = '';
-
-    top.forEach(function (item) {
-
-        html +=
-            '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;">' +
-            '<span>' + item[0] + '</span>' +
-            '<b>' + item[1] + '</b>' +
-            '</div>';
-
-    });
-
-    box.innerHTML = html;
-}
-
-function resetDatabase() {
-    if (!confirm('Tüm şikayet ve fatura kayıtları silinsin mi?')) return;
-    localStorage.removeItem('tralvid_pages_complaints');
-    localStorage.removeItem('tralvid_pages_invoices');
-    complaints = []; invoices = [];
-    renderRecordsTable(); renderAccounting(); renderDashboard();
-    showToast('Veritabanı temizlendi.');
-}
-
-function backupDatabase() {
-    var backup = {
-        complaints: complaints,
-        invoices: invoices,
-        backupDate: new Date().toISOString()
-    };
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
-    var dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", "CRM_Yedek_" + new Date().toISOString().slice(0, 10) + ".json");
-    dlAnchorElem.click();
-}
-
-function restoreDatabase(event) {
-    var file = event.target.files[0]; if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function (e) {
-        try {
-            var data = JSON.parse(e.target.result);
-            complaints = data.complaints || []; invoices = data.invoices || [];
-            syncStorage(); renderRecordsTable(); renderDashboard(); renderAccounting();
-            showToast('Yedek başarıyla geri yüklendi.');
-        } catch (err) { alert('Geçersiz yedek dosyası.'); }
-    };
-    reader.readAsText(file);
-}
-
-function importMasterData(event) {
-
-    var file = event.target.files[0];
-    if (!file) return;
-
-    var reader = new FileReader();
-
-    reader.onload = function (e) {
-
-        var data = new Uint8Array(e.target.result);
-
-        var workbook = XLSX.read(data, {
-            type: 'array'
-        });
-
-        function readSheet(sheetName) {
-
-            if (!workbook.Sheets[sheetName]) {
-                return [];
+            if (regionStats[r] > maxRegion) {
+                maxRegion = regionStats[r];
             }
 
-            var rows = XLSX.utils.sheet_to_json(
-                workbook.Sheets[sheetName],
-                { header: 1 }
-            );
+        });
 
-            return rows
-                .slice(1)
-                .map(r => r[0])
-                .filter(Boolean);
+        var regionHtml = '';
 
-        }
+        Object.keys(regionStats).forEach(function (r) {
 
-        localStorage.setItem(
-            'operators',
-            JSON.stringify(readSheet('Operatörler'))
-        );
+            var width =
+                (regionStats[r] / maxRegion) * 100;
 
-        localStorage.setItem(
-            'regions',
-            JSON.stringify(readSheet('Bolgeler'))
-        );
+            regionHtml +=
+                '<div class="operator-bar">' +
+                '<div class="operator-name">' +
+                r +
+                '</div>' +
+                '<div class="operator-track">' +
+                '<div class="operator-fill" style="width:' +
+                width +
+                '%;">' +
+                regionStats[r] +
+                ' şikayet</div>' +
+                '</div>' +
+                '</div>';
 
-        localStorage.setItem(
-            'airports',
-            JSON.stringify(readSheet('Havalimanlari'))
-        );
+        });
 
-        localStorage.setItem(
-            'services',
-            JSON.stringify(readSheet('Servisler'))
-        );
+        document.getElementById('region-chart').innerHTML =
+            regionHtml;
 
-        var complaintSheet =
-            workbook.Sheets['SikayetKonulari'];
+    }
 
-        if (complaintSheet) {
+    function renderServiceComplaints() {
 
-            var rows =
-                XLSX.utils.sheet_to_json(
-                    complaintSheet,
+        var activeComplaints = complaints.filter(function (r) {
+            return !r.isDeleted;
+        });
+
+        var box = document.getElementById('service-complaint-chart');
+        if (!box) return;
+
+        var services = {};
+
+        activeComplaints.forEach(function (c) {
+
+            var service = c.ptr || 'Diğer';
+
+            services[service] = (services[service] || 0) + 1;
+
+        });
+        var html = '';
+
+        Object.keys(services)
+            .sort(function (a, b) {
+                return services[b] - services[a];
+            })
+            .forEach(function (s) {
+
+                html +=
+                    '<div style="margin-bottom:12px;">' +
+                    '<div style="display:flex;justify-content:space-between;">' +
+                    '<span>' + s + '</span>' +
+                    '<b>' + services[s] + '</b>' +
+                    '</div>' +
+                    '<div style="height:8px;background:#eee;border-radius:5px;">' +
+                    '<div style="height:8px;background:#2563eb;border-radius:5px;width:' +
+                    (services[s] * 20) +
+                    '%;"></div>' +
+                    '</div>' +
+                    '</div>';
+
+            });
+
+        box.innerHTML = html;
+    }
+
+    function renderTopComplaintSubjects() {
+
+        var activeComplaints = complaints.filter(function (r) {
+            return !r.isDeleted;
+        });
+
+        var box = document.getElementById('top-complaints-chart');
+        if (!box) return;
+        var topics = {};
+
+        activeComplaints.forEach(function (c) {
+
+            [c.ptr, c.ptr2, c.ptr3].forEach(function (p) {
+
+                if (!p) return;
+
+                topics[p] = (topics[p] || 0) + 1;
+
+            });
+
+        });
+
+        var top =
+            Object.entries(topics)
+                .sort(function (a, b) {
+                    return b[1] - a[1];
+                })
+                .slice(0, 5);
+
+        var html = '';
+
+        top.forEach(function (item) {
+
+            html +=
+                '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;">' +
+                '<span>' + item[0] + '</span>' +
+                '<b>' + item[1] + '</b>' +
+                '</div>';
+
+        });
+
+        box.innerHTML = html;
+    }
+
+    function resetDatabase() {
+        if (!confirm('Tüm şikayet ve fatura kayıtları silinsin mi?')) return;
+        localStorage.removeItem('tralvid_pages_complaints');
+        localStorage.removeItem('tralvid_pages_invoices');
+        complaints = []; invoices = [];
+        renderRecordsTable(); renderAccounting(); renderDashboard();
+        showToast('Veritabanı temizlendi.');
+    }
+
+    function backupDatabase() {
+        var backup = {
+            complaints: complaints,
+            invoices: invoices,
+            backupDate: new Date().toISOString()
+        };
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+        var dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr);
+        dlAnchorElem.setAttribute("download", "CRM_Yedek_" + new Date().toISOString().slice(0, 10) + ".json");
+        dlAnchorElem.click();
+    }
+
+    function restoreDatabase(event) {
+        var file = event.target.files[0]; if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                var data = JSON.parse(e.target.result);
+                complaints = data.complaints || []; invoices = data.invoices || [];
+                syncStorage(); renderRecordsTable(); renderDashboard(); renderAccounting();
+                showToast('Yedek başarıyla geri yüklendi.');
+            } catch (err) { alert('Geçersiz yedek dosyası.'); }
+        };
+        reader.readAsText(file);
+    }
+
+    function importMasterData(event) {
+
+        var file = event.target.files[0];
+        if (!file) return;
+
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            var data = new Uint8Array(e.target.result);
+
+            var workbook = XLSX.read(data, {
+                type: 'array'
+            });
+
+            function readSheet(sheetName) {
+
+                if (!workbook.Sheets[sheetName]) {
+                    return [];
+                }
+
+                var rows = XLSX.utils.sheet_to_json(
+                    workbook.Sheets[sheetName],
                     { header: 1 }
                 );
 
-            var reasonsTR = [];
-            var reasonsDE = [];
-            var reasonsEN = [];
+                return rows
+                    .slice(1)
+                    .map(r => r[0])
+                    .filter(Boolean);
 
-            for (var i = 1; i < rows.length; i++) {
-
-                if (rows[i][0]) {
-                    reasonsTR.push(rows[i][0]);
-                }
-
-                if (rows[i][1]) {
-                    reasonsDE.push(rows[i][1]);
-                }
-
-                if (rows[i][2]) {
-                    reasonsEN.push(rows[i][2]);
-                }
             }
 
             localStorage.setItem(
-                'reasonsTR',
-                JSON.stringify(reasonsTR)
+                'operators',
+                JSON.stringify(readSheet('Operatörler'))
             );
 
             localStorage.setItem(
-                'reasonsDE',
-                JSON.stringify(reasonsDE)
+                'regions',
+                JSON.stringify(readSheet('Bolgeler'))
             );
 
             localStorage.setItem(
-                'reasonsEN',
-                JSON.stringify(reasonsEN)
+                'airports',
+                JSON.stringify(readSheet('Havalimanlari'))
+            );
+
+            localStorage.setItem(
+                'services',
+                JSON.stringify(readSheet('Servisler'))
+            );
+
+            var complaintSheet =
+                workbook.Sheets['SikayetKonulari'];
+
+            if (complaintSheet) {
+
+                var rows =
+                    XLSX.utils.sheet_to_json(
+                        complaintSheet,
+                        { header: 1 }
+                    );
+
+                var reasonsTR = [];
+                var reasonsDE = [];
+                var reasonsEN = [];
+
+                for (var i = 1; i < rows.length; i++) {
+
+                    if (rows[i][0]) {
+                        reasonsTR.push(rows[i][0]);
+                    }
+
+                    if (rows[i][1]) {
+                        reasonsDE.push(rows[i][1]);
+                    }
+
+                    if (rows[i][2]) {
+                        reasonsEN.push(rows[i][2]);
+                    }
+                }
+
+                localStorage.setItem(
+                    'reasonsTR',
+                    JSON.stringify(reasonsTR)
+                );
+
+                localStorage.setItem(
+                    'reasonsDE',
+                    JSON.stringify(reasonsDE)
+                );
+
+                localStorage.setItem(
+                    'reasonsEN',
+                    JSON.stringify(reasonsEN)
+                );
+            }
+
+            localStorage.setItem(
+                'transferTypes',
+                JSON.stringify(readSheet('TransferTurleri'))
+            );
+
+            localStorage.setItem(
+                'hotelPartners',
+                JSON.stringify(readSheet('Oteller'))
+            );
+
+            showToast('Master veri başarıyla yüklendi.');
+
+            renderDashboard();
+
+        };
+
+        reader.readAsArrayBuffer(file);
+
+    }
+
+    function exportMasterData() {
+
+        var workbook = XLSX.utils.book_new();
+
+        function addSheet(sheetName, storageKey, columnName) {
+
+            var data =
+                JSON.parse(
+                    localStorage.getItem(storageKey)
+                ) || [];
+
+            var rows = [[columnName]];
+
+            data.forEach(function (item) {
+                rows.push([item]);
+            });
+
+            var worksheet =
+                XLSX.utils.aoa_to_sheet(rows);
+
+            XLSX.utils.book_append_sheet(
+                workbook,
+                worksheet,
+                sheetName
             );
         }
 
-        localStorage.setItem(
-            'transferTypes',
-            JSON.stringify(readSheet('TransferTurleri'))
-        );
-
-        localStorage.setItem(
-            'hotelPartners',
-            JSON.stringify(readSheet('Oteller'))
-        );
-
-        showToast('Master veri başarıyla yüklendi.');
-
-        renderDashboard();
-
-    };
-
-    reader.readAsArrayBuffer(file);
-
-}
-
-function exportMasterData() {
-
-    var workbook = XLSX.utils.book_new();
-
-    function addSheet(sheetName, storageKey, columnName) {
-
-        var data =
-            JSON.parse(
-                localStorage.getItem(storageKey)
-            ) || [];
-
-        var rows = [[columnName]];
-
-        data.forEach(function (item) {
-            rows.push([item]);
-        });
-
-        var worksheet =
-            XLSX.utils.aoa_to_sheet(rows);
-
-        XLSX.utils.book_append_sheet(
-            workbook,
-            worksheet,
-            sheetName
-        );
-    }
-
-    addSheet(
-        'Operatörler',
-        'operators',
-        'Operatör'
-    );
-
-    addSheet(
-        'Bolgeler',
-        'regions',
-        'Bölge'
-    );
-
-    addSheet(
-        'Havalimanlari',
-        'airports',
-        'Havalimanı'
-    );
-
-    addSheet(
-        'Servisler',
-        'services',
-        'Servis'
-    );
-
-    addSheet(
-        'SikayetKonulari',
-        'reasons',
-        'Konu'
-    );
-
-    addSheet(
-        'TransferTurleri',
-        'transferTypes',
-        'Transfer Türü'
-    );
-
-    addSheet(
-        'Oteller',
-        'hotelPartners',
-        'Otel'
-    );
-
-    XLSX.writeFile(
-        workbook,
-        'TRALVID_MasterData.xlsx'
-    );
-
-    showToast(
-        'Master veri Excel dosyası oluşturuldu.'
-    );
-}
-
-// Overlay Kapatıcı Kuralı
-document.addEventListener('click', function (e) {
-    if (e.target.id === 'complaint-modal-overlay') closeComplaintModal();
-    if (e.target.id === 'invoice-modal-overlay') closeInvoiceModal();
-    if (e.target.id === 'detail-modal-overlay') closeDetailModal();
-});
-
-// INITIALIZER
-document.addEventListener('DOMContentLoaded', function () {
-
-    if (!localStorage.getItem('transferTypes')) {
-
-        localStorage.setItem(
-            'transferTypes',
-            JSON.stringify([
-                'Shuttle',
-                'Private Sedan',
-                'Private Minivan',
-                'Private Vito',
-                'Private Sprinter',
-                'Private Midibus',
-                'Private Bus',
-                'VIP Sedan',
-                'VIP Vito',
-                'VIP Minibus',
-                'VIP Midibus'
-            ])
-        );
-
-    }
-
-    if (!localStorage.getItem('operators')) {
-
-        localStorage.setItem(
+        addSheet(
+            'Operatörler',
             'operators',
-            JSON.stringify([
-                'TUI',
-                'JET2',
-                'ANEX',
-                'CORAL',
-                'ODEON',
-                'DERTOUR',
-                'SCHAUINSLAND',
-                'HOLIDAY CHECK',
-                'LOVEHOLIDAYS',
-                'ON THE BEACH',
-                'EASYJET HOLIDAYS',
-                'SUNEXPRESS HOLIDAYS'
-            ])
+            'Operatör'
         );
 
+        addSheet(
+            'Bolgeler',
+            'regions',
+            'Bölge'
+        );
+
+        addSheet(
+            'Havalimanlari',
+            'airports',
+            'Havalimanı'
+        );
+
+        addSheet(
+            'Servisler',
+            'services',
+            'Servis'
+        );
+
+        addSheet(
+            'SikayetKonulari',
+            'reasons',
+            'Konu'
+        );
+
+        addSheet(
+            'TransferTurleri',
+            'transferTypes',
+            'Transfer Türü'
+        );
+
+        addSheet(
+            'Oteller',
+            'hotelPartners',
+            'Otel'
+        );
+
+        XLSX.writeFile(
+            workbook,
+            'TRALVID_MasterData.xlsx'
+        );
+
+        showToast(
+            'Master veri Excel dosyası oluşturuldu.'
+        );
     }
 
-    var savedUser = sessionStorage.getItem('currentUser');
+    // Overlay Kapatıcı Kuralı
+    document.addEventListener('click', function (e) {
+        if (e.target.id === 'complaint-modal-overlay') closeComplaintModal();
+        if (e.target.id === 'invoice-modal-overlay') closeInvoiceModal();
+        if (e.target.id === 'detail-modal-overlay') closeDetailModal();
+    });
 
-    if (savedUser) {
+    // INITIALIZER
+    document.addEventListener('DOMContentLoaded', function () {
 
-        currentUser = JSON.parse(savedUser);
+        if (!localStorage.getItem('transferTypes')) {
 
-        if (!currentUser) {
-            sessionStorage.removeItem('currentUser');
-            location.reload();
-            return;
+            localStorage.setItem(
+                'transferTypes',
+                JSON.stringify([
+                    'Shuttle',
+                    'Private Sedan',
+                    'Private Minivan',
+                    'Private Vito',
+                    'Private Sprinter',
+                    'Private Midibus',
+                    'Private Bus',
+                    'VIP Sedan',
+                    'VIP Vito',
+                    'VIP Minibus',
+                    'VIP Midibus'
+                ])
+            );
+
         }
 
-        if (!currentUser.username) {
-            sessionStorage.removeItem('currentUser');
-            location.reload();
-            return;
+        if (!localStorage.getItem('operators')) {
+
+            localStorage.setItem(
+                'operators',
+                JSON.stringify([
+                    'TUI',
+                    'JET2',
+                    'ANEX',
+                    'CORAL',
+                    'ODEON',
+                    'DERTOUR',
+                    'SCHAUINSLAND',
+                    'HOLIDAY CHECK',
+                    'LOVEHOLIDAYS',
+                    'ON THE BEACH',
+                    'EASYJET HOLIDAYS',
+                    'SUNEXPRESS HOLIDAYS'
+                ])
+            );
+
         }
 
-        if (!USERS[currentUser.username]) {
+        var savedUser = sessionStorage.getItem('currentUser');
 
-            localStorage.removeItem('currentUser');
+        if (savedUser) {
+
+            currentUser = JSON.parse(savedUser);
+
+            if (!currentUser) {
+                sessionStorage.removeItem('currentUser');
+                location.reload();
+                return;
+            }
+
+            if (!currentUser.username) {
+                sessionStorage.removeItem('currentUser');
+                location.reload();
+                return;
+            }
+
+            if (!USERS[currentUser.username]) {
+
+                localStorage.removeItem('currentUser');
+
+                document.getElementById('login-modal')
+                    .style.display = 'flex';
+
+                return;
+            }
 
             document.getElementById('login-modal')
-                .style.display = 'flex';
+                .style.display = 'none';
 
-            return;
-        }
+            applyPermissions();
 
-        document.getElementById('login-modal')
-            .style.display = 'none';
-
-        applyPermissions();
-
-        initSessionTimeout();
-
-        renderDashboard();
-        renderRecordsTable();
-        renderAccounting();
-        renderUsers();
-        renderDeleteRequests();
-
-        showPage(
-            localStorage.getItem('activePage') || 'dashboard'
-        );
-
-        /* SAVUNMA DOSYALARI */
-
-        document
-            .getElementById('c-sn')
-            .addEventListener('change', function () {
-
-                document
-                    .getElementById('defense-file-area')
-                    .style.display =
-
-                    this.value === 'Evet'
-
-                        ? 'block'
-                        : 'none';
-
-            });
-
-        document
-            .getElementById('c-defense-files')
-            .addEventListener('change', function () {
-
-                Array
-                    .from(this.files)
-                    .forEach(function (file) {
-
-                        pendingAttachments.push(file);
-
-                    });
-
-                var html = '';
-
-                pendingAttachments.forEach(function (file, index) {
-
-                    html +=
-                        (index + 1) +
-                        '. 📎 ' +
-                        file.name +
-                        ' <button type="button" onclick="removePendingFile(' +
-                        index +
-                        ')">❌</button><br>';
-
-                });
-
-                document
-                    .getElementById('defense-file-list')
-                    .innerHTML = html;
-
-                this.value = '';
-
-            });
-
-        window.addEventListener('storage', function () {
-
-            complaints = JSON.parse(
-                localStorage.getItem('tralvid_pages_complaints')
-            ) || [];
-
-            invoices = JSON.parse(
-                localStorage.getItem('tralvid_pages_invoices')
-            ) || [];
+            initSessionTimeout();
 
             renderDashboard();
             renderRecordsTable();
             renderAccounting();
+            renderUsers();
             renderDeleteRequests();
 
-        });
+            showPage(
+                localStorage.getItem('activePage') || 'dashboard'
+            );
 
-    } else {
+            /* SAVUNMA DOSYALARI */
 
-        document.getElementById('login-modal')
-            .style.display = 'flex';
+            document
+                .getElementById('c-sn')
+                .addEventListener('change', function () {
 
-    }
+                    document
+                        .getElementById('defense-file-area')
+                        .style.display =
 
-});
+                        this.value === 'Evet'
+
+                            ? 'block'
+                            : 'none';
+
+                });
+
+            document
+                .getElementById('c-defense-files')
+                .addEventListener('change', function () {
+
+                    Array
+                        .from(this.files)
+                        .forEach(function (file) {
+
+                            pendingAttachments.push(file);
+
+                        });
+
+                    var html = '';
+
+                    pendingAttachments.forEach(function (file, index) {
+
+                        html +=
+                            (index + 1) +
+                            '. 📎 ' +
+                            file.name +
+                            ' <button type="button" onclick="removePendingFile(' +
+                            index +
+                            ')">❌</button><br>';
+
+                    });
+
+                    document
+                        .getElementById('defense-file-list')
+                        .innerHTML = html;
+
+                    this.value = '';
+
+                });
+
+            window.addEventListener('storage', function () {
+
+                complaints = JSON.parse(
+                    localStorage.getItem('tralvid_pages_complaints')
+                ) || [];
+
+                invoices = JSON.parse(
+                    localStorage.getItem('tralvid_pages_invoices')
+                ) || [];
+
+                renderDashboard();
+                renderRecordsTable();
+                renderAccounting();
+                renderDeleteRequests();
+
+            });
+
+        } else {
+
+            document.getElementById('login-modal')
+                .style.display = 'flex';
+
+        }
+
+    });
