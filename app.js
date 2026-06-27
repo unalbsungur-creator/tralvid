@@ -504,6 +504,50 @@ request.onupgradeneeded = function (event) {
 
     }
 
+    if (!fileDB.objectStoreNames.contains('reservations')) {
+
+        fileDB.createObjectStore(
+            'reservations',
+            {
+                keyPath: 'booking'
+            }
+        );
+
+    }
+
+    if (!fileDB.objectStoreNames.contains('flights')) {
+
+        fileDB.createObjectStore(
+            'flights',
+            {
+                keyPath: 'booking'
+            }
+        );
+
+    }
+
+    if (!fileDB.objectStoreNames.contains('transfers')) {
+
+        fileDB.createObjectStore(
+            'transfers',
+            {
+                keyPath: 'booking'
+            }
+        );
+
+    }
+
+    if (!fileDB.objectStoreNames.contains('passengers')) {
+
+        fileDB.createObjectStore(
+            'passengers',
+            {
+                autoIncrement: true
+            }
+        );
+
+    }
+
 };
 
 request.onsuccess = function (event) {
