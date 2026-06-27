@@ -1553,78 +1553,22 @@ function fillPassengerData() {
     var search =
         bookingNo.toUpperCase();
 
-    var reservations =
-        JSON.parse(
-            localStorage.getItem('reservations') || '[]'
-        );
+    var bookingData =
+        getBookingData(bookingNo);
 
     var reservation =
-        reservations.find(function (item) {
-
-            return (
-
-                String(item.booking || '')
-                    .trim()
-                    .toUpperCase() === search ||
-
-                String(item.voucher || '')
-                    .trim()
-                    .toUpperCase() === search ||
-
-                String(item.masterVoucher || '')
-                    .trim()
-                    .toUpperCase() === search
-
-            );
-
-        });
-
-    var pax = null;
-
-    var flightData =
-        JSON.parse(
-            localStorage.getItem('flights') || '[]'
-        );
-
-    var transferData =
-        JSON.parse(
-            localStorage.getItem('transfers') || '[]'
-        );
-
-    var passengerData =
-        JSON.parse(
-            localStorage.getItem('passengers') || '[]'
-        );
+        bookingData.reservation;
 
     var flight =
-        flightData.find(function (item) {
-
-            return (
-                String(item.booking).trim() ===
-                String(bookingNo).trim()
-            );
-
-        });
+        bookingData.flight;
 
     var transfer =
-        transferData.find(function (item) {
-
-            return (
-                String(item.booking).trim() ===
-                String(bookingNo).trim()
-            );
-
-        });
+        bookingData.transfer;
 
     var guests =
-        passengerData.filter(function (item) {
+        bookingData.passengers;
 
-            return (
-                String(item.booking).trim() ===
-                String(bookingNo).trim()
-            );
-
-        });
+    var pax = reservation || {};
 
     console.log('GUESTS =', guests);
     console.log('GUEST=', guests);
