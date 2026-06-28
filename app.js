@@ -1521,32 +1521,27 @@ async function loadBookingCollections() {
 
 }
 
-function getBookingData(bookingNo) {
+async function getBookingData(bookingNo) {
 
     var search =
         String(bookingNo)
             .trim()
             .toUpperCase();
 
+    var data =
+        await loadBookingCollections();
+
     var reservations =
-        JSON.parse(
-            localStorage.getItem('reservations') || '[]'
-        );
+        data.reservations;
 
     var flights =
-        JSON.parse(
-            localStorage.getItem('flights') || '[]'
-        );
+        data.flights;
 
     var transfers =
-        JSON.parse(
-            localStorage.getItem('transfers') || '[]'
-        );
+        data.transfers;
 
     var passengers =
-        JSON.parse(
-            localStorage.getItem('passengers') || '[]'
-        );
+        data.passengers;
 
     var reservation =
         reservations.find(function (r) {
@@ -1731,7 +1726,7 @@ function saveOperationData(data, callback) {
 
 // ================= DATA ACTIONS =================
 
-function fillPassengerData() {
+async function fillPassengerData() {
 
     function excelDateToInputDate(excelDate) {
 
@@ -1757,7 +1752,7 @@ function fillPassengerData() {
         bookingNo.toUpperCase();
 
     var bookingData =
-        getBookingData(bookingNo);
+        await getBookingData(bookingNo);
 
     var reservation =
         bookingData.reservation;
