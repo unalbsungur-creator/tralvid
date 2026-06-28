@@ -1987,6 +1987,8 @@ async function developerBookingTest() {
     var data =
         await getBookingData(booking);
 
+    alert(JSON.stringify(data, null, 2));
+
     var html = "";
 
     html +=
