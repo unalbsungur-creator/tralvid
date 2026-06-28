@@ -1483,11 +1483,25 @@ function getAllFromStore(storeName) {
 
     return new Promise(function (resolve, reject) {
 
-        var tx = db.transaction(storeName, "readonly");
+        if (!fileDB) {
 
-        var store = tx.objectStore(storeName);
+            reject(new Error("IndexedDB henüz hazır değil."));
 
-        var req = store.getAll();
+            return;
+
+        }
+
+        var tx =
+            fileDB.transaction(
+                storeName,
+                "readonly"
+            );
+
+        var store =
+            tx.objectStore(storeName);
+
+        var req =
+            store.getAll();
 
         req.onsuccess = function () {
 
@@ -1504,7 +1518,6 @@ function getAllFromStore(storeName) {
     });
 
 }
-
 async function loadBookingCollections() {
 
     return {
