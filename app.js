@@ -1973,6 +1973,8 @@ async function renderDeveloperCenter() {
 
 async function developerBookingTest() {
 
+    alert("Developer Test V2");
+
     var booking =
 
         document.getElementById(
