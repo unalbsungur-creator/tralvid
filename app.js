@@ -4474,7 +4474,11 @@ function showImportResult(collections) {
 
 function importOperationExcel(event) {
 
+    console.log("=== IMPORT BAŞLADI ===");
+
     var file = event.target.files[0];
+
+    console.log("Dosya :", file ? file.name : "YOK");
 
     if (!file) return;
 
@@ -4484,6 +4488,13 @@ function importOperationExcel(event) {
 
             var collections =
                 parseOperationRows(rows);
+
+            console.log("Collections =", collections);
+
+            console.log("Reservations :", collections.reservations.length);
+            console.log("Flights      :", collections.flights.length);
+            console.log("Transfers    :", collections.transfers.length);
+            console.log("Passengers   :", collections.passengers.length);
 
             saveOperationData(
 
