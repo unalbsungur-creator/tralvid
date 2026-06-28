@@ -1971,6 +1971,96 @@ async function renderDeveloperCenter() {
 
 }
 
+async function developerBookingTest() {
+
+    var booking =
+
+        document.getElementById(
+            "developer-booking"
+        ).value.trim();
+
+    if (!booking)
+        return;
+
+    var data =
+        await getBookingData(booking);
+
+    var html = "";
+
+    html +=
+        "<b>Reservation :</b> " +
+
+        (data.reservation ? "✅" : "❌") +
+
+        "<br>";
+
+    html +=
+        "<b>Flight :</b> " +
+
+        (data.flight ? "✅" : "❌") +
+
+        "<br>";
+
+    html +=
+        "<b>Transfer :</b> " +
+
+        (data.transfer ? "✅" : "❌") +
+
+        "<br>";
+
+    html +=
+        "<b>Passengers :</b> " +
+
+        data.passengers.length +
+
+        "<br><br>";
+
+    if (data.reservation) {
+
+        html +=
+
+            "<b>Hotel :</b> " +
+
+            (data.reservation.hotel || "-") +
+
+            "<br>";
+
+    }
+
+    if (data.flight) {
+
+        html +=
+
+            "<b>Arrival Flight :</b> " +
+
+            (data.flight.arrivalFlightNo || "-") +
+
+            "<br>";
+
+    }
+
+    if (data.passengers.length) {
+
+        html +=
+
+            "<b>İlk Yolcu :</b> " +
+
+            data.passengers[0].firstName +
+
+            " " +
+
+            data.passengers[0].lastName;
+
+    }
+
+    document.getElementById(
+
+        "developer-booking-result"
+
+    ).innerHTML = html;
+
+}
+
 async function fillPassengerData() {
 
     function excelDateToInputDate(excelDate) {
