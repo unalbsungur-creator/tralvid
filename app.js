@@ -1931,7 +1931,7 @@ async function fillPassengerData() {
         transferValue;
 
     document.getElementById('c-transferprovider').value =
-        transfer.supplier || '';
+        transfer ? (transfer.supplier || '') : '';
 
     document.getElementById('c-subbooking').value =
         String(pax.subBooking || '').trim();
