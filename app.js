@@ -2015,6 +2015,8 @@ async function developerBookingTest() {
 
         "<br><br>";
 
+
+
     if (data.reservation) {
 
         html +=
@@ -2052,6 +2054,28 @@ async function developerBookingTest() {
             data.passengers[0].lastName;
 
     }
+
+    html += "<hr>";
+
+    html += "<b>Operator :</b> " +
+        (data.reservation?.operator || "-") +
+        "<br>";
+
+    html += "<b>Region :</b> " +
+        (data.reservation?.region || "-") +
+        "<br>";
+
+    html += "<b>Hotel :</b> " +
+        (data.reservation?.hotel || "-") +
+        "<br>";
+
+    html += "<b>Transfer Type :</b> " +
+        (data.transfer?.transferType || "-") +
+        "<br>";
+
+    document.getElementById(
+        "developer-booking-result"
+    ).innerHTML = html;
 
     document.getElementById(
 
