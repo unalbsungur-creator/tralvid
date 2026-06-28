@@ -1662,6 +1662,139 @@ function saveReservationsToIndexedDB(data, callback) {
 // SAVE OPERATION DATA TO INDEXEDDB
 // ======================================================
 
+function mergeReservation(item) {
+
+    return new Promise(function (resolve, reject) {
+
+        var tx =
+            fileDB.transaction(
+                "reservations",
+                "readwrite"
+            );
+
+        var store =
+            tx.objectStore(
+                "reservations"
+            );
+
+        var req =
+            store.get(item.booking);
+
+        req.onsuccess = function () {
+
+            var old =
+                req.result || {};
+
+            var merged = {
+
+                ...old,
+
+                ...item
+
+            };
+
+            Object.keys(merged).forEach(function (k) {
+
+                if (
+
+                    merged[k] === "" ||
+
+                    merged[k] === null ||
+
+                    merged[k] === undefined
+
+                ) {
+
+                    merged[k] =
+                        old[k];
+
+                }
+
+            });
+
+            store.put(merged);
+
+        };
+
+        tx.oncomplete = function () {
+
+            resolve();
+
+        };
+
+        tx.onerror = function (e) {
+
+            reject(e);
+
+        };
+
+    });
+
+}
+
+async function saveReservation(item) {
+
+    return new Promise(function (resolve, reject) {
+
+        var tx =
+            fileDB.transaction(
+                "reservations",
+                "readwrite"
+            );
+
+        var store =
+            tx.objectStore(
+                "reservations"
+            );
+
+        var req =
+            store.get(item.booking);
+
+        req.onsuccess = function () {
+
+            var current =
+                req.result || {};
+
+            Object.keys(item).forEach(function (key) {
+
+                var value = item[key];
+
+                if (
+
+                    value !== "" &&
+
+                    value !== null &&
+
+                    value !== undefined
+
+                ) {
+
+                    current[key] = value;
+
+                }
+
+            });
+
+            store.put(current);
+
+        };
+
+        tx.oncomplete = function () {
+
+            resolve();
+
+        };
+
+        tx.onerror = function (e) {
+
+            reject(e);
+
+        };
+
+    });
+
+}
+
 function saveOperationData(data, callback) {
 
     var tx =
