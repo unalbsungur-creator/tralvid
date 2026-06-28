@@ -1872,6 +1872,52 @@ function saveOperationData(data, callback) {
 
 // ================= DATA ACTIONS =================
 
+async function renderDeveloperCenter() {
+
+    var reservations =
+        await getAllFromStore("reservations");
+
+    var flights =
+        await getAllFromStore("flights");
+
+    var transfers =
+        await getAllFromStore("transfers");
+
+    var passengers =
+        await getAllFromStore("passengers");
+
+    var attachments =
+        await getAllFromStore("attachments");
+
+    document.getElementById(
+        "developer-db-stats"
+    ).innerHTML =
+
+        "Reservations : " +
+        reservations.length +
+
+        "<br><br>" +
+
+        "Flights : " +
+        flights.length +
+
+        "<br><br>" +
+
+        "Transfers : " +
+        transfers.length +
+
+        "<br><br>" +
+
+        "Passengers : " +
+        passengers.length +
+
+        "<br><br>" +
+
+        "Attachments : " +
+        attachments.length;
+
+}
+
 async function fillPassengerData() {
 
     function excelDateToInputDate(excelDate) {
