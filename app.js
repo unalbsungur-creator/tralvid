@@ -4292,168 +4292,42 @@ function importOperationExcel(event) {
 
     if (!file) return;
 
-    var reader = new FileReader();
+    readExcelFile(file)
 
-    reader.onload = function (e) {
-
-
-        var headerInfo =
-            findHeaderRow(rows);
-
-        if (!headerInfo) {
-
-            alert(
-                "Excel başlık satırı bulunamadı."
-            );
-
-            return;
-
-        }
-
-        var headers =
-            rows[
-            headerInfo.index
-            ];
-
-        var groups =
-            detectDataGroups(headers);
-
-        console.log(groups);
-
-        console.table(headers);
-
-        console.log(
-            rows[headerInfo.index]
-        );
-
-        console.log(
-            rows[headerInfo.index + 1]
-        );
-
-        console.log(
-            "IMPORT PROFILE =",
-            headerInfo.profile
-        );
-
-        console.log(
-            detectDataGroups(headers)
-        );
-
-        var reservations = [];
-        var profile =
-            detectImportProfile(headers);
-
-        console.log("IMPORT PROFILE =", profile);
-        var flights = [];
-        var transfers = [];
-        var passengers = [];
-
-        for (
-
-            var i =
-                headerInfo.index + 1;
-
-            i < rows.length;
-
-            i++
-
-        ) {
-
-            var row = rows[i];
-
-            if (!row || !row.length)
-                continue;
-
-            var mtr =
-                mapExcelRow(
-                    headers,
-                    row
-                );
-
-            console.log("HEADERLAR", headers);
-            console.log("MTR", mtr);
-
-            var booking =
-                String(
-                    mtr.bookingNumber || ''
-                ).trim();
-
-            console.log("BOOKING =", booking);
-            if (!booking)
-                continue;
+        .then(function (rows) {
 
             var collections =
-                buildCollectionsFromMTR(mtr);
-
-            if (groups.reservation) {
-
-                reservations.push(
-                    collections.reservation
-                );
-
-            }
-
-            if (groups.flight) {
-
-                flights.push(
-                    collections.flight
-                );
-
-            }
-
-            if (groups.transfer) {
-
-                transfers.push(
-                    collections.transfer
-                );
-
-            }
-
-            if (groups.passenger) {
-
-                passengers.push(
-                    collections.passenger
-                );
-
-            }
+                parseOperationRows(rows);
 
             saveOperationData(
 
-                {
-
-                    reservations: reservations,
-
-                    flights: flights,
-
-                    transfers: transfers,
-
-                    passengers: passengers
-
-                },
+                collections,
 
                 function () {
 
-                    alert(
-                        'V2 Operasyon Verisi Yüklendi\n\n' +
-                        'Rezervasyon : ' +
-                        reservations.length +
-                        '\nUçuş : ' +
-                        flights.length +
-                        '\nTransfer : ' +
-                        transfers.length +
-                        '\nYolcu : ' +
-                        passengers.length
+                    showImportResult(
+                        collections
                     );
 
                 }
 
             );
 
-        };
+        })
 
-        reader.readAsArrayBuffer(file);
+        .catch(function (err) {
 
-    }
+            console.error(err);
+
+            alert(
+
+                "Excel yüklenemedi.\n\n" +
+
+                err.message
+
+            );
+
+        });
 
 }
 
