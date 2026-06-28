@@ -4218,6 +4218,13 @@ function parseOperationRows(rows) {
 
         var mtr = mapExcelRow(headers, row);
 
+        console.log("MTR =", mtr);
+
+        console.log(
+            "Booking =",
+            mtr.bookingNumber
+        );
+
         var booking =
             String(mtr.bookingNumber || '').trim();
 
