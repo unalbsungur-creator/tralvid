@@ -1479,6 +1479,48 @@ function buildCollectionsFromMTR(mtr) {
 // GET BOOKING DATA
 // ======================================================
 
+function getAllFromStore(storeName) {
+
+    return new Promise(function (resolve, reject) {
+
+        var tx = db.transaction(storeName, "readonly");
+
+        var store = tx.objectStore(storeName);
+
+        var req = store.getAll();
+
+        req.onsuccess = function () {
+
+            resolve(req.result || []);
+
+        };
+
+        req.onerror = function () {
+
+            reject(req.error);
+
+        };
+
+    });
+
+}
+
+async function loadBookingCollections() {
+
+    return {
+
+        reservations: await getAllFromStore("reservations"),
+
+        flights: await getAllFromStore("flights"),
+
+        transfers: await getAllFromStore("transfers"),
+
+        passengers: await getAllFromStore("passengers")
+
+    };
+
+}
+
 function getBookingData(bookingNo) {
 
     var search =
