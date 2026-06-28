@@ -4236,15 +4236,15 @@ function showImportResult(collections) {
 
 }
 
-async function importOperationExcel(event) {
+function importOperationExcel(event) {
 
     var file = event.target.files[0];
 
     if (!file) return;
 
-    try {
+    var reader = new FileReader();
 
-        var rows = await readExcelFile(file);
+    reader.onload = function (e) {
 
 
         var headerInfo =
