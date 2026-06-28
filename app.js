@@ -4214,6 +4214,28 @@ function parseOperationRows(rows) {
 
 }
 
+function showImportResult(collections) {
+
+    alert(
+
+        'V2 Operasyon Verisi Yüklendi\n\n' +
+
+        'Rezervasyon : ' +
+        collections.reservations.length +
+
+        '\nUçuş : ' +
+        collections.flights.length +
+
+        '\nTransfer : ' +
+        collections.transfers.length +
+
+        '\nYolcu : ' +
+        collections.passengers.length
+
+    );
+
+}
+
 async function importOperationExcel(event) {
 
     var file = event.target.files[0];
