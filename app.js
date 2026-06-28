@@ -1853,6 +1853,8 @@ function saveOperationData(data, callback) {
             "Operation data IndexedDB'ye kaydedildi."
         );
 
+        console.log("IndexedDB yazımı tamamlandı.");
+
         if (callback)
             callback();
 
@@ -1915,6 +1917,57 @@ async function renderDeveloperCenter() {
 
         "Attachments : " +
         attachments.length;
+
+    var preview = "";
+
+    if (reservations.length) {
+
+        preview +=
+            "<b>İlk Reservation</b><br>" +
+
+            "Booking : " +
+            (reservations[0].booking || "-") +
+
+            "<br>Hotel : " +
+            (reservations[0].hotel || "-") +
+
+            "<br><br>";
+
+    }
+
+    if (flights.length) {
+
+        preview +=
+            "<b>İlk Flight</b><br>" +
+
+            "Booking : " +
+            (flights[0].booking || "-") +
+
+            "<br>Flight : " +
+            (flights[0].arrivalFlightNo || "-") +
+
+            "<br><br>";
+
+    }
+
+    if (passengers.length) {
+
+        preview +=
+            "<b>İlk Passenger</b><br>" +
+
+            "Booking : " +
+            (passengers[0].booking || "-") +
+
+            "<br>Ad Soyad : " +
+
+            ((passengers[0].firstName || "") + " " +
+                (passengers[0].lastName || "")).trim();
+
+    }
+
+    document.getElementById(
+        "developer-preview"
+    ).innerHTML = preview;
 
 }
 
@@ -4495,6 +4548,8 @@ function importOperationExcel(event) {
             console.log("Flights      :", collections.flights.length);
             console.log("Transfers    :", collections.transfers.length);
             console.log("Passengers   :", collections.passengers.length);
+
+            console.log("IndexedDB'ye yazılıyor...");
 
             saveOperationData(
 
