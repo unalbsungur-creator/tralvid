@@ -4091,6 +4091,52 @@ function importPassengerExcel(event) {
 
 }
 
+function readExcelFile(file) {
+
+    return new Promise(function (resolve, reject) {
+
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            try {
+
+                var workbook = XLSX.read(e.target.result, {
+                    type: 'array'
+                });
+
+                var sheet =
+                    workbook.Sheets[
+                    workbook.SheetNames[0]
+                    ];
+
+                var rows =
+                    XLSX.utils.sheet_to_json(
+                        sheet,
+                        {
+                            header: 1,
+                            defval: ''
+                        }
+                    );
+
+                resolve(rows);
+
+            } catch (err) {
+
+                reject(err);
+
+            }
+
+        };
+
+        reader.onerror = reject;
+
+        reader.readAsArrayBuffer(file);
+
+    });
+
+}
+
 function importOperationExcel(event) {
 
     var file = event.target.files[0];
