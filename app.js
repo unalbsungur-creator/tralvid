@@ -4137,36 +4137,93 @@ function readExcelFile(file) {
 
 }
 
-function importOperationExcel(event) {
+function parseOperationRows(rows) {
+
+    var headerInfo = findHeaderRow(rows);
+
+    if (!headerInfo) {
+
+        throw new Error("Excel başlık satırı bulunamadı.");
+
+    }
+
+    var headers = rows[headerInfo.index];
+
+    var groups = detectDataGroups(headers);
+
+    var collections = {
+
+        reservations: [],
+        flights: [],
+        transfers: [],
+        passengers: []
+
+    };
+
+    for (var i = headerInfo.index + 1; i < rows.length; i++) {
+
+        var row = rows[i];
+
+        if (!row || !row.length) continue;
+
+        var mtr = mapExcelRow(headers, row);
+
+        var booking =
+            String(mtr.bookingNumber || '').trim();
+
+        if (!booking) continue;
+
+        var result =
+            buildCollectionsFromMTR(mtr);
+
+        if (groups.reservation && result.reservation) {
+
+            collections.reservations.push(
+                result.reservation
+            );
+
+        }
+
+        if (groups.flight && result.flight) {
+
+            collections.flights.push(
+                result.flight
+            );
+
+        }
+
+        if (groups.transfer && result.transfer) {
+
+            collections.transfers.push(
+                result.transfer
+            );
+
+        }
+
+        if (groups.passenger && result.passenger) {
+
+            collections.passengers.push(
+                result.passenger
+            );
+
+        }
+
+    }
+
+    return collections;
+
+}
+
+async function importOperationExcel(event) {
 
     var file = event.target.files[0];
 
     if (!file) return;
 
-    var reader = new FileReader();
+    try {
 
-    reader.onload = function (e) {
+        var rows = await readExcelFile(file);
 
-        var data =
-            new Uint8Array(
-                e.target.result
-            );
-
-        var workbook =
-            XLSX.read(data, {
-                type: 'array'
-            });
-
-        var sheet =
-            workbook.Sheets[
-            workbook.SheetNames[0]
-            ];
-
-        var rows =
-            XLSX.utils.sheet_to_json(
-                sheet,
-                { header: 1 }
-            );
 
         var headerInfo =
             findHeaderRow(rows);
