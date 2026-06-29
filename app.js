@@ -2650,6 +2650,7 @@ function fillDropdowns(formData) {
             reservation.transferType;
 
 }
+
 function handleDefenseFileInputChange(input) {
 
     Array.from(input.files).forEach(function (file) {
@@ -4036,6 +4037,20 @@ function loadOperatorDropdown() {
 }
 
 function loadHotelDropdown() {
+
+    console.log(
+        "hotelPartners =",
+        JSON.parse(
+            localStorage.getItem("hotelPartners") || "[]"
+        ).length
+    );
+
+    console.log(
+        "hotels =",
+        JSON.parse(
+            localStorage.getItem("hotels") || "[]"
+        ).length
+    );
 
     let select =
         document.getElementById('c-hotel');
