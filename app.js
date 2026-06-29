@@ -1493,13 +1493,13 @@ function selectDropdownByText(selectId, text) {
     function normalize(str) {
 
         return String(str || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
             .toUpperCase()
             .replace(/İ/g, "I")
             .replace(/İ/g, "I")
             .replace(/ß/g, "SS")
-            .replace(/\|/g, " ")
-            .replace(/\s+/g, "")
-            .trim();
+            .replace(/[^A-Z0-9]/g, "");
 
     }
 
@@ -1558,17 +1558,8 @@ function selectDropdownByText(selectId, text) {
         }
 
         if (
-
-            value === search ||
-
-            value.startsWith(search) ||
-
-            search.startsWith(value) ||
-
-            value.indexOf(search) >= 0 ||
-
-            search.indexOf(value) >= 0
-
+            value.includes(search) ||
+            search.includes(value)
         ) {
 
             console.log("SEÇİLDİ:", option.value);
