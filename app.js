@@ -4038,6 +4038,8 @@ function loadOperatorDropdown() {
 
 function loadHotelDropdown() {
 
+    alert("loadHotelDropdown çalıştı");
+
     console.log(
         "hotelPartners =",
         JSON.parse(
@@ -4059,10 +4061,11 @@ function loadHotelDropdown() {
 
     let hotels =
         JSON.parse(
-            localStorage.getItem(
-                'hotelPartners'
-            )
+            localStorage.getItem("hotelPartners")
         ) || [];
+
+    console.log("HOTEL PARTNERS =", hotels);
+    console.log("HOTEL SAYISI =", hotels.length);
 
     select.innerHTML = '';
 
