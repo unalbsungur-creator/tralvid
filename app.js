@@ -1505,6 +1505,18 @@ function selectDropdownByText(selectId, text) {
 
     var search = normalize(text);
 
+    console.log(
+        "TOPLAM OPTION =",
+        select.options.length
+    );
+
+    console.log(
+        "SON OPTION =",
+        select.options[
+            select.options.length - 1
+        ].text
+    );
+
     console.log("SEARCH =", search);
 
     for (var i = 0; i < select.options.length; i++) {
