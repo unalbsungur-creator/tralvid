@@ -1591,6 +1591,76 @@ function selectDropdownByText(selectId, text) {
 
 }
 
+function selectBestOption(selectId, searchText) {
+
+    var select =
+        document.getElementById(selectId);
+
+    if (!select || !searchText)
+        return;
+
+    function normalize(text) {
+
+        return String(text || "")
+            .toUpperCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^A-Z0-9]/g, "");
+
+    }
+
+    var search =
+        normalize(searchText);
+
+    var bestIndex = -1;
+    var bestScore = -1;
+
+    for (var i = 0; i < select.options.length; i++) {
+
+        var option =
+            select.options[i];
+
+        var value =
+            normalize(option.text);
+
+        if (!value)
+            continue;
+
+        if (value.indexOf(search) >= 0) {
+
+            select.selectedIndex = i;
+
+            return;
+
+        }
+
+        var score = 0;
+
+        search.split(" ").forEach(function (part) {
+
+            if (!part)
+                return;
+
+            if (value.indexOf(part) >= 0)
+                score++;
+
+        });
+
+        if (score > bestScore) {
+
+            bestScore = score;
+
+            bestIndex = i;
+
+        }
+
+    }
+
+    if (bestIndex >= 0)
+        select.selectedIndex = bestIndex;
+
+}
+
 // ================= DATA ACTIONS =================
 
 // ======================================================
@@ -2207,6 +2277,76 @@ async function developerBookingTest() {
 
 }
 
+function normalizeText(text) {
+
+    return String(text || "")
+        .toUpperCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^A-Z0-9]/g, "");
+
+}
+
+function selectBestOption(selectId, searchText) {
+
+    var select =
+        document.getElementById(selectId);
+
+    if (!select || !searchText)
+        return;
+
+    var search =
+        normalizeText(searchText);
+
+    var bestIndex = -1;
+    var bestScore = 0;
+
+    for (var i = 0; i < select.options.length; i++) {
+
+        var option =
+            normalizeText(
+                select.options[i].text
+            );
+
+        if (!option)
+            continue;
+
+        if (option.indexOf(search) >= 0) {
+
+            select.selectedIndex = i;
+
+            return;
+
+        }
+
+        var score = 0;
+
+        search.split(" ").forEach(function (part) {
+
+            if (
+                part &&
+                option.indexOf(part) >= 0
+            ) {
+                score++;
+            }
+
+        });
+
+        if (score > bestScore) {
+
+            bestScore = score;
+
+            bestIndex = i;
+
+        }
+
+    }
+
+    if (bestIndex >= 0)
+        select.selectedIndex = bestIndex;
+
+}
+
 async function fillPassengerData() {
 
 
@@ -2432,6 +2572,15 @@ async function fillPassengerData() {
             ? transfer.transferType
             : pax.transferType
     );
+
+    fillReservation({
+        reservation: reservation
+    });
+
+    fillDropdowns({
+        reservation: reservation,
+        transfer: transfer
+    });
 
     document.getElementById('c-transferprovider').value =
         transfer ? (transfer.supplier || '') : '';
@@ -2689,32 +2838,55 @@ function fillTransfers(formData) {
 
 function fillDropdowns(formData) {
 
-    var reservation = formData.reservation;
+    var reservation =
+        formData.reservation;
 
-    if (!reservation) return;
+    var transfer =
+        formData.transfer;
 
-    if (reservation.operator)
-        document.getElementById("c-veranstalter").value =
-            reservation.operator;
+    loadSimpleDropdown(
+        "c-veranstalter",
+        "operators"
+    );
 
-    if (reservation.region)
-        document.getElementById("c-region").value =
-            reservation.region;
+    loadSimpleDropdown(
+        "c-region",
+        "regions"
+    );
 
-    if (reservation.airport)
-        document.getElementById("c-airport").value =
-            reservation.airport;
+    loadTransferTypeDropdown();
 
-    if (reservation.hotel)
-        document.getElementById("c-hotel").value =
-            reservation.hotel;
+    loadHotelDropdown();
 
-    if (reservation.transferType)
-        document.getElementById("c-transfertype").value =
-            reservation.transferType;
+    if (reservation) {
+
+        selectBestOption(
+            "c-veranstalter",
+            reservation.operator
+        );
+
+        selectBestOption(
+            "c-region",
+            reservation.region
+        );
+
+        selectBestOption(
+            "c-hotel",
+            reservation.hotel
+        );
+
+    }
+
+    if (transfer) {
+
+        selectBestOption(
+            "c-transfertype",
+            transfer.transferType
+        );
+
+    }
 
 }
-
 function handleDefenseFileInputChange(input) {
 
     Array.from(input.files).forEach(function (file) {
