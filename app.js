@@ -1523,6 +1523,11 @@ function selectDropdownByText(selectId, text) {
 
         var value = normalize(option.value);
 
+        console.log(
+            "TEXT =", option.text,
+            "VALUE =", option.value
+        );
+
         if (value.indexOf("YILSAM") >= 0) {
 
             console.log("VALUE =", value);
