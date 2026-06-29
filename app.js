@@ -1490,87 +1490,85 @@ function selectDropdownByText(selectId, text) {
     if (!select || !text)
         return;
 
-    function normalize(str) {
+    return String(str || "")
+        .toUpperCase()
+        .replace(/İ/g, "I")
+        .replace(/İ/g, "I")
+        .replace(/ß/g, "SS")
+        .replace(/\|/g, " ")
+        .replace(/\s+/g, "")
+        .trim();
 
-        return String(str || "")
-            .toUpperCase()
-            .replace(/İ/g, "I")
-            .replace(/İ/g, "I")
-            .replace(/ß/g, "SS")
-            .replace(/\|/g, "")
-            .replace(/[^A-Z0-9]/g, "")
-            .trim();
+}
 
-    }
+var search = normalize(text);
 
-    var search = normalize(text);
+console.log("SEARCH =", search);
 
-    console.log("SEARCH =", search);
+for (var i = 0; i < select.options.length; i++) {
 
-    for (var i = 0; i < select.options.length; i++) {
+    var option = select.options[i];
 
-        var option = select.options[i];
+    var value = normalize(option.value);
 
-        var value = normalize(option.value);
+    console.log(
+        "TEXT =", option.text,
+        "VALUE =", option.value
+    );
 
-        console.log(
-            "TEXT =", option.text,
-            "VALUE =", option.value
-        );
+    if (value.indexOf("YILSAM") >= 0) {
 
-        if (value.indexOf("YILSAM") >= 0) {
-
-            console.log("VALUE =", value);
-
-        }
-
-        if (!value)
-            continue;
-
-        console.log(
-            "COMPARE:",
-            value,
-            "<=>",
-            search
-        );
-
-        if (value.indexOf(search) >= 0) {
-
-            console.log(
-                "BULUNDU:",
-                option.value
-            );
-
-        }
-
-        if (
-
-            value === search ||
-
-            value.startsWith(search) ||
-
-            search.startsWith(value) ||
-
-            value.indexOf(search) >= 0 ||
-
-            search.indexOf(value) >= 0
-
-        ) {
-
-            console.log("SEÇİLDİ:", option.value);
-
-            select.selectedIndex = i;
-
-            return;
-
-        }
+        console.log("VALUE =", value);
 
     }
 
-    console.warn(
-        "Eşleşme bulunamadı:",
+    if (!value)
+        continue;
+
+    console.log(
+        "COMPARE:",
+        value,
+        "<=>",
         search
     );
+
+    if (value.indexOf(search) >= 0) {
+
+        console.log(
+            "BULUNDU:",
+            option.value
+        );
+
+    }
+
+    if (
+
+        value === search ||
+
+        value.startsWith(search) ||
+
+        search.startsWith(value) ||
+
+        value.indexOf(search) >= 0 ||
+
+        search.indexOf(value) >= 0
+
+    ) {
+
+        console.log("SEÇİLDİ:", option.value);
+
+        select.selectedIndex = i;
+
+        return;
+
+    }
+
+}
+
+console.warn(
+    "Eşleşme bulunamadı:",
+    search
+);
 
 }
 
