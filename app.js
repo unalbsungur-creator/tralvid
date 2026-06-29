@@ -2457,14 +2457,33 @@ async function fillPassengerData() {
         reservation ? reservation.hotel : pax.hotel
     );
 
-    selectDropdownByText(
-        "c-hotel",
-        reservation ? reservation.hotel : pax.hotel
-    );
+    var hotelSelect =
+        document.getElementById("c-hotel");
+
+    for (var i = 0; i < hotelSelect.options.length; i++) {
+
+        if (
+            hotelSelect.options[i].text
+                .toUpperCase()
+                .includes("YILSAM")
+        ) {
+
+            console.log(
+                "MANUEL SEÇİLDİ:",
+                hotelSelect.options[i].text
+            );
+
+            hotelSelect.selectedIndex = i;
+
+            break;
+
+        }
+
+    }
 
     console.log(
         "SEÇİLEN OTEL =",
-        document.getElementById("c-hotel").value
+        hotelSelect.value
     );
 
     console.log('BOOKING=', bookingNo);
