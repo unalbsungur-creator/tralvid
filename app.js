@@ -2256,16 +2256,6 @@ async function fillPassengerData() {
         op
     );
 
-    console.log(
-        'OPTIONS:',
-        Array.from(opSelect.options)
-            .map(o => o.value)
-    );
-
-    console.log(
-        'SELECT VALUE:',
-        opSelect.value
-    );
 
     console.log('RESERVATION =', reservation);
 
