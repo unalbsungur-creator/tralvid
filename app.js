@@ -1515,11 +1515,19 @@ function selectDropdownByText(selectId, text) {
 
     var search = normalize(text);
 
+    console.log("SEARCH =", search);
+
     for (var i = 0; i < select.options.length; i++) {
 
         var option = select.options[i];
 
         var value = normalize(option.value);
+
+        if (value.indexOf("YILSAM") >= 0) {
+
+            console.log("VALUE =", value);
+
+        }
 
         if (!value)
             continue;
