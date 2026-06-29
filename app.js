@@ -1530,9 +1530,11 @@ function selectDropdownByText(selectId, text) {
             "VALUE =", option.value
         );
 
-        if (value.indexOf("YILSAM") >= 0) {
+        if (option.text.toUpperCase().indexOf("YILSAM") >= 0) {
 
-            console.log("VALUE =", value);
+            console.log("YILSAM OPTION =", option.text);
+            console.log("YILSAM VALUE =", value);
+            console.log("SEARCH =", search);
 
         }
 
