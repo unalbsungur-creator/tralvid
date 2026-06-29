@@ -2560,35 +2560,72 @@ async function fillPassengerData() {
 
 function fillComplaintForm(formData) {
 
-    var reservation = formData.reservation;
+    fillReservation(formData);
 
-    console.log("fillComplaintForm çalıştı");
+    fillGuests(formData);
+
+    fillFlights(formData);
+
+    fillTransfers(formData);
+
+    fillDropdowns(formData);
+
+}
+
+function fillReservation(formData) {
+
+    var reservation = formData.reservation;
 
     if (!reservation)
         return;
 
-    console.log("HOTEL =", reservation.hotel);
+    document.getElementById("c-subbooking").value =
+        reservation.subBooking || "";
 
-    loadHotelDropdown();
+    document.getElementById("c-adult").value =
+        reservation.adult || 0;
 
-    setTimeout(function () {
+    document.getElementById("c-child").value =
+        reservation.child || 0;
 
-        console.log("HOTEL SEÇİMİ BAŞLADI");
+    document.getElementById("c-infant").value =
+        reservation.infant || 0;
 
-        selectDropdownByText(
-            "c-hotel",
-            reservation.hotel
-        );
+    document.getElementById("c-voucher").value =
+        reservation.voucher || "";
 
-        console.log(
-            "SEÇİLEN HOTEL =",
-            document.getElementById("c-hotel").value
-        );
+    document.getElementById("c-board").value =
+        reservation.board || "";
 
-    }, 1000);
+    document.getElementById("c-nights").value =
+        reservation.nights || "";
+
+    document.getElementById("c-roomtype").value =
+        reservation.roomType || "";
+
+    document.getElementById("c-adate").value =
+        reservation.checkIn || "";
+
+    document.getElementById("c-ddate").value =
+        reservation.checkOut || "";
 
 }
 
+function fillGuests(formData) {
+
+}
+
+function fillFlights(formData) {
+
+}
+
+function fillTransfers(formData) {
+
+}
+
+function fillDropdowns(formData) {
+
+}
 function handleDefenseFileInputChange(input) {
 
     Array.from(input.files).forEach(function (file) {
