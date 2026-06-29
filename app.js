@@ -2178,6 +2178,20 @@ async function fillPassengerData() {
     var guests =
         bookingData.passengers;
 
+    var formData = {
+
+        bookingNo: bookingNo,
+
+        reservation: reservation,
+
+        flight: flight,
+
+        transfer: transfer,
+
+        guests: guests
+
+    };
+
     var pax = reservation || {};
 
     console.log('GUESTS =', guests);
@@ -2493,6 +2507,20 @@ async function fillPassengerData() {
         'PAX bilgileri yüklendi:',
         pax
     );
+
+    fillComplaintForm(formData);
+
+}
+
+function fillComplaintForm(formData) {
+
+    var reservation = formData.reservation;
+    var flight = formData.flight;
+    var transfer = formData.transfer;
+    var guests = formData.guests;
+
+    console.log("fillComplaintForm çalıştı");
+
 }
 
 function handleDefenseFileInputChange(input) {
