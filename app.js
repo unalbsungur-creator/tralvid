@@ -1572,1451 +1572,1284 @@ function selectDropdownByText(selectId, text) {
         search
     );
 
-    // ================= DATA ACTIONS =================
+}
 
-    // ======================================================
-    // GET BOOKING DATA
-    // ======================================================
+// ================= DATA ACTIONS =================
 
-    function getAllFromStore(storeName) {
+// ======================================================
+// GET BOOKING DATA
+// ======================================================
 
-        return new Promise(function (resolve, reject) {
+function getAllFromStore(storeName) {
 
-            if (!fileDB) {
+    return new Promise(function (resolve, reject) {
 
-                reject(new Error("IndexedDB henüz hazır değil."));
+        if (!fileDB) {
 
-                return;
+            reject(new Error("IndexedDB henüz hazır değil."));
 
-            }
+            return;
 
-            var tx =
-                fileDB.transaction(
-                    storeName,
-                    "readonly"
-                );
-
-            var store =
-                tx.objectStore(storeName);
-
-            var req =
-                store.getAll();
-
-            req.onsuccess = function () {
-
-                resolve(req.result || []);
-
-            };
-
-            req.onerror = function () {
-
-                reject(req.error);
-
-            };
-
-        });
-
-    }
-    async function loadBookingCollections() {
-
-        return {
-
-            reservations: await getAllFromStore("reservations"),
-
-            flights: await getAllFromStore("flights"),
-
-            transfers: await getAllFromStore("transfers"),
-
-            passengers: await getAllFromStore("passengers")
-
-        };
-
-    }
-
-    async function getBookingData(bookingNo) {
-
-        var search =
-            String(bookingNo)
-                .trim()
-                .toUpperCase();
-
-        var data =
-            await loadBookingCollections();
-
-        var reservations =
-            data.reservations;
-
-        var flights =
-            data.flights;
-
-        var transfers =
-            data.transfers;
-
-        var passengers =
-            data.passengers;
-
-        var reservation =
-            reservations.find(function (r) {
-
-                return (
-                    String(r.booking || '')
-                        .trim()
-                        .toUpperCase() === search ||
-
-                    String(r.voucher || '')
-                        .trim()
-                        .toUpperCase() === search ||
-
-                    String(r.masterVoucher || '')
-                        .trim()
-                        .toUpperCase() === search
-                );
-
-            }) || null;
-
-        var flight =
-            flights.find(function (f) {
-
-                return (
-                    String(f.booking || '')
-                        .trim()
-                        .toUpperCase() === search
-                );
-
-            }) || null;
-
-        var transfer =
-            transfers.find(function (t) {
-
-                return (
-                    String(t.booking || '')
-                        .trim()
-                        .toUpperCase() === search
-                );
-
-            }) || null;
-
-        var guestList =
-            passengers.filter(function (p) {
-
-                return (
-                    String(p.booking || '')
-                        .trim()
-                        .toUpperCase() === search
-                );
-
-            });
-
-        return {
-
-            reservation: reservation,
-
-            flight: flight,
-
-            transfer: transfer,
-
-            passengers: guestList
-
-        };
-
-    }
-
-
-    // ======================================================
-    // SAVE RESERVATIONS TO INDEXEDDB
-    // ======================================================
-
-    function saveReservationsToIndexedDB(data, callback) {
+        }
 
         var tx =
             fileDB.transaction(
-                ['reservations'],
-                'readwrite'
+                storeName,
+                "readonly"
             );
 
         var store =
-            tx.objectStore('reservations');
+            tx.objectStore(storeName);
 
-        data.forEach(function (item) {
+        var req =
+            store.getAll();
 
-            store.put(item);
+        req.onsuccess = function () {
 
-        });
-
-        tx.oncomplete = function () {
-
-            console.log(
-                data.length +
-                " reservation IndexedDB'ye kaydedildi."
-            );
-
-            if (callback)
-                callback();
+            resolve(req.result || []);
 
         };
 
-    }
+        req.onerror = function () {
 
-    // ======================================================
-    // SAVE OPERATION DATA TO INDEXEDDB
-    // ======================================================
+            reject(req.error);
 
-    function mergeReservation(item) {
+        };
 
-        return new Promise(function (resolve, reject) {
+    });
 
-            var tx =
-                fileDB.transaction(
-                    "reservations",
-                    "readwrite"
-                );
+}
+async function loadBookingCollections() {
 
-            var store =
-                tx.objectStore(
-                    "reservations"
-                );
+    return {
 
-            var req =
-                store.get(item.booking);
+        reservations: await getAllFromStore("reservations"),
 
-            req.onsuccess = function () {
+        flights: await getAllFromStore("flights"),
 
-                var old =
-                    req.result || {};
+        transfers: await getAllFromStore("transfers"),
 
-                var merged = {
+        passengers: await getAllFromStore("passengers")
 
-                    ...old,
+    };
 
-                    ...item
+}
 
-                };
+async function getBookingData(bookingNo) {
 
-                Object.keys(merged).forEach(function (k) {
+    var search =
+        String(bookingNo)
+            .trim()
+            .toUpperCase();
 
-                    if (
+    var data =
+        await loadBookingCollections();
 
-                        merged[k] === "" ||
+    var reservations =
+        data.reservations;
 
-                        merged[k] === null ||
+    var flights =
+        data.flights;
 
-                        merged[k] === undefined
+    var transfers =
+        data.transfers;
 
-                    ) {
+    var passengers =
+        data.passengers;
 
-                        merged[k] =
-                            old[k];
+    var reservation =
+        reservations.find(function (r) {
 
-                    }
+            return (
+                String(r.booking || '')
+                    .trim()
+                    .toUpperCase() === search ||
 
-                });
+                String(r.voucher || '')
+                    .trim()
+                    .toUpperCase() === search ||
 
-                store.put(merged);
+                String(r.masterVoucher || '')
+                    .trim()
+                    .toUpperCase() === search
+            );
 
-            };
+        }) || null;
 
-            tx.oncomplete = function () {
+    var flight =
+        flights.find(function (f) {
 
-                resolve();
+            return (
+                String(f.booking || '')
+                    .trim()
+                    .toUpperCase() === search
+            );
 
-            };
+        }) || null;
 
-            tx.onerror = function (e) {
+    var transfer =
+        transfers.find(function (t) {
 
-                reject(e);
+            return (
+                String(t.booking || '')
+                    .trim()
+                    .toUpperCase() === search
+            );
 
-            };
+        }) || null;
 
-        });
+    var guestList =
+        passengers.filter(function (p) {
 
-    }
-
-    async function saveReservation(item) {
-
-        return new Promise(function (resolve, reject) {
-
-            var tx =
-                fileDB.transaction(
-                    "reservations",
-                    "readwrite"
-                );
-
-            var store =
-                tx.objectStore(
-                    "reservations"
-                );
-
-            var req =
-                store.get(item.booking);
-
-            req.onsuccess = function () {
-
-                var current =
-                    req.result || {};
-
-                Object.keys(item).forEach(function (key) {
-
-                    var value = item[key];
-
-                    if (
-
-                        value !== "" &&
-
-                        value !== null &&
-
-                        value !== undefined
-
-                    ) {
-
-                        current[key] = value;
-
-                    }
-
-                });
-
-                store.put(current);
-
-            };
-
-            tx.oncomplete = function () {
-
-                resolve();
-
-            };
-
-            tx.onerror = function (e) {
-
-                reject(e);
-
-            };
+            return (
+                String(p.booking || '')
+                    .trim()
+                    .toUpperCase() === search
+            );
 
         });
 
-    }
+    return {
 
-    function saveOperationData(data, callback) {
+        reservation: reservation,
+
+        flight: flight,
+
+        transfer: transfer,
+
+        passengers: guestList
+
+    };
+
+}
+
+
+// ======================================================
+// SAVE RESERVATIONS TO INDEXEDDB
+// ======================================================
+
+function saveReservationsToIndexedDB(data, callback) {
+
+    var tx =
+        fileDB.transaction(
+            ['reservations'],
+            'readwrite'
+        );
+
+    var store =
+        tx.objectStore('reservations');
+
+    data.forEach(function (item) {
+
+        store.put(item);
+
+    });
+
+    tx.oncomplete = function () {
+
+        console.log(
+            data.length +
+            " reservation IndexedDB'ye kaydedildi."
+        );
+
+        if (callback)
+            callback();
+
+    };
+
+}
+
+// ======================================================
+// SAVE OPERATION DATA TO INDEXEDDB
+// ======================================================
+
+function mergeReservation(item) {
+
+    return new Promise(function (resolve, reject) {
 
         var tx =
             fileDB.transaction(
-
-                [
-                    'reservations',
-                    'flights',
-                    'transfers',
-                    'passengers'
-                ],
-
-                'readwrite'
-
+                "reservations",
+                "readwrite"
             );
 
-        var reservationStore =
-            tx.objectStore('reservations');
+        var store =
+            tx.objectStore(
+                "reservations"
+            );
 
-        var flightStore =
-            tx.objectStore('flights');
+        var req =
+            store.get(item.booking);
 
-        var transferStore =
-            tx.objectStore('transfers');
+        req.onsuccess = function () {
 
-        var passengerStore =
-            tx.objectStore('passengers');
+            var old =
+                req.result || {};
 
-        data.reservations.forEach(function (item) {
+            var merged = {
 
-            reservationStore.put(item);
+                ...old,
 
-        });
+                ...item
 
-        data.flights.forEach(function (item) {
+            };
 
-            flightStore.put(item);
+            Object.keys(merged).forEach(function (k) {
 
-        });
+                if (
 
-        data.transfers.forEach(function (item) {
+                    merged[k] === "" ||
 
-            transferStore.put(item);
+                    merged[k] === null ||
 
-        });
+                    merged[k] === undefined
 
-        data.passengers.forEach(function (item) {
+                ) {
 
-            passengerStore.put(item);
+                    merged[k] =
+                        old[k];
 
-        });
+                }
+
+            });
+
+            store.put(merged);
+
+        };
 
         tx.oncomplete = function () {
 
-            console.log(
-                "Operation data IndexedDB'ye kaydedildi."
-            );
-
-            console.log("IndexedDB yazımı tamamlandı.");
-
-            if (callback)
-                callback();
+            resolve();
 
         };
 
         tx.onerror = function (e) {
 
-            console.error(
-                "IndexedDB kayıt hatası",
-                e
-            );
+            reject(e);
 
         };
 
-    }
+    });
+
+}
+
+async function saveReservation(item) {
+
+    return new Promise(function (resolve, reject) {
+
+        var tx =
+            fileDB.transaction(
+                "reservations",
+                "readwrite"
+            );
+
+        var store =
+            tx.objectStore(
+                "reservations"
+            );
+
+        var req =
+            store.get(item.booking);
+
+        req.onsuccess = function () {
+
+            var current =
+                req.result || {};
+
+            Object.keys(item).forEach(function (key) {
+
+                var value = item[key];
+
+                if (
+
+                    value !== "" &&
+
+                    value !== null &&
+
+                    value !== undefined
+
+                ) {
+
+                    current[key] = value;
+
+                }
+
+            });
+
+            store.put(current);
+
+        };
+
+        tx.oncomplete = function () {
+
+            resolve();
+
+        };
+
+        tx.onerror = function (e) {
+
+            reject(e);
+
+        };
+
+    });
+
+}
+
+function saveOperationData(data, callback) {
+
+    var tx =
+        fileDB.transaction(
+
+            [
+                'reservations',
+                'flights',
+                'transfers',
+                'passengers'
+            ],
+
+            'readwrite'
+
+        );
+
+    var reservationStore =
+        tx.objectStore('reservations');
+
+    var flightStore =
+        tx.objectStore('flights');
+
+    var transferStore =
+        tx.objectStore('transfers');
+
+    var passengerStore =
+        tx.objectStore('passengers');
+
+    data.reservations.forEach(function (item) {
+
+        reservationStore.put(item);
+
+    });
+
+    data.flights.forEach(function (item) {
+
+        flightStore.put(item);
+
+    });
+
+    data.transfers.forEach(function (item) {
+
+        transferStore.put(item);
+
+    });
+
+    data.passengers.forEach(function (item) {
+
+        passengerStore.put(item);
+
+    });
+
+    tx.oncomplete = function () {
+
+        console.log(
+            "Operation data IndexedDB'ye kaydedildi."
+        );
+
+        console.log("IndexedDB yazımı tamamlandı.");
+
+        if (callback)
+            callback();
+
+    };
+
+    tx.onerror = function (e) {
+
+        console.error(
+            "IndexedDB kayıt hatası",
+            e
+        );
+
+    };
+
+}
 
 
-    // ================= DATA ACTIONS =================
+// ================= DATA ACTIONS =================
 
-    async function renderDeveloperCenter() {
+async function renderDeveloperCenter() {
 
-        var reservations =
-            await getAllFromStore("reservations");
+    var reservations =
+        await getAllFromStore("reservations");
 
-        var flights =
-            await getAllFromStore("flights");
+    var flights =
+        await getAllFromStore("flights");
 
-        var transfers =
-            await getAllFromStore("transfers");
+    var transfers =
+        await getAllFromStore("transfers");
 
-        var passengers =
-            await getAllFromStore("passengers");
+    var passengers =
+        await getAllFromStore("passengers");
 
-        var attachments =
-            await getAllFromStore("attachments");
+    var attachments =
+        await getAllFromStore("attachments");
 
-        document.getElementById(
-            "developer-db-stats"
-        ).innerHTML =
+    document.getElementById(
+        "developer-db-stats"
+    ).innerHTML =
 
-            "Reservations : " +
-            reservations.length +
+        "Reservations : " +
+        reservations.length +
 
-            "<br><br>" +
+        "<br><br>" +
 
-            "Flights : " +
-            flights.length +
+        "Flights : " +
+        flights.length +
 
-            "<br><br>" +
+        "<br><br>" +
 
-            "Transfers : " +
-            transfers.length +
+        "Transfers : " +
+        transfers.length +
 
-            "<br><br>" +
+        "<br><br>" +
 
-            "Passengers : " +
-            passengers.length +
+        "Passengers : " +
+        passengers.length +
 
-            "<br><br>" +
+        "<br><br>" +
 
-            "Attachments : " +
-            attachments.length;
+        "Attachments : " +
+        attachments.length;
 
-        var preview = "";
+    var preview = "";
 
-        if (reservations.length) {
+    if (reservations.length) {
 
-            preview +=
-                "<b>İlk Reservation</b><br>" +
+        preview +=
+            "<b>İlk Reservation</b><br>" +
 
-                "Booking : " +
-                (reservations[0].booking || "-") +
+            "Booking : " +
+            (reservations[0].booking || "-") +
 
-                "<br>Hotel : " +
-                (reservations[0].hotel || "-") +
-
-                "<br><br>";
-
-        }
-
-        if (flights.length) {
-
-            preview +=
-                "<b>İlk Flight</b><br>" +
-
-                "Booking : " +
-                (flights[0].booking || "-") +
-
-                "<br>Flight : " +
-                (flights[0].arrivalFlightNo || "-") +
-
-                "<br><br>";
-
-        }
-
-        if (passengers.length) {
-
-            preview +=
-                "<b>İlk Passenger</b><br>" +
-
-                "Booking : " +
-                (passengers[0].booking || "-") +
-
-                "<br>Ad Soyad : " +
-
-                ((passengers[0].firstName || "") + " " +
-                    (passengers[0].lastName || "")).trim();
-
-        }
-
-        document.getElementById(
-            "developer-preview"
-        ).innerHTML = preview;
-
-    }
-
-    async function developerBookingTest() {
-
-        alert("Developer Test V2");
-
-        var booking =
-
-            document.getElementById(
-                "developer-booking"
-            ).value.trim();
-
-        if (!booking)
-            return;
-
-        var data =
-            await getBookingData(booking);
-
-        alert(JSON.stringify(data, null, 2));
-
-        var html = "";
-
-        html +=
-            "<b>Reservation :</b> " +
-
-            (data.reservation ? "✅" : "❌") +
-
-            "<br>";
-
-        html +=
-            "<b>Flight :</b> " +
-
-            (data.flight ? "✅" : "❌") +
-
-            "<br>";
-
-        html +=
-            "<b>Transfer :</b> " +
-
-            (data.transfer ? "✅" : "❌") +
-
-            "<br>";
-
-        html +=
-            "<b>Passengers :</b> " +
-
-            data.passengers.length +
+            "<br>Hotel : " +
+            (reservations[0].hotel || "-") +
 
             "<br><br>";
 
+    }
 
+    if (flights.length) {
 
-        if (data.reservation) {
+        preview +=
+            "<b>İlk Flight</b><br>" +
 
-            html +=
+            "Booking : " +
+            (flights[0].booking || "-") +
 
-                "<b>Hotel :</b> " +
+            "<br>Flight : " +
+            (flights[0].arrivalFlightNo || "-") +
 
-                (data.reservation.hotel || "-") +
-
-                "<br>";
-
-        }
-
-        if (data.flight) {
-
-            html +=
-
-                "<b>Arrival Flight :</b> " +
-
-                (data.flight.arrivalFlightNo || "-") +
-
-                "<br>";
-
-        }
-
-        if (data.passengers.length) {
-
-            html +=
-
-                "<b>İlk Yolcu :</b> " +
-
-                data.passengers[0].firstName +
-
-                " " +
-
-                data.passengers[0].lastName;
-
-        }
-
-        html += "<hr>";
-
-        html += "<b>Operator :</b> " +
-            (data.reservation?.operator || "-") +
-            "<br>";
-
-        html += "<b>Region :</b> " +
-            (data.reservation?.region || "-") +
-            "<br>";
-
-        html += "<b>Hotel :</b> " +
-            (data.reservation?.hotel || "-") +
-            "<br>";
-
-        html += "<b>Transfer Type :</b> " +
-            (data.transfer?.transferType || "-") +
-            "<br>";
-
-        document.getElementById(
-            "developer-booking-result"
-        ).innerHTML = html;
-
-        document.getElementById(
-
-            "developer-booking-result"
-
-        ).innerHTML = html;
+            "<br><br>";
 
     }
 
-    async function fillPassengerData() {
+    if (passengers.length) {
+
+        preview +=
+            "<b>İlk Passenger</b><br>" +
+
+            "Booking : " +
+            (passengers[0].booking || "-") +
+
+            "<br>Ad Soyad : " +
+
+            ((passengers[0].firstName || "") + " " +
+                (passengers[0].lastName || "")).trim();
+
+    }
+
+    document.getElementById(
+        "developer-preview"
+    ).innerHTML = preview;
+
+}
+
+async function developerBookingTest() {
+
+    alert("Developer Test V2");
+
+    var booking =
+
+        document.getElementById(
+            "developer-booking"
+        ).value.trim();
+
+    if (!booking)
+        return;
+
+    var data =
+        await getBookingData(booking);
+
+    alert(JSON.stringify(data, null, 2));
+
+    var html = "";
+
+    html +=
+        "<b>Reservation :</b> " +
+
+        (data.reservation ? "✅" : "❌") +
+
+        "<br>";
+
+    html +=
+        "<b>Flight :</b> " +
+
+        (data.flight ? "✅" : "❌") +
+
+        "<br>";
+
+    html +=
+        "<b>Transfer :</b> " +
+
+        (data.transfer ? "✅" : "❌") +
+
+        "<br>";
+
+    html +=
+        "<b>Passengers :</b> " +
+
+        data.passengers.length +
+
+        "<br><br>";
 
 
-        function excelDateToInputDate(excelDate) {
 
-            if (!excelDate) return '';
+    if (data.reservation) {
 
-            var date =
-                new Date(
-                    (excelDate - 25569) *
-                    86400 * 1000
-                );
+        html +=
 
-            return date
-                .toISOString()
-                .split('T')[0];
-        } var bookingNo =
+            "<b>Hotel :</b> " +
+
+            (data.reservation.hotel || "-") +
+
+            "<br>";
+
+    }
+
+    if (data.flight) {
+
+        html +=
+
+            "<b>Arrival Flight :</b> " +
+
+            (data.flight.arrivalFlightNo || "-") +
+
+            "<br>";
+
+    }
+
+    if (data.passengers.length) {
+
+        html +=
+
+            "<b>İlk Yolcu :</b> " +
+
+            data.passengers[0].firstName +
+
+            " " +
+
+            data.passengers[0].lastName;
+
+    }
+
+    html += "<hr>";
+
+    html += "<b>Operator :</b> " +
+        (data.reservation?.operator || "-") +
+        "<br>";
+
+    html += "<b>Region :</b> " +
+        (data.reservation?.region || "-") +
+        "<br>";
+
+    html += "<b>Hotel :</b> " +
+        (data.reservation?.hotel || "-") +
+        "<br>";
+
+    html += "<b>Transfer Type :</b> " +
+        (data.transfer?.transferType || "-") +
+        "<br>";
+
+    document.getElementById(
+        "developer-booking-result"
+    ).innerHTML = html;
+
+    document.getElementById(
+
+        "developer-booking-result"
+
+    ).innerHTML = html;
+
+}
+
+async function fillPassengerData() {
+
+
+    function excelDateToInputDate(excelDate) {
+
+        if (!excelDate) return '';
+
+        var date =
+            new Date(
+                (excelDate - 25569) *
+                86400 * 1000
+            );
+
+        return date
+            .toISOString()
+            .split('T')[0];
+    } var bookingNo =
+        document.getElementById('c-booking')
+            .value
+            .trim();
+
+    if (!bookingNo) return;
+
+    var search =
+        bookingNo.toUpperCase();
+
+    var bookingData =
+        await getBookingData(bookingNo);
+
+    var reservation =
+        bookingData.reservation;
+
+    var flight =
+        bookingData.flight;
+
+    var transfer =
+        bookingData.transfer;
+
+    var guests =
+        bookingData.passengers;
+
+    var formData = {
+
+        bookingNo: bookingNo,
+
+        reservation: reservation,
+
+        flight: flight,
+
+        transfer: transfer,
+
+        guests: guests
+
+    };
+
+    var pax = reservation || {};
+
+    console.log('GUESTS =', guests);
+    console.log('GUEST=', guests);
+    console.log('FLIGHT=', flight);
+    console.log('TRANSFER=', transfer);
+
+    console.log('BOOKING ARANIYOR:', bookingNo);
+
+    console.log('RESERVATIONS:',
+        JSON.parse(localStorage.getItem('reservations') || '[]').length);
+
+    console.log('FLIGHTS:',
+        JSON.parse(localStorage.getItem('flights') || '[]').length);
+
+    console.log('TRANSFERS:',
+        JSON.parse(localStorage.getItem('transfers') || '[]').length);
+
+    console.log('PASSENGERS:',
+        JSON.parse(localStorage.getItem('passengers') || '[]').length);
+
+    if (!pax && !reservation) {
+
+        console.log(
+            'Rezervasyon bulunamadı:',
+            bookingNo
+        );
+
+        return;
+    }
+    loadSimpleDropdown(
+        'c-veranstalter',
+        'operators'
+    );
+
+    loadSimpleDropdown(
+        'c-region',
+        'regions'
+    );
+
+    loadSimpleDropdown(
+        'c-airport',
+        'airports'
+    );
+
+    loadTransferTypeDropdown();
+
+    loadHotelDropdown();
+
+    setTimeout(function () {
+
+        console.log("Region options:",
+            document.getElementById("c-region").options.length);
+
+        console.log("Operator options:",
+            document.getElementById("c-veranstalter").options.length);
+
+        console.log("Transfer options:",
+            document.getElementById("c-transfertype").options.length);
+
+        console.log("Hotel options:",
+            document.getElementById("c-hotel").options.length);
+
+    }, 1000);
+
+    pax = reservation || {};
+
+    document.getElementById('c-subbooking').value =
+        String(pax.subBooking || '').trim();
+
+    var op =
+        String(pax.operator || '')
+            .trim();
+
+    console.log(
+        'PAX OPERATOR:',
+        JSON.stringify(op)
+    );
+
+    loadSimpleDropdown(
+        'c-veranstalter',
+        'operators'
+    );
+
+    selectDropdownByText(
+        'c-veranstalter',
+        op
+    );
+
+
+    console.log('RESERVATION =', reservation);
+
+    if (reservation) {
+
+        console.log('Voucher :', reservation.voucher);
+        console.log('Board   :', reservation.board);
+        console.log('Nights  :', reservation.nights);
+        console.log('RoomType:', reservation.roomType);
+
+        var regionSelect =
+            document.getElementById('c-region');
+
+        var regionName =
+            (reservation.region || '').trim();
+
+        Array.from(regionSelect.options)
+            .forEach(function (opt) {
+
+                if (
+                    opt.value
+                        .toUpperCase()
+                        .includes(
+                            regionName.toUpperCase()
+                        ) ||
+
+                    regionName
+                        .toUpperCase()
+                        .includes(
+                            opt.value.toUpperCase()
+                        )
+                ) {
+
+                    regionSelect.value =
+                        opt.value;
+
+                }
+
+            });
+
+        document.getElementById('c-adate').value =
+            reservation.checkIn || '';
+
+        document.getElementById('c-ddate').value =
+            reservation.checkOut || '';
+
+        document.getElementById('c-voucher').value =
+            reservation.voucher || '';
+
+        document.getElementById('c-board').value =
+            reservation.board || '';
+
+        document.getElementById('c-nights').value =
+            reservation.nights || '';
+
+        document.getElementById('c-roomtype').value =
+            reservation.roomType || '';
+
+    } else {
+
+        document.getElementById('c-region').value =
+            (pax.region || '').trim();
+
+        document.getElementById('c-adate').value =
+            excelDateToInputDate(
+                pax.arrivalDate
+            );
+
+        document.getElementById('c-ddate').value =
+            excelDateToInputDate(
+                pax.departureDate
+            );
+
+    }
+
+    selectDropdownByText(
+        'c-transfertype',
+        transfer
+            ? transfer.transferType
+            : pax.transferType
+    );
+
+    document.getElementById('c-transferprovider').value =
+        transfer ? (transfer.supplier || '') : '';
+
+    document.getElementById('c-subbooking').value =
+        String(pax.subBooking || '').trim();
+
+    document.getElementById('c-adult').value =
+        pax.adult || 0;
+
+    document.getElementById('c-child').value =
+        pax.child || 0;
+
+    document.getElementById('c-infant').value =
+        pax.infant || 0;
+
+    console.log('HOTEL DROPDOWN YÜKLENİYOR');
+
+    loadHotelDropdown();
+
+    console.log(
+        "OTEL SEÇİLECEK =",
+        reservation ? reservation.hotel : pax.hotel
+    );
+
+    selectDropdownByText(
+        "c-hotel",
+        reservation ? reservation.hotel : pax.hotel
+    );
+
+    console.log(
+        "SEÇİLEN OTEL =",
+        document.getElementById("c-hotel").value
+    );
+
+    console.log('BOOKING=', bookingNo);
+    console.log('GUESTS=', guests);
+    console.log('FLIGHT=', flight);
+    console.log('TRANSFER=', transfer);
+
+    var guestText = '';
+
+    guests.forEach(function (g, index) {
+
+        guestText +=
+            (index + 1) + '. ' +
+            (g.title || '') + ' ' +
+            (g.firstName || '') + ' ' +
+            (g.lastName || '');
+
+        if (g.age) {
+            guestText += ' (' + g.age + ')';
+        }
+
+        guestText += '\n';
+
+    });
+
+    document.getElementById('c-guests').value =
+        guestText.trim();
+
+    var guestsTbody =
+        document.getElementById('c-guests-tbody');
+
+    if (guestsTbody) {
+
+        if (!guests.length) {
+
+            guestsTbody.innerHTML =
+                '<tr><td colspan="5" class="guest-table-empty">' +
+                'Bu rezervasyon için misafir kaydı bulunamadı.' +
+                '</td></tr>';
+
+        } else {
+
+            var guestsHtml = '';
+
+            guests.forEach(function (g, index) {
+
+                guestsHtml +=
+                    '<tr>' +
+                    '<td>' + (g.title || '') + '</td>' +
+                    '<td>' +
+                    ((g.firstName || '') + ' ' + (g.lastName || '')).trim() +
+                    '</td>' +
+                    '<td>' + (g.age || '') + '</td>' +
+                    '<td>' + (g.birthDate || '') + '</td>' +
+                    '<td>' +
+                    '<input type="radio" name="c-guest-complainant" value="' +
+                    index + '"' +
+                    (index === 0 ? ' checked' : '') +
+                    '>' +
+                    '</td>' +
+                    '</tr>';
+
+            });
+
+            guestsTbody.innerHTML = guestsHtml;
+        }
+    }
+
+    if (flight) {
+
+        document.getElementById('c-arrairline').value =
+            flight.arrivalAirline || '';
+
+        document.getElementById('c-arrflight').value =
+            flight.arrivalFlightNo || '';
+
+        document.getElementById('c-arrtime').value =
+            flight.arrivalDepartureTime || '';
+
+        if (document.getElementById('c-arrarrtime')) {
+            document.getElementById('c-arrarrtime').value =
+                flight.arrivalArrivalTime || '';
+        }
+
+        document.getElementById('c-arrfrom').value =
+            flight.arrivalFrom || '';
+
+        document.getElementById('c-arrto').value =
+            flight.arrivalTo || '';
+
+        document.getElementById('c-depairline').value =
+            flight.departureAirline || '';
+
+        document.getElementById('c-depflight').value =
+            flight.departureFlightNo || '';
+
+        document.getElementById('c-deptime').value =
+            flight.departureDepartureTime || '';
+
+        if (document.getElementById('c-deparrtime')) {
+            document.getElementById('c-deparrtime').value =
+                flight.departureArrivalTime || '';
+        }
+
+        document.getElementById('c-depfrom').value =
+            flight.departureFrom || '';
+
+        document.getElementById('c-depto').value =
+            flight.departureTo || '';
+    }
+
+    if (transfer) {
+
+        document.getElementById('c-transferprovider').value =
+            transfer.supplier || '';
+
+        document.getElementById('c-transferno').value =
+            transfer.transferNo || '';
+    }
+
+    console.log(
+        'PAX bilgileri yüklendi:',
+        pax
+    );
+
+    fillComplaintForm({
+
+        reservation: reservation,
+
+        flight: flight,
+
+        transfer: transfer,
+
+        guests: guests
+
+    });
+}
+
+function fillComplaintForm(formData) {
+
+    fillReservation(formData);
+
+    fillGuests(formData);
+
+    fillFlights(formData);
+
+    fillTransfers(formData);
+
+    fillDropdowns(formData);
+
+}
+
+function fillReservation(formData) {
+
+    var reservation = formData.reservation;
+
+    if (!reservation)
+        return;
+
+    document.getElementById("c-subbooking").value =
+        reservation.subBooking || "";
+
+    document.getElementById("c-adult").value =
+        reservation.adult || 0;
+
+    document.getElementById("c-child").value =
+        reservation.child || 0;
+
+    document.getElementById("c-infant").value =
+        reservation.infant || 0;
+
+    document.getElementById("c-voucher").value =
+        reservation.voucher || "";
+
+    document.getElementById("c-board").value =
+        reservation.board || "";
+
+    document.getElementById("c-nights").value =
+        reservation.nights || "";
+
+    document.getElementById("c-roomtype").value =
+        reservation.roomType || "";
+
+    document.getElementById("c-adate").value =
+        reservation.checkIn || "";
+
+    document.getElementById("c-ddate").value =
+        reservation.checkOut || "";
+
+}
+
+function fillGuests(formData) {
+
+}
+
+function fillFlights(formData) {
+
+}
+
+function fillTransfers(formData) {
+
+}
+
+function fillDropdowns(formData) {
+
+    var reservation = formData.reservation;
+
+    if (!reservation) return;
+
+    if (reservation.operator)
+        document.getElementById("c-veranstalter").value =
+            reservation.operator;
+
+    if (reservation.region)
+        document.getElementById("c-region").value =
+            reservation.region;
+
+    if (reservation.airport)
+        document.getElementById("c-airport").value =
+            reservation.airport;
+
+    if (reservation.hotel)
+        document.getElementById("c-hotel").value =
+            reservation.hotel;
+
+    if (reservation.transferType)
+        document.getElementById("c-transfertype").value =
+            reservation.transferType;
+
+}
+
+function handleDefenseFileInputChange(input) {
+
+    Array.from(input.files).forEach(function (file) {
+
+        pendingAttachments.push(file);
+
+    });
+
+    var html = '';
+
+    pendingAttachments.forEach(function (file, index) {
+
+        html +=
+            (index + 1) +
+            '. 📎 ' +
+            file.name +
+            ' <button type="button" onclick="removePendingFile(' +
+            index +
+            ')">❌</button><br>';
+
+    });
+
+    document
+        .getElementById('defense-file-list')
+        .innerHTML = html;
+
+    input.value = '';
+}
+
+function removePendingFile(index) {
+
+    pendingAttachments.splice(index, 1);
+
+    var html = '';
+
+    pendingAttachments.forEach(function (file, i) {
+
+        html +=
+            (i + 1) +
+            '. 📎 ' +
+            file.name +
+            ' <button type="button" onclick="removePendingFile(' +
+            i +
+            ')">❌</button><br>';
+
+    });
+
+    document
+        .getElementById('defense-file-list')
+        .innerHTML = html;
+
+}
+function saveComplaint() {
+
+    try {
+
+        var booking =
             document.getElementById('c-booking')
                 .value
                 .trim();
 
-        if (!bookingNo) return;
+        var veranstalter =
+            document.getElementById('c-veranstalter')
+                .value
+                .trim();
 
-        var search =
-            bookingNo.toUpperCase();
+        if (!booking) {
 
-        var bookingData =
-            await getBookingData(bookingNo);
-
-        var reservation =
-            bookingData.reservation;
-
-        var flight =
-            bookingData.flight;
-
-        var transfer =
-            bookingData.transfer;
-
-        var guests =
-            bookingData.passengers;
-
-        var formData = {
-
-            bookingNo: bookingNo,
-
-            reservation: reservation,
-
-            flight: flight,
-
-            transfer: transfer,
-
-            guests: guests
-
-        };
-
-        var pax = reservation || {};
-
-        console.log('GUESTS =', guests);
-        console.log('GUEST=', guests);
-        console.log('FLIGHT=', flight);
-        console.log('TRANSFER=', transfer);
-
-        console.log('BOOKING ARANIYOR:', bookingNo);
-
-        console.log('RESERVATIONS:',
-            JSON.parse(localStorage.getItem('reservations') || '[]').length);
-
-        console.log('FLIGHTS:',
-            JSON.parse(localStorage.getItem('flights') || '[]').length);
-
-        console.log('TRANSFERS:',
-            JSON.parse(localStorage.getItem('transfers') || '[]').length);
-
-        console.log('PASSENGERS:',
-            JSON.parse(localStorage.getItem('passengers') || '[]').length);
-
-        if (!pax && !reservation) {
-
-            console.log(
-                'Rezervasyon bulunamadı:',
-                bookingNo
+            alert(
+                'Rezervasyon numarası zorunludur.'
             );
 
             return;
         }
-        loadSimpleDropdown(
-            'c-veranstalter',
-            'operators'
-        );
 
-        loadSimpleDropdown(
-            'c-region',
-            'regions'
-        );
+        if (!veranstalter) {
 
-        loadSimpleDropdown(
-            'c-airport',
-            'airports'
-        );
+            alert(
+                'Tur operatörü seçiniz.'
+            );
 
-        loadTransferTypeDropdown();
-
-        loadHotelDropdown();
-
-        setTimeout(function () {
-
-            console.log("Region options:",
-                document.getElementById("c-region").options.length);
-
-            console.log("Operator options:",
-                document.getElementById("c-veranstalter").options.length);
-
-            console.log("Transfer options:",
-                document.getElementById("c-transfertype").options.length);
-
-            console.log("Hotel options:",
-                document.getElementById("c-hotel").options.length);
-
-        }, 1000);
-
-        pax = reservation || {};
-
-        document.getElementById('c-subbooking').value =
-            String(pax.subBooking || '').trim();
-
-        var op =
-            String(pax.operator || '')
-                .trim();
-
-        console.log(
-            'PAX OPERATOR:',
-            JSON.stringify(op)
-        );
-
-        loadSimpleDropdown(
-            'c-veranstalter',
-            'operators'
-        );
-
-        selectDropdownByText(
-            'c-veranstalter',
-            op
-        );
-
-
-        console.log('RESERVATION =', reservation);
-
-        if (reservation) {
-
-            console.log('Voucher :', reservation.voucher);
-            console.log('Board   :', reservation.board);
-            console.log('Nights  :', reservation.nights);
-            console.log('RoomType:', reservation.roomType);
-
-            var regionSelect =
-                document.getElementById('c-region');
-
-            var regionName =
-                (reservation.region || '').trim();
-
-            Array.from(regionSelect.options)
-                .forEach(function (opt) {
-
-                    if (
-                        opt.value
-                            .toUpperCase()
-                            .includes(
-                                regionName.toUpperCase()
-                            ) ||
-
-                        regionName
-                            .toUpperCase()
-                            .includes(
-                                opt.value.toUpperCase()
-                            )
-                    ) {
-
-                        regionSelect.value =
-                            opt.value;
-
-                    }
-
-                });
-
-            document.getElementById('c-adate').value =
-                reservation.checkIn || '';
-
-            document.getElementById('c-ddate').value =
-                reservation.checkOut || '';
-
-            document.getElementById('c-voucher').value =
-                reservation.voucher || '';
-
-            document.getElementById('c-board').value =
-                reservation.board || '';
-
-            document.getElementById('c-nights').value =
-                reservation.nights || '';
-
-            document.getElementById('c-roomtype').value =
-                reservation.roomType || '';
-
-        } else {
-
-            document.getElementById('c-region').value =
-                (pax.region || '').trim();
-
-            document.getElementById('c-adate').value =
-                excelDateToInputDate(
-                    pax.arrivalDate
-                );
-
-            document.getElementById('c-ddate').value =
-                excelDateToInputDate(
-                    pax.departureDate
-                );
-
-        }
-
-        selectDropdownByText(
-            'c-transfertype',
-            transfer
-                ? transfer.transferType
-                : pax.transferType
-        );
-
-        document.getElementById('c-transferprovider').value =
-            transfer ? (transfer.supplier || '') : '';
-
-        document.getElementById('c-subbooking').value =
-            String(pax.subBooking || '').trim();
-
-        document.getElementById('c-adult').value =
-            pax.adult || 0;
-
-        document.getElementById('c-child').value =
-            pax.child || 0;
-
-        document.getElementById('c-infant').value =
-            pax.infant || 0;
-
-        console.log('HOTEL DROPDOWN YÜKLENİYOR');
-
-        loadHotelDropdown();
-
-        console.log(
-            "OTEL SEÇİLECEK =",
-            reservation ? reservation.hotel : pax.hotel
-        );
-
-        selectDropdownByText(
-            "c-hotel",
-            reservation ? reservation.hotel : pax.hotel
-        );
-
-        console.log(
-            "SEÇİLEN OTEL =",
-            document.getElementById("c-hotel").value
-        );
-
-        console.log('BOOKING=', bookingNo);
-        console.log('GUESTS=', guests);
-        console.log('FLIGHT=', flight);
-        console.log('TRANSFER=', transfer);
-
-        var guestText = '';
-
-        guests.forEach(function (g, index) {
-
-            guestText +=
-                (index + 1) + '. ' +
-                (g.title || '') + ' ' +
-                (g.firstName || '') + ' ' +
-                (g.lastName || '');
-
-            if (g.age) {
-                guestText += ' (' + g.age + ')';
-            }
-
-            guestText += '\n';
-
-        });
-
-        document.getElementById('c-guests').value =
-            guestText.trim();
-
-        var guestsTbody =
-            document.getElementById('c-guests-tbody');
-
-        if (guestsTbody) {
-
-            if (!guests.length) {
-
-                guestsTbody.innerHTML =
-                    '<tr><td colspan="5" class="guest-table-empty">' +
-                    'Bu rezervasyon için misafir kaydı bulunamadı.' +
-                    '</td></tr>';
-
-            } else {
-
-                var guestsHtml = '';
-
-                guests.forEach(function (g, index) {
-
-                    guestsHtml +=
-                        '<tr>' +
-                        '<td>' + (g.title || '') + '</td>' +
-                        '<td>' +
-                        ((g.firstName || '') + ' ' + (g.lastName || '')).trim() +
-                        '</td>' +
-                        '<td>' + (g.age || '') + '</td>' +
-                        '<td>' + (g.birthDate || '') + '</td>' +
-                        '<td>' +
-                        '<input type="radio" name="c-guest-complainant" value="' +
-                        index + '"' +
-                        (index === 0 ? ' checked' : '') +
-                        '>' +
-                        '</td>' +
-                        '</tr>';
-
-                });
-
-                guestsTbody.innerHTML = guestsHtml;
-            }
-        }
-
-        if (flight) {
-
-            document.getElementById('c-arrairline').value =
-                flight.arrivalAirline || '';
-
-            document.getElementById('c-arrflight').value =
-                flight.arrivalFlightNo || '';
-
-            document.getElementById('c-arrtime').value =
-                flight.arrivalDepartureTime || '';
-
-            if (document.getElementById('c-arrarrtime')) {
-                document.getElementById('c-arrarrtime').value =
-                    flight.arrivalArrivalTime || '';
-            }
-
-            document.getElementById('c-arrfrom').value =
-                flight.arrivalFrom || '';
-
-            document.getElementById('c-arrto').value =
-                flight.arrivalTo || '';
-
-            document.getElementById('c-depairline').value =
-                flight.departureAirline || '';
-
-            document.getElementById('c-depflight').value =
-                flight.departureFlightNo || '';
-
-            document.getElementById('c-deptime').value =
-                flight.departureDepartureTime || '';
-
-            if (document.getElementById('c-deparrtime')) {
-                document.getElementById('c-deparrtime').value =
-                    flight.departureArrivalTime || '';
-            }
-
-            document.getElementById('c-depfrom').value =
-                flight.departureFrom || '';
-
-            document.getElementById('c-depto').value =
-                flight.departureTo || '';
-        }
-
-        if (transfer) {
-
-            document.getElementById('c-transferprovider').value =
-                transfer.supplier || '';
-
-            document.getElementById('c-transferno').value =
-                transfer.transferNo || '';
-        }
-
-        console.log(
-            'PAX bilgileri yüklendi:',
-            pax
-        );
-
-        fillComplaintForm({
-
-            reservation: reservation,
-
-            flight: flight,
-
-            transfer: transfer,
-
-            guests: guests
-
-        });
-    }
-
-    function fillComplaintForm(formData) {
-
-        fillReservation(formData);
-
-        fillGuests(formData);
-
-        fillFlights(formData);
-
-        fillTransfers(formData);
-
-        fillDropdowns(formData);
-
-    }
-
-    function fillReservation(formData) {
-
-        var reservation = formData.reservation;
-
-        if (!reservation)
             return;
-
-        document.getElementById("c-subbooking").value =
-            reservation.subBooking || "";
-
-        document.getElementById("c-adult").value =
-            reservation.adult || 0;
-
-        document.getElementById("c-child").value =
-            reservation.child || 0;
-
-        document.getElementById("c-infant").value =
-            reservation.infant || 0;
-
-        document.getElementById("c-voucher").value =
-            reservation.voucher || "";
-
-        document.getElementById("c-board").value =
-            reservation.board || "";
-
-        document.getElementById("c-nights").value =
-            reservation.nights || "";
-
-        document.getElementById("c-roomtype").value =
-            reservation.roomType || "";
-
-        document.getElementById("c-adate").value =
-            reservation.checkIn || "";
-
-        document.getElementById("c-ddate").value =
-            reservation.checkOut || "";
-
-    }
-
-    function fillGuests(formData) {
-
-    }
-
-    function fillFlights(formData) {
-
-    }
-
-    function fillTransfers(formData) {
-
-    }
-
-    function fillDropdowns(formData) {
-
-        var reservation = formData.reservation;
-
-        if (!reservation) return;
-
-        if (reservation.operator)
-            document.getElementById("c-veranstalter").value =
-                reservation.operator;
-
-        if (reservation.region)
-            document.getElementById("c-region").value =
-                reservation.region;
-
-        if (reservation.airport)
-            document.getElementById("c-airport").value =
-                reservation.airport;
-
-        if (reservation.hotel)
-            document.getElementById("c-hotel").value =
-                reservation.hotel;
-
-        if (reservation.transferType)
-            document.getElementById("c-transfertype").value =
-                reservation.transferType;
-
-    }
-
-    function handleDefenseFileInputChange(input) {
-
-        Array.from(input.files).forEach(function (file) {
-
-            pendingAttachments.push(file);
-
-        });
-
-        var html = '';
-
-        pendingAttachments.forEach(function (file, index) {
-
-            html +=
-                (index + 1) +
-                '. 📎 ' +
-                file.name +
-                ' <button type="button" onclick="removePendingFile(' +
-                index +
-                ')">❌</button><br>';
-
-        });
-
-        document
-            .getElementById('defense-file-list')
-            .innerHTML = html;
-
-        input.value = '';
-    }
-
-    function removePendingFile(index) {
-
-        pendingAttachments.splice(index, 1);
-
-        var html = '';
-
-        pendingAttachments.forEach(function (file, i) {
-
-            html +=
-                (i + 1) +
-                '. 📎 ' +
-                file.name +
-                ' <button type="button" onclick="removePendingFile(' +
-                i +
-                ')">❌</button><br>';
-
-        });
-
-        document
-            .getElementById('defense-file-list')
-            .innerHTML = html;
-
-    }
-    function saveComplaint() {
-
-        try {
-
-            var booking =
-                document.getElementById('c-booking')
-                    .value
-                    .trim();
-
-            var veranstalter =
-                document.getElementById('c-veranstalter')
-                    .value
-                    .trim();
-
-            if (!booking) {
-
-                alert(
-                    'Rezervasyon numarası zorunludur.'
-                );
-
-                return;
-            }
-
-            if (!veranstalter) {
-
-                alert(
-                    'Tur operatörü seçiniz.'
-                );
-
-                return;
-            }
-
-            console.log('c-defense-required', document.getElementById('c-defense-required'));
-            console.log('c-defense-unit', document.getElementById('c-defense-unit'));
-            console.log('c-kw', document.getElementById('c-kw'));
-            console.log('c-quarter', document.getElementById('c-quarter'));
-            console.log('c-date', document.getElementById('c-date'));
-            console.log('c-timeout', document.getElementById('c-timeout'));
-            console.log('c-sn', document.getElementById('c-sn'));
-
-            var rec = {
-                id: complaints.length > 0 ? Math.max.apply(Math, complaints.map(function (o) { return o.id; })) + 1 : 1,
-                kw: document.getElementById('c-kw').value,
-                quarter: document.getElementById('c-quarter').value,
-                user: currentUser.username,
-                date: document.getElementById('c-date').value,
-                timeout: document.getElementById('c-timeout').value,
-                sn: document.getElementById('c-sn').value,
-                booking: document.getElementById('c-booking').value.trim() || 'BOŞ',
-                subbooking: document.getElementById('c-subbooking').value.trim(),
-                adult: parseInt(document.getElementById('c-adult').value) || 0,
-                child: parseInt(document.getElementById('c-child').value) || 0,
-                infant: parseInt(document.getElementById('c-infant').value) || 0,
-                bdate: document.getElementById('c-bdate').value,
-                adate: document.getElementById('c-adate').value,
-                ddate: document.getElementById('c-ddate').value,
-                veranstalter: document.getElementById('c-veranstalter').value,
-                partner: '',
-
-                Verursacher:
-                    document.getElementById('c-verursacher').value,
-
-                region:
-                    document.getElementById('c-region').value,
-
-                airport:
-                    document.getElementById('c-airport').value,
-
-                service:
-                    document.getElementById('c-service')
-                        ? document.getElementById('c-service').value
-                        : '',
-
-                hotel:
-                    document.getElementById('c-hotel').value,
-
-                transfertype:
-                    document.getElementById('c-transfertype')
-                        ? document.getElementById('c-transfertype').value
-                        : 'Shuttle',
-
-                ptr: document.getElementById('c-ptr').value,
-
-                ptr2:
-                    document.getElementById('c-ptr2')
-                        ? document.getElementById('c-ptr2').value
-                        : '',
-
-                ptr3:
-                    document.getElementById('c-ptr3')
-                        ? document.getElementById('c-ptr3').value
-                        : '',
-
-                result: document.getElementById('c-result').value,
-                price: parseFloat(document.getElementById('c-price').value) || 0,
-                currency: document.getElementById('c-currency').value,
-                notes: document.getElementById('c-notes').value.trim(),
-
-                defenseRequired:
-                    document.getElementById('c-defense-required').value,
-
-                defenseUnit:
-                    document.getElementById('c-defense-unit')
-                        ? document.getElementById('c-defense-unit').value
-                        : '',
-
-                defenseRequestedAt:
-                    document.getElementById('c-defense-required').value === 'Evet'
-                        ? new Date().toISOString()
-                        : '',
-
-                defenseStatus:
-                    document.getElementById('c-defense-required').value === 'Evet'
-                        ? 'Bekleniyor'
-                        : 'Yok',
-
-                defenseCompletedAt: '',
-
-                attachments: [],
-
-                isDeleted: false,
-                deleteRequested: false,
-                deletedBy: '',
-                deletedAt: ''
-            };
-
-            console.log('PTR1=', rec.ptr);
-            console.log('PTR2=', rec.ptr2);
-            console.log('PTR3=', rec.ptr3);
-
-            var files = pendingAttachments;
-
-            Promise.all(
-
-                files.map(function (file, index) {
-
-                    var fileId =
-                        'CMP_' +
-                        rec.id +
-                        '_' +
-                        index;
-
-                    rec.attachments.push({
-
-                        id: fileId,
-                        name: file.name,
-                        type: file.type,
-                        size: file.size
-
-                    });
-
-                    return saveAttachment(
-                        fileId,
-                        file
-                    );
-
-                })
-
-            ).then(function () {
-
-                var existingComplaint =
-                    complaints.find(function (x) {
-
-                        return x.booking === rec.booking;
-
-                    });
-
-                if (existingComplaint) {
-
-                    alert(
-                        'Bu rezervasyon numarası için zaten bir kayıt mevcut.\n\nRezervasyon No: ' +
-                        rec.booking
-                    );
-
-                    openComplaintDetail(
-                        existingComplaint.id
-                    );
-
-                    return;
-                }
-
-                complaints.unshift(rec);
-
-                syncStorage();
-
-                clearComplaintForm();
-
-                closeComplaintModal();
-
-                pendingAttachments = [];
-
-                document.getElementById('defense-file-list').innerHTML = '';
-
-                showToast(
-                    'Şikayet kartı veritabanına işlendi.'
-                );
-
-                renderRecordsTable();
-
-                renderDashboard();
-
-            });
-        } catch (err) {
-            console.error(err);
-            alert("Kayıt sırasında hata oluştu:\n\n" + err.message);
         }
-    }
 
-    function saveComplaintChanges(id) {
+        console.log('c-defense-required', document.getElementById('c-defense-required'));
+        console.log('c-defense-unit', document.getElementById('c-defense-unit'));
+        console.log('c-kw', document.getElementById('c-kw'));
+        console.log('c-quarter', document.getElementById('c-quarter'));
+        console.log('c-date', document.getElementById('c-date'));
+        console.log('c-timeout', document.getElementById('c-timeout'));
+        console.log('c-sn', document.getElementById('c-sn'));
 
-        var r = complaints.find(function (o) {
-            return o.id == id;
-        });
-
-        if (!r) return;
-
-        var oldOperator = r.veranstalter;
-
-        r.veranstalter =
-            document.getElementById(
-                'edit-veranstalter'
-            ).value;
-
-        syncStorage();
-
-        renderRecordsTable();
-        renderDashboard();
-
-        showToast(
-            'Operatör güncellendi'
-        );
-
-        console.log(
-            'LOG:',
-            oldOperator +
-            ' -> ' +
-            r.veranstalter
-        );
-    }
-
-    function saveComplaintChanges(id) {
-
-        var r = complaints.find(function (o) {
-            return o.id == id;
-        });
-
-        if (!r) return;
-
-        var oldOperator = r.veranstalter;
-
-        r.veranstalter =
-            document.getElementById(
-                'edit-veranstalter'
-            ).value;
-
-        syncStorage();
-
-        renderRecordsTable();
-        renderDashboard();
-
-        showToast(
-            'Operatör güncellendi'
-        );
-
-        console.log(
-            'LOG:',
-            oldOperator +
-            ' -> ' +
-            r.veranstalter
-        );
-
-    }
-
-    function saveInvoice() {
-        var nextId = invoices.length > 0 ? Math.max.apply(Math, invoices.map(function (o) { return o.id; })) + 1 : 1;
         var rec = {
-            id: nextId,
-            faturaNo: document.getElementById('inv-no').value.trim() || 'INV-' + nextId,
-            tarih: document.getElementById('inv-date').value,
-            partner: document.getElementById('inv-partner').value,
-            booking: document.getElementById('inv-booking').value.trim() || '—',
-            tutar: parseFloat(document.getElementById('inv-tutar').value) || 0,
-            doviz: document.getElementById('inv-doviz').value,
-            durum: document.getElementById('inv-durum').value,
-            kabul: document.getElementById('inv-kabul').value,
-            iadeTutar: parseFloat(document.getElementById('inv-iade-tutar').value) || 0,
-            iadeDate: document.getElementById('inv-iade-date').value,
-            kesinti: document.getElementById('inv-kesinti').value.trim(),
+            id: complaints.length > 0 ? Math.max.apply(Math, complaints.map(function (o) { return o.id; })) + 1 : 1,
+            kw: document.getElementById('c-kw').value,
+            quarter: document.getElementById('c-quarter').value,
+            user: currentUser.username,
+            date: document.getElementById('c-date').value,
+            timeout: document.getElementById('c-timeout').value,
+            sn: document.getElementById('c-sn').value,
+            booking: document.getElementById('c-booking').value.trim() || 'BOŞ',
+            subbooking: document.getElementById('c-subbooking').value.trim(),
+            adult: parseInt(document.getElementById('c-adult').value) || 0,
+            child: parseInt(document.getElementById('c-child').value) || 0,
+            infant: parseInt(document.getElementById('c-infant').value) || 0,
+            bdate: document.getElementById('c-bdate').value,
+            adate: document.getElementById('c-adate').value,
+            ddate: document.getElementById('c-ddate').value,
+            veranstalter: document.getElementById('c-veranstalter').value,
+            partner: '',
+
+            Verursacher:
+                document.getElementById('c-verursacher').value,
+
+            region:
+                document.getElementById('c-region').value,
+
+            airport:
+                document.getElementById('c-airport').value,
+
+            service:
+                document.getElementById('c-service')
+                    ? document.getElementById('c-service').value
+                    : '',
+
+            hotel:
+                document.getElementById('c-hotel').value,
+
+            transfertype:
+                document.getElementById('c-transfertype')
+                    ? document.getElementById('c-transfertype').value
+                    : 'Shuttle',
+
+            ptr: document.getElementById('c-ptr').value,
+
+            ptr2:
+                document.getElementById('c-ptr2')
+                    ? document.getElementById('c-ptr2').value
+                    : '',
+
+            ptr3:
+                document.getElementById('c-ptr3')
+                    ? document.getElementById('c-ptr3').value
+                    : '',
+
+            result: document.getElementById('c-result').value,
+            price: parseFloat(document.getElementById('c-price').value) || 0,
+            currency: document.getElementById('c-currency').value,
+            notes: document.getElementById('c-notes').value.trim(),
+
+            defenseRequired:
+                document.getElementById('c-defense-required').value,
+
+            defenseUnit:
+                document.getElementById('c-defense-unit')
+                    ? document.getElementById('c-defense-unit').value
+                    : '',
+
+            defenseRequestedAt:
+                document.getElementById('c-defense-required').value === 'Evet'
+                    ? new Date().toISOString()
+                    : '',
+
+            defenseStatus:
+                document.getElementById('c-defense-required').value === 'Evet'
+                    ? 'Bekleniyor'
+                    : 'Yok',
+
+            defenseCompletedAt: '',
+
+            attachments: [],
 
             isDeleted: false,
             deleteRequested: false,
@@ -3024,531 +2857,700 @@ function selectDropdownByText(selectId, text) {
             deletedAt: ''
         };
 
-        invoices.unshift(rec);
-        syncStorage();
-        closeInvoiceModal();
-        showToast('Finansal fatura regress kaydı eklendi.');
-        renderAccounting();
-        renderDashboard();
-    }
+        console.log('PTR1=', rec.ptr);
+        console.log('PTR2=', rec.ptr2);
+        console.log('PTR3=', rec.ptr3);
 
-    // ==================== RENDERING ENGINE ====================
-    function completeDefense(id) {
+        var files = pendingAttachments;
 
-        var rec = complaints.find(function (r) {
-            return r.id == id;
+        Promise.all(
+
+            files.map(function (file, index) {
+
+                var fileId =
+                    'CMP_' +
+                    rec.id +
+                    '_' +
+                    index;
+
+                rec.attachments.push({
+
+                    id: fileId,
+                    name: file.name,
+                    type: file.type,
+                    size: file.size
+
+                });
+
+                return saveAttachment(
+                    fileId,
+                    file
+                );
+
+            })
+
+        ).then(function () {
+
+            var existingComplaint =
+                complaints.find(function (x) {
+
+                    return x.booking === rec.booking;
+
+                });
+
+            if (existingComplaint) {
+
+                alert(
+                    'Bu rezervasyon numarası için zaten bir kayıt mevcut.\n\nRezervasyon No: ' +
+                    rec.booking
+                );
+
+                openComplaintDetail(
+                    existingComplaint.id
+                );
+
+                return;
+            }
+
+            complaints.unshift(rec);
+
+            syncStorage();
+
+            clearComplaintForm();
+
+            closeComplaintModal();
+
+            pendingAttachments = [];
+
+            document.getElementById('defense-file-list').innerHTML = '';
+
+            showToast(
+                'Şikayet kartı veritabanına işlendi.'
+            );
+
+            renderRecordsTable();
+
+            renderDashboard();
+
         });
+    } catch (err) {
+        console.error(err);
+        alert("Kayıt sırasında hata oluştu:\n\n" + err.message);
+    }
+}
 
-        if (!rec) return;
+function saveComplaintChanges(id) {
 
-        rec.defenseStatus = 'Tamamlandı';
+    var r = complaints.find(function (o) {
+        return o.id == id;
+    });
 
+    if (!r) return;
+
+    var oldOperator = r.veranstalter;
+
+    r.veranstalter =
+        document.getElementById(
+            'edit-veranstalter'
+        ).value;
+
+    syncStorage();
+
+    renderRecordsTable();
+    renderDashboard();
+
+    showToast(
+        'Operatör güncellendi'
+    );
+
+    console.log(
+        'LOG:',
+        oldOperator +
+        ' -> ' +
+        r.veranstalter
+    );
+}
+
+function saveComplaintChanges(id) {
+
+    var r = complaints.find(function (o) {
+        return o.id == id;
+    });
+
+    if (!r) return;
+
+    var oldOperator = r.veranstalter;
+
+    r.veranstalter =
+        document.getElementById(
+            'edit-veranstalter'
+        ).value;
+
+    syncStorage();
+
+    renderRecordsTable();
+    renderDashboard();
+
+    showToast(
+        'Operatör güncellendi'
+    );
+
+    console.log(
+        'LOG:',
+        oldOperator +
+        ' -> ' +
+        r.veranstalter
+    );
+
+}
+
+function saveInvoice() {
+    var nextId = invoices.length > 0 ? Math.max.apply(Math, invoices.map(function (o) { return o.id; })) + 1 : 1;
+    var rec = {
+        id: nextId,
+        faturaNo: document.getElementById('inv-no').value.trim() || 'INV-' + nextId,
+        tarih: document.getElementById('inv-date').value,
+        partner: document.getElementById('inv-partner').value,
+        booking: document.getElementById('inv-booking').value.trim() || '—',
+        tutar: parseFloat(document.getElementById('inv-tutar').value) || 0,
+        doviz: document.getElementById('inv-doviz').value,
+        durum: document.getElementById('inv-durum').value,
+        kabul: document.getElementById('inv-kabul').value,
+        iadeTutar: parseFloat(document.getElementById('inv-iade-tutar').value) || 0,
+        iadeDate: document.getElementById('inv-iade-date').value,
+        kesinti: document.getElementById('inv-kesinti').value.trim(),
+
+        isDeleted: false,
+        deleteRequested: false,
+        deletedBy: '',
+        deletedAt: ''
+    };
+
+    invoices.unshift(rec);
+    syncStorage();
+    closeInvoiceModal();
+    showToast('Finansal fatura regress kaydı eklendi.');
+    renderAccounting();
+    renderDashboard();
+}
+
+// ==================== RENDERING ENGINE ====================
+function completeDefense(id) {
+
+    var rec = complaints.find(function (r) {
+        return r.id == id;
+    });
+
+    if (!rec) return;
+
+    rec.defenseStatus = 'Tamamlandı';
+
+    rec.defenseCompletedAt =
+        new Date().toISOString();
+
+    syncStorage();
+
+    renderDashboard();
+    renderRecordsTable();
+
+    openComplaintDetail(id);
+
+    showToast(
+        'Savunma tamamlandı olarak işaretlendi.'
+    );
+}
+
+function updateDefenseStatus(id, status) {
+
+    var rec = complaints.find(function (r) {
+        return r.id == id;
+    });
+
+    if (!rec) return;
+
+    rec.defenseStatus = status;
+
+    if (
+        (status === 'Savunma Geldi' ||
+            status === 'Tamamlandı')
+        &&
+        !rec.defenseCompletedAt
+    ) {
         rec.defenseCompletedAt =
             new Date().toISOString();
-
-        syncStorage();
-
-        renderDashboard();
-        renderRecordsTable();
-
-        openComplaintDetail(id);
-
-        showToast(
-            'Savunma tamamlandı olarak işaretlendi.'
-        );
     }
 
-    function updateDefenseStatus(id, status) {
+    syncStorage();
 
-        var rec = complaints.find(function (r) {
-            return r.id == id;
+    renderDashboard();
+    renderRecordsTable();
+
+    openComplaintDetail(id);
+
+    showToast('Savunma durumu güncellendi.');
+}
+
+function renderRecordsTable() {
+    var q = document.getElementById('rec-search').value.toLowerCase();
+    var fs = document.getElementById('rec-filter-sonuc').value;
+    var showDeleted =
+        document.getElementById('showDeleted') &&
+        document.getElementById('showDeleted').checked;
+    var showCompletedDefense =
+        document.getElementById('showCompletedDefense') &&
+        document.getElementById('showCompletedDefense').checked;
+    var tbody = document.getElementById('rec-tbody');
+    if (!tbody) return;
+
+    var visibleComplaints = complaints;
+
+    if (
+        currentUser &&
+        currentUser.role !== 'admin'
+    ) {
+        visibleComplaints = complaints.filter(function (r) {
+            return r.user === currentUser.username;
         });
-
-        if (!rec) return;
-
-        rec.defenseStatus = status;
-
-        if (
-            (status === 'Savunma Geldi' ||
-                status === 'Tamamlandı')
-            &&
-            !rec.defenseCompletedAt
-        ) {
-            rec.defenseCompletedAt =
-                new Date().toISOString();
-        }
-
-        syncStorage();
-
-        renderDashboard();
-        renderRecordsTable();
-
-        openComplaintDetail(id);
-
-        showToast('Savunma durumu güncellendi.');
     }
 
-    function renderRecordsTable() {
-        var q = document.getElementById('rec-search').value.toLowerCase();
-        var fs = document.getElementById('rec-filter-sonuc').value;
-        var showDeleted =
-            document.getElementById('showDeleted') &&
-            document.getElementById('showDeleted').checked;
-        var showCompletedDefense =
-            document.getElementById('showCompletedDefense') &&
-            document.getElementById('showCompletedDefense').checked;
-        var tbody = document.getElementById('rec-tbody');
-        if (!tbody) return;
+    var filtered = visibleComplaints.filter(function (r) {
 
-        var visibleComplaints = complaints;
+        if (r.isDeleted && !showDeleted)
+            return false;
+
 
         if (
-            currentUser &&
-            currentUser.role !== 'admin'
-        ) {
-            visibleComplaints = complaints.filter(function (r) {
-                return r.user === currentUser.username;
-            });
-        }
+            r.defenseStatus === 'Tamamlandı' &&
+            !showCompletedDefense
+        )
+            return false;
 
-        var filtered = visibleComplaints.filter(function (r) {
+        var haystack =
+            (r.booking + r.user + r.ptr + r.veranstalter +
+                r.region + r.hotel).toLowerCase();
 
-            if (r.isDeleted && !showDeleted)
-                return false;
+        return (!q || haystack.indexOf(q) !== -1)
+            && (!fs || r.result === fs);
+    });
 
+    if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; padding:20px;">Kriterlere uygun müşteri şikayeti bulunamadı.</td></tr>';
+        return;
+    }
 
-            if (
-                r.defenseStatus === 'Tamamlandı' &&
-                !showCompletedDefense
-            )
-                return false;
+    var html = '';
+    for (var i = 0; i < filtered.length; i++) {
+        var r = filtered[i];
 
-            var haystack =
-                (r.booking + r.user + r.ptr + r.veranstalter +
-                    r.region + r.hotel).toLowerCase();
+        var defenseInfo = getDefenseInfo(r);
 
-            return (!q || haystack.indexOf(q) !== -1)
-                && (!fs || r.result === fs);
-        });
+        var icon = '⚪';
 
-        if (!filtered.length) {
-            tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; padding:20px;">Kriterlere uygun müşteri şikayeti bulunamadı.</td></tr>';
-            return;
-        }
+        if (defenseInfo.status === 'Bekleniyor')
+            icon = '🟡';
 
-        var html = '';
-        for (var i = 0; i < filtered.length; i++) {
-            var r = filtered[i];
+        if (defenseInfo.status === 'Yaklaşıyor')
+            icon = '🟠';
 
-            var defenseInfo = getDefenseInfo(r);
+        if (defenseInfo.status === 'Kritik')
+            icon = '🔴';
 
-            var icon = '⚪';
+        if (defenseInfo.status === 'Süre Aşıldı')
+            icon = '🚨';
 
-            if (defenseInfo.status === 'Bekleniyor')
-                icon = '🟡';
+        if (defenseInfo.status === 'Savunma Geldi')
+            icon = '🔵';
 
-            if (defenseInfo.status === 'Yaklaşıyor')
-                icon = '🟠';
+        if (defenseInfo.status === 'Tamamlandı')
+            icon = '🟢';
 
-            if (defenseInfo.status === 'Kritik')
-                icon = '🔴';
+        if (defenseInfo.status === 'Yok')
+            icon = '⚪';
 
-            if (defenseInfo.status === 'Süre Aşıldı')
-                icon = '🚨';
-
-            if (defenseInfo.status === 'Savunma Geldi')
-                icon = '🔵';
-
-            if (defenseInfo.status === 'Tamamlandı')
-                icon = '🟢';
-
-            if (defenseInfo.status === 'Yok')
-                icon = '⚪';
-
-            var defenseBadge =
-                '<span style="color:' +
-                defenseInfo.color +
-                ';font-weight:700;">' +
-                icon + ' ' +
-                defenseInfo.status +
-                (
-                    defenseInfo.remaining
-                        ? ' (' + defenseInfo.remaining + ')'
-                        : ''
-                ) +
-                '</span>';
+        var defenseBadge =
+            '<span style="color:' +
+            defenseInfo.color +
+            ';font-weight:700;">' +
+            icon + ' ' +
+            defenseInfo.status +
             (
                 defenseInfo.remaining
                     ? ' (' + defenseInfo.remaining + ')'
                     : ''
             ) +
-                '</span>';
-            var rowClass = '';
+            '</span>';
+        (
+            defenseInfo.remaining
+                ? ' (' + defenseInfo.remaining + ')'
+                : ''
+        ) +
+            '</span>';
+        var rowClass = '';
 
-            if (r.isDeleted) {
-                rowClass = 'deleted-row';
-            }
-            else if (r.defenseStatus === 'Tamamlandı') {
-                rowClass = 'completed-row';
-            }
+        if (r.isDeleted) {
+            rowClass = 'deleted-row';
+        }
+        else if (r.defenseStatus === 'Tamamlandı') {
+            rowClass = 'completed-row';
+        }
 
-            html += '<tr class="' + rowClass + '">' +
+        html += '<tr class="' + rowClass + '">' +
 
+            '<td>' +
+            '<input type="checkbox" class="complaint-select" value="' + r.id + '">' +
+            '</td>' +
+
+            '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
+            '<td>' + r.date + '</td>' +
+            '<td>' + truncate(r.user, 14) + '</td>' +
+            '<td style="font-family:monospace; font-weight:bold;">' + r.booking + '</td>' +
+            '<td>' + truncate(r.veranstalter, 18) + '</td>' +
+
+            '<td>' + r.region + '</td>' +
+            '<td>' + truncate(r.ptr || '-', 22) + '</td>' +
+
+            '<td>' +
+            defenseBadge +
+            '</td>' +
+
+            '<td><span class="badge ' +
+            (r.result === 'Haklı' ? 'badge-green' : 'badge-red') +
+            '">' + (r.result || '-') + '</span></td>' +
+            '<td style="font-weight:600;">' + (r.price > 0 ? fmt(r.price) + ' ' + r.currency : '-') + '</td>' +
+            '<td>' +
+            (
+                r.attachments && r.attachments.length > 0
+                    ? '<span style="display:inline-block;width:42px;" title="Ek Dosyalar">📎(' + r.attachments.length + ')</span>'
+                    : '<span style="display:inline-block;width:42px;"></span>'
+            ) +
+
+            '<button class="icon-btn" onclick="openComplaintDetail(' + r.id + ')" title="Detay Gör">&#128065;</button>' +
+
+            (
+                r.deleteRequested
+                    ? '<span title="Admin Onayı Bekleniyor" style="color:#ff9800;font-size:18px;">⏳</span>'
+                    : (
+                        r.isDeleted
+                            ? (
+                                currentUser.role === 'admin'
+                                    ? '<button class="icon-btn" onclick="restoreComplaint(' + r.id + ')" title="Geri Yükle">&#8635;</button>'
+                                    : ''
+                            )
+                            : '<button class="icon-btn btn-delete" onclick="requestDeleteComplaint(' + r.id + ')" title="Silme Talebi">&#128465;</button>'
+                    )
+            ) +
+            '</td>' +
+            '</tr>';
+    }
+    tbody.innerHTML = html;
+}
+
+function toggleAllComplaints(cb) {
+
+    document
+        .querySelectorAll('.complaint-select')
+        .forEach(function (c) {
+
+            c.checked = cb.checked;
+
+        });
+}
+
+function requestDeleteComplaint(id) {
+
+    var rec = complaints.find(function (r) {
+        return r.id === id;
+    });
+
+    if (!rec) return;
+
+    if (rec.deleteRequested) {
+        alert('Bu kayıt için zaten silme talebi gönderilmiş.');
+        return;
+    }
+
+    if (currentUser.role === 'admin') {
+
+        if (!confirm('Kayıt silinsin mi?')) {
+            return;
+        }
+
+        rec.isDeleted = true;
+
+        rec.deletedBy =
+            currentUser.username;
+
+        rec.deletedAt =
+            new Date().toLocaleString('tr-TR');
+
+        syncStorage();
+
+        renderRecordsTable();
+        renderDashboard();
+
+        addLog(
+            'Kayıt #' +
+            id +
+            ' silindi'
+        );
+
+        showToast('Kayıt silindi.');
+
+        return;
+    }
+
+    localStorage.setItem('activePage', 'records');
+
+    rec.deleteRequested = true;
+
+    syncStorage();
+    renderRecordsTable();
+
+    addLog('Kayıt #' + id + ' için silme talebi gönderdi');
+
+    showToast('Silme talebi gönderildi.');
+}
+
+function renderDeleteRequests() {
+
+    var tbody = document.getElementById('delete-requests-body');
+    var panel = document.getElementById('delete-requests-panel');
+
+    if (!tbody || !panel) return;
+
+    var pending = complaints.filter(function (r) {
+        return r.deleteRequested === true && !r.isDeleted;
+    });
+
+    if (currentUser && currentUser.role === 'admin') {
+        panel.style.display = 'block';
+    } else {
+        panel.style.display = 'none';
+        return;
+    }
+
+    tbody.innerHTML = '';
+
+    pending.forEach(function (r) {
+
+        tbody.innerHTML +=
+            '<tr>' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td>' + hotels[i] + '</td>' +
+            '<td>' +
+
+            '<button class="btn-secondary" ' +
+            'onclick="editHotel(' + i + ')">' +
+            '✏️</button> ' +
+
+            '<button class="btn-delete" ' +
+            'onclick="deleteHotel(' + i + ')">' +
+            '🗑️</button>' +
+
+            '</td>' +
+            '</tr>';
+
+    });
+}
+
+function approveDeleteComplaint(id) {
+
+    var rec = complaints.find(function (r) {
+        return r.id === id;
+    });
+
+    if (!rec) return;
+
+    rec.isDeleted = true;
+    rec.deleteRequested = false;
+    rec.deletedBy = currentUser.username;
+    rec.deletedAt = new Date().toISOString();
+
+    syncStorage();
+
+    renderDeleteRequests();
+    renderRecordsTable();
+    renderDashboard();
+
+    addLog('Kayıt #' + id + ' silindi');
+
+    showToast('Kayıt pasif olarak silindi.');
+}
+
+function rejectDeleteComplaint(id) {
+
+    var rec = complaints.find(function (r) {
+        return r.id === id;
+    });
+
+    if (!rec) return;
+
+    rec.deleteRequested = false;
+
+    localStorage.setItem('activePage', 'records');
+
+    syncStorage();
+
+    renderDeleteRequests();
+    renderRecordsTable();
+    renderDashboard();
+
+    addLog('Kayıt #' + id + ' silme talebi reddedildi');
+
+    showToast('Silme talebi reddedildi.');
+}
+
+
+function restoreComplaint(id) {
+
+    var rec = complaints.find(function (r) {
+        return r.id === id;
+    });
+
+    if (!rec) return;
+
+    rec.isDeleted = false;
+    rec.deletedBy = '';
+    rec.deletedAt = '';
+    localStorage.setItem('activePage', 'records');
+    syncStorage();
+
+    renderRecordsTable();
+    renderDashboard();
+
+    addLog('Kayıt #' + id + ' geri yüklendi');
+
+    showToast('Kayıt geri yüklendi.');
+}
+
+
+function renderAccounting() {
+    var fPart = document.getElementById('acc-filter-partner').value;
+    var fDurum = document.getElementById('acc-filter-durum').value;
+    var fDoviz = document.getElementById('acc-filter-doviz').value;
+
+    var partnerMenu = document.getElementById('acc-filter-partner');
+    if (partnerMenu && partnerMenu.options.length <= 1) {
+        var pList = ['SWT', 'HDS AYT OPERATIONS', 'MTS/OTS EGE', 'SERAMONI'];
+        for (var p = 0; p < pList.length; p++) {
+            var opt = document.createElement('option'); opt.value = pList[p]; opt.textContent = pList[p];
+            partnerMenu.appendChild(opt);
+        }
+    }
+
+    var filtered = invoices.filter(function (r) {
+        return (!fPart || r.partner === fPart) && (!fDurum || r.durum === fDurum) && (!fDoviz || r.doviz === fDoviz);
+    });
+
+    var totalSent = filtered.reduce(function (s, o) { return s + o.tutar; }, 0);
+    var totalReceived = filtered.reduce(function (s, o) { return s + o.iadeTutar; }, 0);
+    var totalPending = filtered.filter(function (o) { return o.durum === 'Beklemede' || o.durum === 'Gönderildi'; }).reduce(function (s, o) { return s + o.tutar; }, 0);
+    var objectedCount = filtered.filter(function (o) { return o.durum === 'İtiraz edildi'; }).length;
+
+    document.getElementById('acc-stats').innerHTML =
+        '<div class="stat-card"><div class="s-lbl">Toplam Gönderilen Fatura Tutarı</div><div class="s-val">' + fmt(totalSent) + ' €</div><div class="s-sub">' + filtered.length + ' Fatura Takipte</div></div>' +
+        '<div class="stat-card"><div class="s-lbl">Tahsil Edilen (İade Edilen) Miktar</div><div class="s-val" style="color:#3B6D11;">' + fmt(totalReceived) + ' €</div></div>' +
+        '<div class="stat-card"><div class="s-lbl">Yanıt Bekleyen Tutar</div><div class="s-val" style="color:#854F0B;">' + fmt(totalPending) + ' €</div></div>' +
+        '<div class="stat-card"><div class="s-lbl">İtiraz Edilen Fatura Sayısı</div><div class="s-val" style="color:#A32D2D;">' + objectedCount + ' Adet</div></div>';
+
+    var tbody = document.getElementById('acc-tbody'); if (!tbody) return;
+    if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; padding:20px;">Filtre kriterlerine uyan regress fatura kartı bulunmuyor.</td></tr>';
+    } else {
+        var html = '';
+        for (var k = 0; k < filtered.length; k++) {
+            var inv = filtered[k];
+            var dBadge = inv.durum === 'Kabul edildi' ? 'badge-green' : (inv.durum === 'İtiraz edildi' ? 'badge-red' : 'badge-gray');
+            html += '<tr>' +
+                '<td style="font-family:monospace; font-weight:bold;">' + inv.faturaNo + '</td>' +
+                '<td>' + inv.tarih + '</td>' +
+                '<td>' + inv.partner + '</td>' +
+                '<td style="font-family:monospace;">' + inv.booking + '</td>' +
+                '<td style="font-weight:600;">' + fmt(inv.tutar) + '</td>' +
+                '<td>' + inv.doviz + '</td>' +
+                '<td><span class="badge ' + dBadge + '">' + inv.durum + '</span></td>' +
+                '<td style="font-weight:600; color:#3B6D11;">' + (inv.iadeTutar > 0 ? fmt(inv.iadeTutar) : '—') + '</td>' +
+                '<td>' + (inv.iadeDate || '—') + '</td>' +
+                '<td><span class="badge badge-purple">' + (inv.kabul || '—') + '</span></td>' +
+                '<td>' + truncate(inv.kesinti, 24) + '</td>' +
                 '<td>' +
-                '<input type="checkbox" class="complaint-select" value="' + r.id + '">' +
-                '</td>' +
-
-                '<td><span class="badge badge-gray">' + r.kw + '</span></td>' +
-                '<td>' + r.date + '</td>' +
-                '<td>' + truncate(r.user, 14) + '</td>' +
-                '<td style="font-family:monospace; font-weight:bold;">' + r.booking + '</td>' +
-                '<td>' + truncate(r.veranstalter, 18) + '</td>' +
-
-                '<td>' + r.region + '</td>' +
-                '<td>' + truncate(r.ptr || '-', 22) + '</td>' +
-
-                '<td>' +
-                defenseBadge +
-                '</td>' +
-
-                '<td><span class="badge ' +
-                (r.result === 'Haklı' ? 'badge-green' : 'badge-red') +
-                '">' + (r.result || '-') + '</span></td>' +
-                '<td style="font-weight:600;">' + (r.price > 0 ? fmt(r.price) + ' ' + r.currency : '-') + '</td>' +
-                '<td>' +
-                (
-                    r.attachments && r.attachments.length > 0
-                        ? '<span style="display:inline-block;width:42px;" title="Ek Dosyalar">📎(' + r.attachments.length + ')</span>'
-                        : '<span style="display:inline-block;width:42px;"></span>'
-                ) +
-
-                '<button class="icon-btn" onclick="openComplaintDetail(' + r.id + ')" title="Detay Gör">&#128065;</button>' +
-
-                (
-                    r.deleteRequested
-                        ? '<span title="Admin Onayı Bekleniyor" style="color:#ff9800;font-size:18px;">⏳</span>'
-                        : (
-                            r.isDeleted
-                                ? (
-                                    currentUser.role === 'admin'
-                                        ? '<button class="icon-btn" onclick="restoreComplaint(' + r.id + ')" title="Geri Yükle">&#8635;</button>'
-                                        : ''
-                                )
-                                : '<button class="icon-btn btn-delete" onclick="requestDeleteComplaint(' + r.id + ')" title="Silme Talebi">&#128465;</button>'
-                        )
-                ) +
+                '<button class="icon-btn" onclick="openInvoiceDetail(' + inv.id + ')" title="Göz İkonu - Detay Aç">&#128065;</button>' +
+                '<button class="icon-btn btn-delete" onclick="deleteInvoice(' + inv.id + ')" title="Sil">&#128465;</button>' +
                 '</td>' +
                 '</tr>';
         }
         tbody.innerHTML = html;
     }
 
-    function toggleAllComplaints(cb) {
+    var partners = ['SWT', 'HDS AYT OPERATIONS', 'MTS/OTS EGE', 'SERAMONI'];
+    var sumTbody = document.getElementById('acc-summary-tbody'); if (!sumTbody) return;
+    var sumHtml = '';
 
-        document
-            .querySelectorAll('.complaint-select')
-            .forEach(function (c) {
+    for (var p = 0; p < partners.length; p++) {
+        var pName = partners[p];
+        var pInvs = invoices.filter(function (o) { return o.partner === pName; });
 
-                c.checked = cb.checked;
+        var pSent = pInvs.reduce(function (s, o) { return s + o.tutar; }, 0);
+        var pRecv = pInvs.reduce(function (s, o) { return s + o.iadeTutar; }, 0);
+        var pKabul = pInvs.filter(function (o) { return o.kabul === 'Evet' || o.kabul === 'Kısmi kabul'; }).reduce(function (s, o) { return s + o.iadeTutar; }, 0);
+        var pPend = pInvs.filter(function (o) { return o.durum === 'Beklemede' || o.durum === 'Gönderildi'; }).reduce(function (s, o) { return s + o.tutar; }, 0);
 
-            });
+        var rate = pSent > 0 ? Math.round((pRecv / pSent) * 100) : 0;
+        var color = rate > 75 ? '#3B6D11' : (rate > 40 ? '#BA7517' : '#A32D2D');
+
+        sumHtml += '<tr>' +
+            '<td style="font-weight:600;">' + pName + '</td>' +
+            '<td>' + fmt(pSent) + ' €</td>' +
+            '<td>' + fmt(pRecv) + ' €</td>' +
+            '<td>' + fmt(pKabul) + ' €</td>' +
+            '<td>' + fmt(pPend) + ' €</td>' +
+            '<td>' +
+            '<div style="display:flex; align-items:center; gap:8px;">' +
+            '<div class="progress-wrap"><div class="progress-bar" style="width:' + rate + '%; background:' + color + ';"></div></div>' +
+            '<span style="font-weight:600; font-size:11px; min-width:30px; text-align:right;">%' + rate + '</span>' +
+            '</div>' +
+            '</td>' +
+            '</tr>';
+    }
+    sumTbody.innerHTML = sumHtml;
+}
+
+function bulkDeleteComplaints() {
+
+    var selected =
+        document.querySelectorAll(
+            '.complaint-select:checked'
+        );
+
+    if (!selected.length) {
+
+        alert('Lütfen kayıt seçiniz.');
+        return;
     }
 
-    function requestDeleteComplaint(id) {
-
-        var rec = complaints.find(function (r) {
-            return r.id === id;
-        });
-
-        if (!rec) return;
-
-        if (rec.deleteRequested) {
-            alert('Bu kayıt için zaten silme talebi gönderilmiş.');
-            return;
-        }
-
-        if (currentUser.role === 'admin') {
-
-            if (!confirm('Kayıt silinsin mi?')) {
-                return;
-            }
-
-            rec.isDeleted = true;
-
-            rec.deletedBy =
-                currentUser.username;
-
-            rec.deletedAt =
-                new Date().toLocaleString('tr-TR');
-
-            syncStorage();
-
-            renderRecordsTable();
-            renderDashboard();
-
-            addLog(
-                'Kayıt #' +
-                id +
-                ' silindi'
-            );
-
-            showToast('Kayıt silindi.');
-
-            return;
-        }
-
-        localStorage.setItem('activePage', 'records');
-
-        rec.deleteRequested = true;
-
-        syncStorage();
-        renderRecordsTable();
-
-        addLog('Kayıt #' + id + ' için silme talebi gönderdi');
-
-        showToast('Silme talebi gönderildi.');
-    }
-
-    function renderDeleteRequests() {
-
-        var tbody = document.getElementById('delete-requests-body');
-        var panel = document.getElementById('delete-requests-panel');
-
-        if (!tbody || !panel) return;
-
-        var pending = complaints.filter(function (r) {
-            return r.deleteRequested === true && !r.isDeleted;
-        });
-
-        if (currentUser && currentUser.role === 'admin') {
-            panel.style.display = 'block';
-        } else {
-            panel.style.display = 'none';
-            return;
-        }
-
-        tbody.innerHTML = '';
-
-        pending.forEach(function (r) {
-
-            tbody.innerHTML +=
-                '<tr>' +
-                '<td>' + (i + 1) + '</td>' +
-                '<td>' + hotels[i] + '</td>' +
-                '<td>' +
-
-                '<button class="btn-secondary" ' +
-                'onclick="editHotel(' + i + ')">' +
-                '✏️</button> ' +
-
-                '<button class="btn-delete" ' +
-                'onclick="deleteHotel(' + i + ')">' +
-                '🗑️</button>' +
-
-                '</td>' +
-                '</tr>';
-
-        });
-    }
-
-    function approveDeleteComplaint(id) {
-
-        var rec = complaints.find(function (r) {
-            return r.id === id;
-        });
-
-        if (!rec) return;
-
-        rec.isDeleted = true;
-        rec.deleteRequested = false;
-        rec.deletedBy = currentUser.username;
-        rec.deletedAt = new Date().toISOString();
-
-        syncStorage();
-
-        renderDeleteRequests();
-        renderRecordsTable();
-        renderDashboard();
-
-        addLog('Kayıt #' + id + ' silindi');
-
-        showToast('Kayıt pasif olarak silindi.');
-    }
-
-    function rejectDeleteComplaint(id) {
-
-        var rec = complaints.find(function (r) {
-            return r.id === id;
-        });
-
-        if (!rec) return;
-
-        rec.deleteRequested = false;
-
-        localStorage.setItem('activePage', 'records');
-
-        syncStorage();
-
-        renderDeleteRequests();
-        renderRecordsTable();
-        renderDashboard();
-
-        addLog('Kayıt #' + id + ' silme talebi reddedildi');
-
-        showToast('Silme talebi reddedildi.');
-    }
-
-
-    function restoreComplaint(id) {
-
-        var rec = complaints.find(function (r) {
-            return r.id === id;
-        });
-
-        if (!rec) return;
-
-        rec.isDeleted = false;
-        rec.deletedBy = '';
-        rec.deletedAt = '';
-        localStorage.setItem('activePage', 'records');
-        syncStorage();
-
-        renderRecordsTable();
-        renderDashboard();
-
-        addLog('Kayıt #' + id + ' geri yüklendi');
-
-        showToast('Kayıt geri yüklendi.');
-    }
-
-
-    function renderAccounting() {
-        var fPart = document.getElementById('acc-filter-partner').value;
-        var fDurum = document.getElementById('acc-filter-durum').value;
-        var fDoviz = document.getElementById('acc-filter-doviz').value;
-
-        var partnerMenu = document.getElementById('acc-filter-partner');
-        if (partnerMenu && partnerMenu.options.length <= 1) {
-            var pList = ['SWT', 'HDS AYT OPERATIONS', 'MTS/OTS EGE', 'SERAMONI'];
-            for (var p = 0; p < pList.length; p++) {
-                var opt = document.createElement('option'); opt.value = pList[p]; opt.textContent = pList[p];
-                partnerMenu.appendChild(opt);
-            }
-        }
-
-        var filtered = invoices.filter(function (r) {
-            return (!fPart || r.partner === fPart) && (!fDurum || r.durum === fDurum) && (!fDoviz || r.doviz === fDoviz);
-        });
-
-        var totalSent = filtered.reduce(function (s, o) { return s + o.tutar; }, 0);
-        var totalReceived = filtered.reduce(function (s, o) { return s + o.iadeTutar; }, 0);
-        var totalPending = filtered.filter(function (o) { return o.durum === 'Beklemede' || o.durum === 'Gönderildi'; }).reduce(function (s, o) { return s + o.tutar; }, 0);
-        var objectedCount = filtered.filter(function (o) { return o.durum === 'İtiraz edildi'; }).length;
-
-        document.getElementById('acc-stats').innerHTML =
-            '<div class="stat-card"><div class="s-lbl">Toplam Gönderilen Fatura Tutarı</div><div class="s-val">' + fmt(totalSent) + ' €</div><div class="s-sub">' + filtered.length + ' Fatura Takipte</div></div>' +
-            '<div class="stat-card"><div class="s-lbl">Tahsil Edilen (İade Edilen) Miktar</div><div class="s-val" style="color:#3B6D11;">' + fmt(totalReceived) + ' €</div></div>' +
-            '<div class="stat-card"><div class="s-lbl">Yanıt Bekleyen Tutar</div><div class="s-val" style="color:#854F0B;">' + fmt(totalPending) + ' €</div></div>' +
-            '<div class="stat-card"><div class="s-lbl">İtiraz Edilen Fatura Sayısı</div><div class="s-val" style="color:#A32D2D;">' + objectedCount + ' Adet</div></div>';
-
-        var tbody = document.getElementById('acc-tbody'); if (!tbody) return;
-        if (!filtered.length) {
-            tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; padding:20px;">Filtre kriterlerine uyan regress fatura kartı bulunmuyor.</td></tr>';
-        } else {
-            var html = '';
-            for (var k = 0; k < filtered.length; k++) {
-                var inv = filtered[k];
-                var dBadge = inv.durum === 'Kabul edildi' ? 'badge-green' : (inv.durum === 'İtiraz edildi' ? 'badge-red' : 'badge-gray');
-                html += '<tr>' +
-                    '<td style="font-family:monospace; font-weight:bold;">' + inv.faturaNo + '</td>' +
-                    '<td>' + inv.tarih + '</td>' +
-                    '<td>' + inv.partner + '</td>' +
-                    '<td style="font-family:monospace;">' + inv.booking + '</td>' +
-                    '<td style="font-weight:600;">' + fmt(inv.tutar) + '</td>' +
-                    '<td>' + inv.doviz + '</td>' +
-                    '<td><span class="badge ' + dBadge + '">' + inv.durum + '</span></td>' +
-                    '<td style="font-weight:600; color:#3B6D11;">' + (inv.iadeTutar > 0 ? fmt(inv.iadeTutar) : '—') + '</td>' +
-                    '<td>' + (inv.iadeDate || '—') + '</td>' +
-                    '<td><span class="badge badge-purple">' + (inv.kabul || '—') + '</span></td>' +
-                    '<td>' + truncate(inv.kesinti, 24) + '</td>' +
-                    '<td>' +
-                    '<button class="icon-btn" onclick="openInvoiceDetail(' + inv.id + ')" title="Göz İkonu - Detay Aç">&#128065;</button>' +
-                    '<button class="icon-btn btn-delete" onclick="deleteInvoice(' + inv.id + ')" title="Sil">&#128465;</button>' +
-                    '</td>' +
-                    '</tr>';
-            }
-            tbody.innerHTML = html;
-        }
-
-        var partners = ['SWT', 'HDS AYT OPERATIONS', 'MTS/OTS EGE', 'SERAMONI'];
-        var sumTbody = document.getElementById('acc-summary-tbody'); if (!sumTbody) return;
-        var sumHtml = '';
-
-        for (var p = 0; p < partners.length; p++) {
-            var pName = partners[p];
-            var pInvs = invoices.filter(function (o) { return o.partner === pName; });
-
-            var pSent = pInvs.reduce(function (s, o) { return s + o.tutar; }, 0);
-            var pRecv = pInvs.reduce(function (s, o) { return s + o.iadeTutar; }, 0);
-            var pKabul = pInvs.filter(function (o) { return o.kabul === 'Evet' || o.kabul === 'Kısmi kabul'; }).reduce(function (s, o) { return s + o.iadeTutar; }, 0);
-            var pPend = pInvs.filter(function (o) { return o.durum === 'Beklemede' || o.durum === 'Gönderildi'; }).reduce(function (s, o) { return s + o.tutar; }, 0);
-
-            var rate = pSent > 0 ? Math.round((pRecv / pSent) * 100) : 0;
-            var color = rate > 75 ? '#3B6D11' : (rate > 40 ? '#BA7517' : '#A32D2D');
-
-            sumHtml += '<tr>' +
-                '<td style="font-weight:600;">' + pName + '</td>' +
-                '<td>' + fmt(pSent) + ' €</td>' +
-                '<td>' + fmt(pRecv) + ' €</td>' +
-                '<td>' + fmt(pKabul) + ' €</td>' +
-                '<td>' + fmt(pPend) + ' €</td>' +
-                '<td>' +
-                '<div style="display:flex; align-items:center; gap:8px;">' +
-                '<div class="progress-wrap"><div class="progress-bar" style="width:' + rate + '%; background:' + color + ';"></div></div>' +
-                '<span style="font-weight:600; font-size:11px; min-width:30px; text-align:right;">%' + rate + '</span>' +
-                '</div>' +
-                '</td>' +
-                '</tr>';
-        }
-        sumTbody.innerHTML = sumHtml;
-    }
-
-    function bulkDeleteComplaints() {
-
-        var selected =
-            document.querySelectorAll(
-                '.complaint-select:checked'
-            );
-
-        if (!selected.length) {
-
-            alert('Lütfen kayıt seçiniz.');
-            return;
-        }
-
-        if (
-            !confirm(
-                selected.length +
-                ' kayıt işlensin mi?'
-            )
-        ) return;
-
-        selected.forEach(function (cb) {
-
-            requestDeleteComplaint(
-                parseInt(cb.value)
-            );
-
-        });
-    }
-
-    // ==================== USER MANAGEMENT ====================
-    function renderUsers() {
-        let tbody = document.getElementById('users-body');
-        if (!tbody) return;
-        tbody.innerHTML = '';
-        Object.keys(USERS).forEach(username => {
-            let row = `<tr>
+    if (
+        !confirm(
+            selected.length +
+            ' kayıt işlensin mi?'
+        )
+    ) return;
+
+    selected.forEach(function (cb) {
+
+        requestDeleteComplaint(
+            parseInt(cb.value)
+        );
+
+    });
+}
+
+// ==================== USER MANAGEMENT ====================
+function renderUsers() {
+    let tbody = document.getElementById('users-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    Object.keys(USERS).forEach(username => {
+        let row = `<tr>
     <td>${username}</td>
     <td>
         <span class="badge badge-purple">
@@ -3557,186 +3559,1168 @@ function selectDropdownByText(selectId, text) {
     </td>
     <td>
         ${username !== 'admin'
-                    ? `<button class="btn-secondary"
+                ? `<button class="btn-secondary"
                  style="color:var(--red-text);"
                  onclick="deleteUser('${username}')">
                  Sil
                </button>`
-                    : '<span style="color:#999;">Korunuyor</span>'
-                }
+                : '<span style="color:#999;">Korunuyor</span>'
+            }
     </td>
 </tr>`;
-            tbody.innerHTML += row;
+        tbody.innerHTML += row;
+
+    });
+
+}
+
+function renderDataManager() {
+
+    var area =
+        document.getElementById(
+            'data-manager-content'
+        );
+
+    if (!area) return;
+
+    if (area.innerHTML.trim()) {
+        return;
+    }
+
+    area.innerHTML =
+        '<div class="section-title">' +
+        'Bir kategori seçin' +
+        '</div>';
+}
+
+function openPaxConverter() {
+
+    var area =
+        document.getElementById(
+            'pax-converter-area'
+        );
+
+    if (area) {
+        area.style.display = 'block';
+    }
+
+}
+
+var paxExcelRows = [];
+
+function convertPaxExcel() {
+
+    if (!paxExcelRows.length) {
+
+        alert('Önce Excel analiz edilmelidir.');
+        return;
+
+    }
+
+    var headers = paxExcelRows[0];
+
+    var voucherIndex =
+        headers.indexOf('Asıl Voucher');
+
+    var operatorIndex =
+        headers.indexOf('Operatör');
+
+    var hotelIndex =
+        headers.indexOf('Otel Adı');
+
+    if (hotelIndex === -1) {
+
+        hotelIndex =
+            headers.indexOf('Otel');
+
+    }
+
+    var hotelCodeIndex =
+        headers.indexOf('Otel ');
+
+    var realHotelIndex =
+        headers.indexOf('Gerçek Otel');
+
+    var roomTypeIndex =
+        headers.indexOf('Oda Tipi Tanmı');
+
+    var mealPlanIndex =
+        headers.indexOf('Pansiyon');
+
+    var nightsIndex =
+        headers.indexOf('Gün');
+
+    var transferIncludedIndex =
+        headers.indexOf('HDS OTEL + TRANSFER');
+
+    var adultIndex =
+        headers.indexOf('Yetişkin');
+
+    var childIndex =
+        headers.indexOf('Çocuk');
+
+    var infantIndex =
+        headers.indexOf('Bebek');
+
+    var arrivalIndex =
+        headers.indexOf('Giriş Tarihi');
+
+    var departureIndex =
+        headers.indexOf('Çıkış Tarihi');
+
+    var converted = [];
+
+    for (var i = 1; i < paxExcelRows.length; i++) {
+
+        var row = paxExcelRows[i];
+
+        converted.push({
+
+            booking:
+                String(row[voucherIndex] || '').trim(),
+
+            subBooking:
+                String(row[5] || row[4] || '').trim(),
+
+            operator:
+                row[operatorIndex] || '',
+
+            veranstalter:
+                row[operatorIndex] || '',
+
+            tourOperator:
+                row[operatorIndex] || '',
+
+            hotel:
+                String(row[hotelIndex] || '').trim(),
+
+            hotelCode:
+                String(row[hotelCodeIndex] || '').trim(),
+
+            realHotel:
+                String(row[realHotelIndex] || '').trim(),
+
+            roomType:
+                String(row[roomTypeIndex] || '').trim(),
+
+            mealPlan:
+                String(row[mealPlanIndex] || '').trim(),
+
+            nights:
+                Number(row[nightsIndex] || 0),
+
+            transferIncluded:
+                String(
+                    row[transferIncludedIndex] || ''
+                ).toUpperCase() === 'EVET',
+
+            adult:
+                parseInt(row[adultIndex] || 0),
+
+            child:
+                parseInt(row[childIndex] || 0),
+
+            infant:
+                parseInt(row[infantIndex] || 0),
+
+            totalPax:
+                parseInt(row[adultIndex] || 0) +
+                parseInt(row[childIndex] || 0) +
+                parseInt(row[infantIndex] || 0),
+
+            arrival:
+                row[arrivalIndex] || '',
+
+            arrivalDate:
+                row[arrivalIndex] || '',
+
+            departure:
+                row[departureIndex] || '',
+
+            departureDate:
+                row[departureIndex] || ''
 
         });
 
     }
 
-    function renderDataManager() {
+    localStorage.setItem(
+        'passengerStats',
+        JSON.stringify(converted)
+    );
 
-        var area =
-            document.getElementById(
-                'data-manager-content'
-            );
+    alert(
+        converted.length +
+        ' kayıt PAX verilerine aktarıldı.'
+    );
 
-        if (!area) return;
+    renderDashboard();
 
-        if (area.innerHTML.trim()) {
-            return;
-        }
-
-        area.innerHTML =
-            '<div class="section-title">' +
-            'Bir kategori seçin' +
-            '</div>';
+    if (typeof renderPassengerStats === 'function') {
+        renderPassengerStats();
     }
 
-    function openPaxConverter() {
+}
 
-        var area =
-            document.getElementById(
-                'pax-converter-area'
-            );
+function analyzePaxExcel() {
 
-        if (area) {
-            area.style.display = 'block';
-        }
+    var file =
+        document.getElementById(
+            'paxConverterFile'
+        ).files[0];
 
+    if (!file) {
+
+        alert(
+            'Lütfen Excel dosyası seçiniz.'
+        );
+
+        return;
     }
 
-    var paxExcelRows = [];
+    var reader =
+        new FileReader();
 
-    function convertPaxExcel() {
+    reader.onload = function (e) {
 
-        if (!paxExcelRows.length) {
+        var data =
+            new Uint8Array(
+                e.target.result
+            );
 
-            alert('Önce Excel analiz edilmelidir.');
-            return;
+        var workbook =
+            XLSX.read(data, {
+                type: 'array'
+            });
 
+        var sheet =
+            workbook.Sheets[
+            workbook.SheetNames[0]
+            ];
+
+        var rows =
+            XLSX.utils.sheet_to_json(
+                sheet,
+                { header: 1 }
+            );
+
+        paxExcelRows = rows;
+
+        console.log(rows);
+
+        var header = rows[0];
+
+        function getColIndex(name) {
+            return header.indexOf(name);
         }
 
-        var headers = paxExcelRows[0];
-
-        var voucherIndex =
-            headers.indexOf('Asıl Voucher');
-
-        var operatorIndex =
-            headers.indexOf('Operatör');
-
+        var operatorIndex = getColIndex('Operatör');
         var hotelIndex =
-            headers.indexOf('Otel Adı');
+            getColIndex('Otel Adı');
 
         if (hotelIndex === -1) {
 
             hotelIndex =
-                headers.indexOf('Otel');
+                getColIndex('Otel');
+
+        }
+        var regionIndex = getColIndex('Bölge');
+        var airportIndex = getColIndex('Havalimanı');
+
+        var operators =
+            JSON.parse(localStorage.getItem('operators')) || [];
+
+        var hotels =
+            JSON.parse(localStorage.getItem('hotelPartners')) || [];
+
+        var regions =
+            JSON.parse(localStorage.getItem('regions')) || [];
+
+        var airports =
+            JSON.parse(localStorage.getItem('airports')) || [];
+
+        var newOperators = [];
+        var newHotels = [];
+        var newRegions = [];
+        var newAirports = [];
+
+        rows.slice(1).forEach(function (row) {
+
+            if (
+                operatorIndex > -1 &&
+                row[operatorIndex]
+            ) {
+
+                var op =
+                    String(row[operatorIndex]).trim();
+
+                if (
+                    op &&
+                    operators.indexOf(op) === -1
+                ) {
+
+                    operators.push(op);
+                    newOperators.push(op);
+
+                }
+            }
+
+            if (
+                hotelIndex > -1 &&
+                row[hotelIndex]
+            ) {
+
+                var hotel =
+                    String(row[hotelIndex]).trim();
+
+                if (
+                    hotel &&
+                    hotels.indexOf(hotel) === -1
+                ) {
+
+                    hotels.push(hotel);
+                    newHotels.push(hotel);
+
+                }
+            }
+
+            if (
+                regionIndex > -1 &&
+                row[regionIndex]
+            ) {
+
+                var region =
+                    String(row[regionIndex]).trim();
+
+                if (
+                    region &&
+                    regions.indexOf(region) === -1
+                ) {
+
+                    regions.push(region);
+                    newRegions.push(region);
+
+                }
+            }
+
+            if (
+                airportIndex > -1 &&
+                row[airportIndex]
+            ) {
+
+                var airport =
+                    String(row[airportIndex]).trim();
+
+                if (
+                    airport &&
+                    airports.indexOf(airport) === -1
+                ) {
+
+                    airports.push(airport);
+                    newAirports.push(airport);
+
+                }
+            }
+
+        });
+
+        localStorage.setItem(
+            'operators',
+            JSON.stringify(operators)
+        );
+
+        localStorage.setItem(
+            'hotelPartners',
+            JSON.stringify(hotels)
+        );
+
+        localStorage.setItem(
+            'regions',
+            JSON.stringify(regions)
+        );
+
+        localStorage.setItem(
+            'airports',
+            JSON.stringify(airports)
+        );
+
+        console.log(
+            'Yeni Operatörler:',
+            newOperators
+        );
+
+        console.log(
+            'Yeni Oteller:',
+            newHotels
+        );
+
+        console.log(
+            'Yeni Bölgeler:',
+            newRegions
+        );
+
+        console.log(
+            'Yeni Otel Sayısı:',
+            newHotels.length
+        );
+
+        console.log(
+            'İlk 20 Otel:',
+            newHotels.slice(0, 20)
+        );
+
+        console.log(
+            'Yeni Havalimanları:',
+            newAirports
+        );
+
+        var requiredFields = [
+            'Operatör',
+            'Asıl Voucher',
+            'Giriş Tarihi',
+            'Çıkış Tarihi',
+            'Yetişkin',
+            'Çocuk',
+            'Bebek',
+            'Otel'
+        ];
+
+        var foundFields = requiredFields.filter(function (f) {
+
+            return rows[0].indexOf(f) > -1;
+
+        });
+
+        document.getElementById(
+            'pax-preview'
+        ).innerHTML =
+
+            '<div><b>Bulunan Satır:</b> ' +
+            (rows.length - 1) +
+            '</div><br>' +
+
+            '<div><b>Dönüştürülebilen Alanlar:</b></div>' +
+
+            foundFields.map(function (f) {
+
+                return '<div style="color:green;">✓ ' +
+                    f +
+                    '</div>';
+
+            }).join('') +
+
+            '<br><br>' +
+
+            '<button class="fab" onclick="convertPaxExcel()">' +
+            'DÖNÜŞTÜR' +
+            '</button>';
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+}
+
+
+function loadOperatorDropdown() {
+
+    let select =
+        document.getElementById('c-veranstalter');
+
+    if (!select) return;
+
+    let operators =
+        JSON.parse(
+            localStorage.getItem('operators')
+        ) || [];
+
+    select.innerHTML = '';
+
+    let firstOption =
+        document.createElement('option');
+
+    firstOption.value = '';
+    firstOption.textContent =
+        'Operatör seçiniz...';
+
+    select.appendChild(firstOption);
+
+    operators
+        .sort()
+        .forEach(function (item) {
+
+            let option =
+                document.createElement('option');
+
+            option.value =
+                String(item).trim();
+
+            option.textContent =
+                String(item).trim();
+
+            select.appendChild(option);
+
+        });
+
+}
+
+function loadHotelDropdown() {
+
+    alert("loadHotelDropdown çalıştı");
+
+    console.log(
+        "hotelPartners =",
+        JSON.parse(
+            localStorage.getItem("hotelPartners") || "[]"
+        ).length
+    );
+
+    console.log(
+        "hotels =",
+        JSON.parse(
+            localStorage.getItem("hotels") || "[]"
+        ).length
+    );
+
+    let select =
+        document.getElementById("c-hotel");
+
+    console.log("SELECT =", select);
+
+    if (!select) {
+
+        console.log("c-hotel bulunamadı");
+
+        return;
+
+    }
+
+    let hotels =
+        JSON.parse(
+            localStorage.getItem("hotelPartners") || "[]"
+        );
+
+    console.log("Yüklenen hotel sayısı =", hotels.length);
+
+    select.innerHTML = "";
+
+    let firstOption =
+        document.createElement("option");
+
+    firstOption.value = "";
+    firstOption.textContent = "Otel seçiniz...";
+
+    select.appendChild(firstOption);
+
+    hotels.forEach(function (item) {
+
+        let option =
+            document.createElement("option");
+
+        option.value = String(item).trim();
+        option.textContent = String(item).trim();
+
+        select.appendChild(option);
+
+    });
+
+    console.log(
+        "Dropdown option sayısı =",
+        select.options.length
+    );
+
+}
+
+
+function filterHotels() {
+
+    let text =
+        document.getElementById(
+            'hotel-search'
+        ).value.toLowerCase();
+
+    let select =
+        document.getElementById(
+            'c-hotel'
+        );
+
+    if (!select) return;
+
+    let hotels =
+        JSON.parse(
+            localStorage.getItem(
+                'hotelPartners'
+            )
+        ) || [];
+
+    select.innerHTML = '';
+
+    hotels.forEach(function (item) {
+
+        if (
+            item.toLowerCase()
+                .includes(text)
+        ) {
+
+            let option =
+                document.createElement(
+                    'option'
+                );
+
+            option.value = item;
+            option.textContent = item;
+
+            select.appendChild(option);
 
         }
 
-        var hotelCodeIndex =
-            headers.indexOf('Otel ');
+    });
 
-        var realHotelIndex =
-            headers.indexOf('Gerçek Otel');
+}
 
-        var roomTypeIndex =
-            headers.indexOf('Oda Tipi Tanmı');
+function openDataManager(type) {
 
-        var mealPlanIndex =
-            headers.indexOf('Pansiyon');
+    var area =
+        document.getElementById(
+            'data-manager-content'
+        );
 
-        var nightsIndex =
-            headers.indexOf('Gün');
+    if (!area) return;
 
-        var transferIncludedIndex =
-            headers.indexOf('HDS OTEL + TRANSFER');
+    var config = {
 
-        var adultIndex =
-            headers.indexOf('Yetişkin');
+        hotels: {
+            title: '🏨 Otel / Partner Yönetimi',
+            storage: 'hotelPartners',
+            placeholder: 'Yeni otel / partner adı'
+        },
 
-        var childIndex =
-            headers.indexOf('Çocuk');
+        regions: {
+            title: '🌍 Bölge Yönetimi',
+            storage: 'regions',
+            placeholder: 'Yeni bölge adı'
+        },
 
-        var infantIndex =
-            headers.indexOf('Bebek');
+        airports: {
+            title: '✈️ Havalimanı Yönetimi',
+            storage: 'airports',
+            placeholder: 'Yeni havalimanı'
+        },
 
-        var arrivalIndex =
-            headers.indexOf('Giriş Tarihi');
+        services: {
+            title: '🚌 Servis Yönetimi',
+            storage: 'services',
+            placeholder: 'Yeni servis'
+        },
 
-        var departureIndex =
-            headers.indexOf('Çıkış Tarihi');
 
-        var converted = [];
+        reasons: {
+            title: '📋 Şikayet Konuları',
+            storageTR: 'reasonsTR',
+            storageDE: 'reasonsDE',
+            storageEN: 'reasonsEN',
+            placeholder: 'Yeni konu'
+        },
 
-        for (var i = 1; i < paxExcelRows.length; i++) {
+        transferTypes: {
+            title: '🚐 Transfer Türleri',
+            storage: 'transferTypes',
+            placeholder: 'Yeni transfer türü'
+        },
 
-            var row = paxExcelRows[i];
+        operators: {
+            title: '🏢 Tur Operatörleri',
+            storage: 'operators',
+            placeholder: 'Yeni tur operatörü'
+        },
 
-            converted.push({
+        passengers: {
+            title: '👥 Yolcu Verileri (PAX)',
+            storage: 'passengers',
+            placeholder: 'Yeni kayıt'
+        },
 
-                booking:
-                    String(row[voucherIndex] || '').trim(),
+    };
 
-                subBooking:
-                    String(row[5] || row[4] || '').trim(),
+    if (!config[type]) return;
 
-                operator:
-                    row[operatorIndex] || '',
+    var items;
 
-                veranstalter:
-                    row[operatorIndex] || '',
+    if (type === 'reasons') {
 
-                tourOperator:
-                    row[operatorIndex] || '',
+        var trItems =
+            JSON.parse(
+                localStorage.getItem(
+                    config[type].storageTR
+                )
+            ) || [];
 
-                hotel:
-                    String(row[hotelIndex] || '').trim(),
+        var deItems =
+            JSON.parse(
+                localStorage.getItem(
+                    config[type].storageDE
+                )
+            ) || [];
 
-                hotelCode:
-                    String(row[hotelCodeIndex] || '').trim(),
+        var enItems =
+            JSON.parse(
+                localStorage.getItem(
+                    config[type].storageEN
+                )
+            ) || [];
 
-                realHotel:
-                    String(row[realHotelIndex] || '').trim(),
+        items = [];
 
-                roomType:
-                    String(row[roomTypeIndex] || '').trim(),
+        for (
+            var i = 0;
+            i < trItems.length;
+            i++
+        ) {
+            items.push({
+                tr: trItems[i] || '',
+                de: deItems[i] || '',
+                en: enItems[i] || ''
+            });
+        }
 
-                mealPlan:
-                    String(row[mealPlanIndex] || '').trim(),
+    } else {
 
-                nights:
-                    Number(row[nightsIndex] || 0),
+        items =
+            JSON.parse(
+                localStorage.getItem(
+                    config[type].storage
+                )
+            ) || [];
 
-                transferIncluded:
-                    String(
-                        row[transferIncludedIndex] || ''
-                    ).toUpperCase() === 'EVET',
+    }
 
-                adult:
-                    parseInt(row[adultIndex] || 0),
+    console.log(
+        'TYPE=', type,
+        'STORAGE=', config[type].storage,
+        'ITEMS=', items
+    );
 
-                child:
-                    parseInt(row[childIndex] || 0),
+    var html =
+        '<div class="table-wrap">' +
 
-                infant:
-                    parseInt(row[infantIndex] || 0),
+        '<div class="section-title">' +
+        config[type].title +
+        '</div>' +
+
+        '<div style="display:flex;gap:10px;margin-bottom:15px;">' +
+
+        '<input id="new-item" ' +
+        'style="flex:1;padding:10px;" ' +
+        'placeholder="' + config[type].placeholder + '">' +
+
+        '<button class="fab" ' +
+        'onclick="addDataItem(\'' + type + '\')">' +
+        'Ekle' +
+        '</button>' +
+
+        '</div>' +
+
+        (type === 'passengers'
+
+            ?
+
+            '<table>' +
+
+            '<thead>' +
+            '<tr>' +
+            '<th>#</th>' +
+            '<th>Yolcu Verisi</th>' +
+            '<th>İşlem</th>' +
+            '</tr>' +
+            '</thead>' +
+
+            '<tbody>'
+
+            :
+
+            '<table>' +
+
+            '<thead>' +
+            '<tr>' +
+            '<th>#</th>' +
+            '<th>TR</th>' +
+            '<th>DE</th>' +
+            '<th>EN</th>' +
+            '<th>İşlem</th>' +
+            '</tr>' +
+            '</thead>' +
+
+            '<tbody>'
+
+        );
+
+    '<tbody>';
+
+    items.forEach(function (item, index) {
+
+        html +=
+
+            '<tr>' +
+
+            '<td>' +
+            (index + 1) +
+            '</td>' +
+
+            '<td>' +
+
+            (
+                type === 'reasons'
+                    ? item.tr
+                    :
+                    (
+                        type === 'passengers'
+
+                            ?
+
+                            '📋 ' + item.booking +
+                            ' | 👤 ' + (item.firstName || '') +
+                            ' ' + (item.lastName || '') +
+                            ' | 🎂 ' + (item.age || '') +
+                            ' | 👨 ' + (item.adult || 0) +
+                            ' | 🧒 ' + (item.child || 0) +
+                            ' | 👶 ' + (item.infant || 0)
+
+                            :
+
+                            type === 'reasons'
+
+                                ?
+
+                                item.tr
+
+                                :
+
+                                item
+                    )
+            )
+
+            +
+
+            '</td>' +
+
+            (
+                type === 'reasons'
+                    ?
+                    '<td>' + item.de + '</td>' +
+                    '<td>' + item.en + '</td>'
+                    :
+                    ''
+            )
+
+            +
+
+            '<td>' +
+
+            '<button class="btn-secondary" ' +
+            'onclick="editDataItem(\'' + type + '\',' + index + ')">' +
+            '✏️' +
+            '</button> ' +
+
+            '<button class="btn-delete" ' +
+            'onclick="deleteDataItem(\'' + type + '\',' + index + ')">' +
+            '🗑️' +
+            '</button>' +
+
+            '</td>' +
+
+            '</tr>';
+
+    });
+
+    html +=
+        '</tbody>' +
+        '</table>' +
+        '</div>';
+
+    area.innerHTML = html;
+}
+
+function addHotelPartner() {
+
+    var input =
+        document.getElementById(
+            'new-hotel-name'
+        );
+
+    if (!input) return;
+
+    var value = input.value.trim();
+
+    if (!value) {
+        alert('Otel adı giriniz');
+        return;
+    }
+
+    var hotels =
+        JSON.parse(
+            localStorage.getItem(
+                'hotelPartners'
+            )
+        ) || [];
+
+    hotels.push(value);
+
+    localStorage.setItem(
+        'hotelPartners',
+        JSON.stringify(hotels)
+    );
+
+    openDataManager('hotels');
+
+}
+
+function importHotelExcel(event) {
+
+    var file = event.target.files[0];
+
+    if (!file) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        var data = new Uint8Array(e.target.result);
+
+        var workbook =
+            XLSX.read(data, {
+                type: 'array'
+            });
+
+        var sheetName =
+            workbook.SheetNames[0];
+
+        var worksheet =
+            workbook.Sheets[sheetName];
+
+        var rows =
+            XLSX.utils.sheet_to_json(
+                sheet,
+                { header: 1 }
+            );
+
+        console.log(rows);
+
+        var hotels = [];
+
+        for (var i = 1; i < rows.length; i++) {
+
+            if (!rows[i]) continue;
+
+            var hotel =
+                rows[i][0] || '';
+
+            var region =
+                rows[i][1] || '';
+
+            var airport =
+                rows[i][2] || '';
+
+            if (hotel === '') continue;
+
+            hotels.push(
+                hotel +
+                ' | ' +
+                region +
+                ' | ' +
+                airport
+            );
+
+        }
+
+        localStorage.setItem(
+            'hotelPartners',
+            JSON.stringify(hotels)
+        );
+
+        alert(
+            hotels.length +
+            ' kayıt yüklendi.'
+        );
+
+        openDataManager('hotels');
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+}
+
+function openExcelImportManager() {
+
+    var secim = prompt(
+        'Veri türünü seç:\n\n' +
+        '1 = Otel / Partner\n' +
+        '2 = Bölge\n' +
+        '3 = Havalimanı\n' +
+        '4 = Servis\n' +
+        '5 = Şikayet Konuları\n' +
+        '6 = Operasyon Exceli (V2)\n' +
+        '7 = Konaklama Exceli (V2)'
+    );
+
+    if (!secim) return;
+
+    localStorage.setItem(
+        'excelImportType',
+        secim
+    );
+
+    document
+        .getElementById('excel-import-file')
+        .click();
+}
+function downloadPaxTemplate() {
+
+    var rows = [[
+
+        'Rezervasyon No',
+        'Alt Rezervasyon No',
+        'Voucher',
+
+        'Tur Operatörü',
+
+        'Bölge',
+        'Havalimanı',
+
+        'Otel',
+        'Gerçek Otel',
+
+        'Check-In',
+        'Check-Out',
+        'Geceleme',
+
+        'Pansiyon',
+        'Oda Tipi',
+
+        'Transfer Türü',
+
+        'Yetişkin',
+        'Çocuk',
+        'Bebek'
+
+    ]];
+
+    var ws =
+        XLSX.utils.aoa_to_sheet(rows);
+
+    var wb =
+        XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        wb,
+        ws,
+        'PAX'
+    );
+
+    XLSX.writeFile(
+        wb,
+        'TRALVID_PAX_SABLON.xlsx'
+    );
+}
+
+
+function importSelectedExcel(event) {
+
+    var secim =
+        localStorage.getItem(
+            'excelImportType'
+        );
+
+    if (secim === '1') {
+        importHotelExcel(event);
+        return;
+    }
+
+    if (secim == '6') {
+
+        importOperationExcel(event);
+
+        return;
+    }
+
+    if (secim == '7') {
+
+        importReservationExcel(event);
+
+        return;
+    }
+
+    alert(
+        'Bu veri türü henüz aktif değil.'
+    );
+}
+
+function importPassengerExcel(event) {
+
+    var file = event.target.files[0];
+
+    if (!file) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        var data = new Uint8Array(e.target.result);
+
+        var workbook = XLSX.read(data, {
+            type: 'array'
+        });
+
+        var sheet =
+            workbook.Sheets[
+            workbook.SheetNames[0]
+            ];
+
+        var rows =
+            XLSX.utils.sheet_to_json(
+                sheet,
+                { header: 1 }
+            );
+
+        var passengers = [];
+
+        for (
+
+            var i =
+                headerInfo.index + 1;
+
+            i < rows.length;
+
+            i++
+
+        ) {
+
+            if (!rows[i]) continue;
+
+            var row = rows[i];
+
+            passengers.push({
+
+                booking: row[0] || '',
+                subBooking: row[1] || '',
+
+                operator: row[2] || '',
+                region: row[3] || '',
+                hotel: row[4] || '',
+                airport: row[5] || '',
+                transferType: row[6] || '',
+
+                arrivalDate: row[7] || '',
+                departureDate: row[8] || '',
+
+                adult: Number(row[9] || 0),
+                child: Number(row[10] || 0),
+                infant: Number(row[11] || 0),
 
                 totalPax:
-                    parseInt(row[adultIndex] || 0) +
-                    parseInt(row[childIndex] || 0) +
-                    parseInt(row[infantIndex] || 0),
-
-                arrival:
-                    row[arrivalIndex] || '',
-
-                arrivalDate:
-                    row[arrivalIndex] || '',
-
-                departure:
-                    row[departureIndex] || '',
-
-                departureDate:
-                    row[departureIndex] || ''
+                    Number(row[9] || 0) +
+                    Number(row[10] || 0) +
+                    Number(row[11] || 0)
 
             });
 
@@ -3744,3150 +4728,2168 @@ function selectDropdownByText(selectId, text) {
 
         localStorage.setItem(
             'passengerStats',
-            JSON.stringify(converted)
+            JSON.stringify(passengers)
         );
 
         alert(
-            converted.length +
-            ' kayıt PAX verilerine aktarıldı.'
+            passengers.length +
+            ' satır yolcu verisi yüklendi.'
         );
 
-        renderDashboard();
+    };
 
-        if (typeof renderPassengerStats === 'function') {
-            renderPassengerStats();
-        }
 
-    }
+    reader.readAsArrayBuffer(file);
 
-    function analyzePaxExcel() {
+}
 
-        var file =
-            document.getElementById(
-                'paxConverterFile'
-            ).files[0];
+function readExcelFile(file) {
 
-        if (!file) {
+    return new Promise(function (resolve, reject) {
 
-            alert(
-                'Lütfen Excel dosyası seçiniz.'
-            );
-
-            return;
-        }
-
-        var reader =
-            new FileReader();
+        var reader = new FileReader();
 
         reader.onload = function (e) {
 
-            var data =
-                new Uint8Array(
-                    e.target.result
-                );
+            try {
 
-            var workbook =
-                XLSX.read(data, {
+                var workbook = XLSX.read(e.target.result, {
                     type: 'array'
                 });
 
-            var sheet =
-                workbook.Sheets[
-                workbook.SheetNames[0]
-                ];
-
-            var rows =
-                XLSX.utils.sheet_to_json(
-                    sheet,
-                    { header: 1 }
-                );
-
-            paxExcelRows = rows;
-
-            console.log(rows);
-
-            var header = rows[0];
-
-            function getColIndex(name) {
-                return header.indexOf(name);
-            }
-
-            var operatorIndex = getColIndex('Operatör');
-            var hotelIndex =
-                getColIndex('Otel Adı');
-
-            if (hotelIndex === -1) {
-
-                hotelIndex =
-                    getColIndex('Otel');
-
-            }
-            var regionIndex = getColIndex('Bölge');
-            var airportIndex = getColIndex('Havalimanı');
-
-            var operators =
-                JSON.parse(localStorage.getItem('operators')) || [];
-
-            var hotels =
-                JSON.parse(localStorage.getItem('hotelPartners')) || [];
-
-            var regions =
-                JSON.parse(localStorage.getItem('regions')) || [];
-
-            var airports =
-                JSON.parse(localStorage.getItem('airports')) || [];
-
-            var newOperators = [];
-            var newHotels = [];
-            var newRegions = [];
-            var newAirports = [];
-
-            rows.slice(1).forEach(function (row) {
-
-                if (
-                    operatorIndex > -1 &&
-                    row[operatorIndex]
-                ) {
-
-                    var op =
-                        String(row[operatorIndex]).trim();
-
-                    if (
-                        op &&
-                        operators.indexOf(op) === -1
-                    ) {
-
-                        operators.push(op);
-                        newOperators.push(op);
-
-                    }
-                }
-
-                if (
-                    hotelIndex > -1 &&
-                    row[hotelIndex]
-                ) {
-
-                    var hotel =
-                        String(row[hotelIndex]).trim();
-
-                    if (
-                        hotel &&
-                        hotels.indexOf(hotel) === -1
-                    ) {
-
-                        hotels.push(hotel);
-                        newHotels.push(hotel);
-
-                    }
-                }
-
-                if (
-                    regionIndex > -1 &&
-                    row[regionIndex]
-                ) {
-
-                    var region =
-                        String(row[regionIndex]).trim();
-
-                    if (
-                        region &&
-                        regions.indexOf(region) === -1
-                    ) {
-
-                        regions.push(region);
-                        newRegions.push(region);
-
-                    }
-                }
-
-                if (
-                    airportIndex > -1 &&
-                    row[airportIndex]
-                ) {
-
-                    var airport =
-                        String(row[airportIndex]).trim();
-
-                    if (
-                        airport &&
-                        airports.indexOf(airport) === -1
-                    ) {
-
-                        airports.push(airport);
-                        newAirports.push(airport);
-
-                    }
-                }
-
-            });
-
-            localStorage.setItem(
-                'operators',
-                JSON.stringify(operators)
-            );
-
-            localStorage.setItem(
-                'hotelPartners',
-                JSON.stringify(hotels)
-            );
-
-            localStorage.setItem(
-                'regions',
-                JSON.stringify(regions)
-            );
-
-            localStorage.setItem(
-                'airports',
-                JSON.stringify(airports)
-            );
-
-            console.log(
-                'Yeni Operatörler:',
-                newOperators
-            );
-
-            console.log(
-                'Yeni Oteller:',
-                newHotels
-            );
-
-            console.log(
-                'Yeni Bölgeler:',
-                newRegions
-            );
-
-            console.log(
-                'Yeni Otel Sayısı:',
-                newHotels.length
-            );
-
-            console.log(
-                'İlk 20 Otel:',
-                newHotels.slice(0, 20)
-            );
-
-            console.log(
-                'Yeni Havalimanları:',
-                newAirports
-            );
-
-            var requiredFields = [
-                'Operatör',
-                'Asıl Voucher',
-                'Giriş Tarihi',
-                'Çıkış Tarihi',
-                'Yetişkin',
-                'Çocuk',
-                'Bebek',
-                'Otel'
-            ];
-
-            var foundFields = requiredFields.filter(function (f) {
-
-                return rows[0].indexOf(f) > -1;
-
-            });
-
-            document.getElementById(
-                'pax-preview'
-            ).innerHTML =
-
-                '<div><b>Bulunan Satır:</b> ' +
-                (rows.length - 1) +
-                '</div><br>' +
-
-                '<div><b>Dönüştürülebilen Alanlar:</b></div>' +
-
-                foundFields.map(function (f) {
-
-                    return '<div style="color:green;">✓ ' +
-                        f +
-                        '</div>';
-
-                }).join('') +
-
-                '<br><br>' +
-
-                '<button class="fab" onclick="convertPaxExcel()">' +
-                'DÖNÜŞTÜR' +
-                '</button>';
-
-        };
-
-        reader.readAsArrayBuffer(file);
-
-    }
-
-
-    function loadOperatorDropdown() {
-
-        let select =
-            document.getElementById('c-veranstalter');
-
-        if (!select) return;
-
-        let operators =
-            JSON.parse(
-                localStorage.getItem('operators')
-            ) || [];
-
-        select.innerHTML = '';
-
-        let firstOption =
-            document.createElement('option');
-
-        firstOption.value = '';
-        firstOption.textContent =
-            'Operatör seçiniz...';
-
-        select.appendChild(firstOption);
-
-        operators
-            .sort()
-            .forEach(function (item) {
-
-                let option =
-                    document.createElement('option');
-
-                option.value =
-                    String(item).trim();
-
-                option.textContent =
-                    String(item).trim();
-
-                select.appendChild(option);
-
-            });
-
-    }
-
-    function loadHotelDropdown() {
-
-        alert("loadHotelDropdown çalıştı");
-
-        console.log(
-            "hotelPartners =",
-            JSON.parse(
-                localStorage.getItem("hotelPartners") || "[]"
-            ).length
-        );
-
-        console.log(
-            "hotels =",
-            JSON.parse(
-                localStorage.getItem("hotels") || "[]"
-            ).length
-        );
-
-        let select =
-            document.getElementById("c-hotel");
-
-        console.log("SELECT =", select);
-
-        if (!select) {
-
-            console.log("c-hotel bulunamadı");
-
-            return;
-
-        }
-
-        let hotels =
-            JSON.parse(
-                localStorage.getItem("hotelPartners") || "[]"
-            );
-
-        console.log("Yüklenen hotel sayısı =", hotels.length);
-
-        select.innerHTML = "";
-
-        let firstOption =
-            document.createElement("option");
-
-        firstOption.value = "";
-        firstOption.textContent = "Otel seçiniz...";
-
-        select.appendChild(firstOption);
-
-        hotels.forEach(function (item) {
-
-            let option =
-                document.createElement("option");
-
-            option.value = String(item).trim();
-            option.textContent = String(item).trim();
-
-            select.appendChild(option);
-
-        });
-
-        console.log(
-            "Dropdown option sayısı =",
-            select.options.length
-        );
-
-    }
-
-
-    function filterHotels() {
-
-        let text =
-            document.getElementById(
-                'hotel-search'
-            ).value.toLowerCase();
-
-        let select =
-            document.getElementById(
-                'c-hotel'
-            );
-
-        if (!select) return;
-
-        let hotels =
-            JSON.parse(
-                localStorage.getItem(
-                    'hotelPartners'
-                )
-            ) || [];
-
-        select.innerHTML = '';
-
-        hotels.forEach(function (item) {
-
-            if (
-                item.toLowerCase()
-                    .includes(text)
-            ) {
-
-                let option =
-                    document.createElement(
-                        'option'
+                var sheet =
+                    workbook.Sheets[
+                    workbook.SheetNames[0]
+                    ];
+
+                var rows =
+                    XLSX.utils.sheet_to_json(
+                        sheet,
+                        {
+                            header: 1,
+                            defval: ''
+                        }
                     );
 
-                option.value = item;
-                option.textContent = item;
+                resolve(rows);
 
-                select.appendChild(option);
+            } catch (err) {
+
+                reject(err);
 
             }
-
-        });
-
-    }
-
-    function openDataManager(type) {
-
-        var area =
-            document.getElementById(
-                'data-manager-content'
-            );
-
-        if (!area) return;
-
-        var config = {
-
-            hotels: {
-                title: '🏨 Otel / Partner Yönetimi',
-                storage: 'hotelPartners',
-                placeholder: 'Yeni otel / partner adı'
-            },
-
-            regions: {
-                title: '🌍 Bölge Yönetimi',
-                storage: 'regions',
-                placeholder: 'Yeni bölge adı'
-            },
-
-            airports: {
-                title: '✈️ Havalimanı Yönetimi',
-                storage: 'airports',
-                placeholder: 'Yeni havalimanı'
-            },
-
-            services: {
-                title: '🚌 Servis Yönetimi',
-                storage: 'services',
-                placeholder: 'Yeni servis'
-            },
-
-
-            reasons: {
-                title: '📋 Şikayet Konuları',
-                storageTR: 'reasonsTR',
-                storageDE: 'reasonsDE',
-                storageEN: 'reasonsEN',
-                placeholder: 'Yeni konu'
-            },
-
-            transferTypes: {
-                title: '🚐 Transfer Türleri',
-                storage: 'transferTypes',
-                placeholder: 'Yeni transfer türü'
-            },
-
-            operators: {
-                title: '🏢 Tur Operatörleri',
-                storage: 'operators',
-                placeholder: 'Yeni tur operatörü'
-            },
-
-            passengers: {
-                title: '👥 Yolcu Verileri (PAX)',
-                storage: 'passengers',
-                placeholder: 'Yeni kayıt'
-            },
 
         };
 
-        if (!config[type]) return;
-
-        var items;
-
-        if (type === 'reasons') {
-
-            var trItems =
-                JSON.parse(
-                    localStorage.getItem(
-                        config[type].storageTR
-                    )
-                ) || [];
-
-            var deItems =
-                JSON.parse(
-                    localStorage.getItem(
-                        config[type].storageDE
-                    )
-                ) || [];
-
-            var enItems =
-                JSON.parse(
-                    localStorage.getItem(
-                        config[type].storageEN
-                    )
-                ) || [];
-
-            items = [];
-
-            for (
-                var i = 0;
-                i < trItems.length;
-                i++
-            ) {
-                items.push({
-                    tr: trItems[i] || '',
-                    de: deItems[i] || '',
-                    en: enItems[i] || ''
-                });
-            }
-
-        } else {
-
-            items =
-                JSON.parse(
-                    localStorage.getItem(
-                        config[type].storage
-                    )
-                ) || [];
-
-        }
-
-        console.log(
-            'TYPE=', type,
-            'STORAGE=', config[type].storage,
-            'ITEMS=', items
-        );
-
-        var html =
-            '<div class="table-wrap">' +
-
-            '<div class="section-title">' +
-            config[type].title +
-            '</div>' +
-
-            '<div style="display:flex;gap:10px;margin-bottom:15px;">' +
-
-            '<input id="new-item" ' +
-            'style="flex:1;padding:10px;" ' +
-            'placeholder="' + config[type].placeholder + '">' +
-
-            '<button class="fab" ' +
-            'onclick="addDataItem(\'' + type + '\')">' +
-            'Ekle' +
-            '</button>' +
-
-            '</div>' +
-
-            (type === 'passengers'
-
-                ?
-
-                '<table>' +
-
-                '<thead>' +
-                '<tr>' +
-                '<th>#</th>' +
-                '<th>Yolcu Verisi</th>' +
-                '<th>İşlem</th>' +
-                '</tr>' +
-                '</thead>' +
-
-                '<tbody>'
-
-                :
-
-                '<table>' +
-
-                '<thead>' +
-                '<tr>' +
-                '<th>#</th>' +
-                '<th>TR</th>' +
-                '<th>DE</th>' +
-                '<th>EN</th>' +
-                '<th>İşlem</th>' +
-                '</tr>' +
-                '</thead>' +
-
-                '<tbody>'
-
-            );
-
-        '<tbody>';
-
-        items.forEach(function (item, index) {
-
-            html +=
-
-                '<tr>' +
-
-                '<td>' +
-                (index + 1) +
-                '</td>' +
-
-                '<td>' +
-
-                (
-                    type === 'reasons'
-                        ? item.tr
-                        :
-                        (
-                            type === 'passengers'
-
-                                ?
-
-                                '📋 ' + item.booking +
-                                ' | 👤 ' + (item.firstName || '') +
-                                ' ' + (item.lastName || '') +
-                                ' | 🎂 ' + (item.age || '') +
-                                ' | 👨 ' + (item.adult || 0) +
-                                ' | 🧒 ' + (item.child || 0) +
-                                ' | 👶 ' + (item.infant || 0)
-
-                                :
-
-                                type === 'reasons'
-
-                                    ?
-
-                                    item.tr
-
-                                    :
-
-                                    item
-                        )
-                )
-
-                +
-
-                '</td>' +
-
-                (
-                    type === 'reasons'
-                        ?
-                        '<td>' + item.de + '</td>' +
-                        '<td>' + item.en + '</td>'
-                        :
-                        ''
-                )
-
-                +
-
-                '<td>' +
-
-                '<button class="btn-secondary" ' +
-                'onclick="editDataItem(\'' + type + '\',' + index + ')">' +
-                '✏️' +
-                '</button> ' +
-
-                '<button class="btn-delete" ' +
-                'onclick="deleteDataItem(\'' + type + '\',' + index + ')">' +
-                '🗑️' +
-                '</button>' +
-
-                '</td>' +
-
-                '</tr>';
-
-        });
-
-        html +=
-            '</tbody>' +
-            '</table>' +
-            '</div>';
-
-        area.innerHTML = html;
-    }
-
-    function addHotelPartner() {
-
-        var input =
-            document.getElementById(
-                'new-hotel-name'
-            );
-
-        if (!input) return;
-
-        var value = input.value.trim();
-
-        if (!value) {
-            alert('Otel adı giriniz');
-            return;
-        }
-
-        var hotels =
-            JSON.parse(
-                localStorage.getItem(
-                    'hotelPartners'
-                )
-            ) || [];
-
-        hotels.push(value);
-
-        localStorage.setItem(
-            'hotelPartners',
-            JSON.stringify(hotels)
-        );
-
-        openDataManager('hotels');
-
-    }
-
-    function importHotelExcel(event) {
-
-        var file = event.target.files[0];
-
-        if (!file) return;
-
-        var reader = new FileReader();
-
-        reader.onload = function (e) {
-
-            var data = new Uint8Array(e.target.result);
-
-            var workbook =
-                XLSX.read(data, {
-                    type: 'array'
-                });
-
-            var sheetName =
-                workbook.SheetNames[0];
-
-            var worksheet =
-                workbook.Sheets[sheetName];
-
-            var rows =
-                XLSX.utils.sheet_to_json(
-                    sheet,
-                    { header: 1 }
-                );
-
-            console.log(rows);
-
-            var hotels = [];
-
-            for (var i = 1; i < rows.length; i++) {
-
-                if (!rows[i]) continue;
-
-                var hotel =
-                    rows[i][0] || '';
-
-                var region =
-                    rows[i][1] || '';
-
-                var airport =
-                    rows[i][2] || '';
-
-                if (hotel === '') continue;
-
-                hotels.push(
-                    hotel +
-                    ' | ' +
-                    region +
-                    ' | ' +
-                    airport
-                );
-
-            }
-
-            localStorage.setItem(
-                'hotelPartners',
-                JSON.stringify(hotels)
-            );
-
-            alert(
-                hotels.length +
-                ' kayıt yüklendi.'
-            );
-
-            openDataManager('hotels');
-
-        };
+        reader.onerror = reject;
 
         reader.readAsArrayBuffer(file);
 
+    });
+
+}
+
+function parseOperationRows(rows) {
+
+    var headerInfo = findHeaderRow(rows);
+
+    if (!headerInfo) {
+
+        throw new Error("Excel başlık satırı bulunamadı.");
+
     }
 
-    function openExcelImportManager() {
+    var headers = rows[headerInfo.index];
 
-        var secim = prompt(
-            'Veri türünü seç:\n\n' +
-            '1 = Otel / Partner\n' +
-            '2 = Bölge\n' +
-            '3 = Havalimanı\n' +
-            '4 = Servis\n' +
-            '5 = Şikayet Konuları\n' +
-            '6 = Operasyon Exceli (V2)\n' +
-            '7 = Konaklama Exceli (V2)'
+    var groups = detectDataGroups(headers);
+
+    var collections = {
+
+        reservations: [],
+        flights: [],
+        transfers: [],
+        passengers: []
+
+    };
+
+    for (var i = headerInfo.index + 1; i < rows.length; i++) {
+
+        var row = rows[i];
+
+        if (!row || !row.length) continue;
+
+        var mtr = mapExcelRow(headers, row);
+
+        console.log("MTR =", mtr);
+
+        console.log(
+            "Booking =",
+            mtr.bookingNumber
         );
 
-        if (!secim) return;
+        var booking =
+            String(mtr.bookingNumber || '').trim();
 
-        localStorage.setItem(
-            'excelImportType',
-            secim
-        );
+        if (!booking) continue;
 
-        document
-            .getElementById('excel-import-file')
-            .click();
-    }
-    function downloadPaxTemplate() {
+        var result =
+            buildCollectionsFromMTR(mtr);
 
-        var rows = [[
+        if (groups.reservation && result.reservation) {
 
-            'Rezervasyon No',
-            'Alt Rezervasyon No',
-            'Voucher',
-
-            'Tur Operatörü',
-
-            'Bölge',
-            'Havalimanı',
-
-            'Otel',
-            'Gerçek Otel',
-
-            'Check-In',
-            'Check-Out',
-            'Geceleme',
-
-            'Pansiyon',
-            'Oda Tipi',
-
-            'Transfer Türü',
-
-            'Yetişkin',
-            'Çocuk',
-            'Bebek'
-
-        ]];
-
-        var ws =
-            XLSX.utils.aoa_to_sheet(rows);
-
-        var wb =
-            XLSX.utils.book_new();
-
-        XLSX.utils.book_append_sheet(
-            wb,
-            ws,
-            'PAX'
-        );
-
-        XLSX.writeFile(
-            wb,
-            'TRALVID_PAX_SABLON.xlsx'
-        );
-    }
-
-
-    function importSelectedExcel(event) {
-
-        var secim =
-            localStorage.getItem(
-                'excelImportType'
+            collections.reservations.push(
+                result.reservation
             );
 
-        if (secim === '1') {
-            importHotelExcel(event);
-            return;
         }
 
-        if (secim == '6') {
+        if (groups.flight && result.flight) {
 
-            importOperationExcel(event);
+            collections.flights.push(
+                result.flight
+            );
 
-            return;
         }
 
-        if (secim == '7') {
+        if (groups.transfer && result.transfer) {
 
-            importReservationExcel(event);
+            collections.transfers.push(
+                result.transfer
+            );
 
-            return;
         }
 
-        alert(
-            'Bu veri türü henüz aktif değil.'
-        );
+        if (groups.passenger && result.passenger) {
+
+            collections.passengers.push(
+                result.passenger
+            );
+
+        }
+
     }
 
-    function importPassengerExcel(event) {
+    return collections;
 
-        var file = event.target.files[0];
+}
 
-        if (!file) return;
+function showImportResult(collections) {
 
-        var reader = new FileReader();
+    alert(
 
-        reader.onload = function (e) {
+        'V2 Operasyon Verisi Yüklendi\n\n' +
 
-            var data = new Uint8Array(e.target.result);
+        'Rezervasyon : ' +
+        collections.reservations.length +
 
-            var workbook = XLSX.read(data, {
+        '\nUçuş : ' +
+        collections.flights.length +
+
+        '\nTransfer : ' +
+        collections.transfers.length +
+
+        '\nYolcu : ' +
+        collections.passengers.length
+
+    );
+
+}
+
+function importOperationExcel(event) {
+
+    console.log("=== IMPORT BAŞLADI ===");
+
+    var file = event.target.files[0];
+
+    console.log("Dosya :", file ? file.name : "YOK");
+
+    if (!file) return;
+
+    readExcelFile(file)
+
+        .then(function (rows) {
+
+            var collections =
+                parseOperationRows(rows);
+
+            console.log("Collections =", collections);
+
+            console.log("Reservations :", collections.reservations.length);
+            console.log("Flights      :", collections.flights.length);
+            console.log("Transfers    :", collections.transfers.length);
+            console.log("Passengers   :", collections.passengers.length);
+
+            console.log("IndexedDB'ye yazılıyor...");
+
+            saveOperationData(
+
+                collections,
+
+                function () {
+
+                    showImportResult(
+                        collections
+                    );
+
+                }
+
+            );
+
+        })
+
+        .catch(function (err) {
+
+            console.error(err);
+
+            alert(
+
+                "Excel yüklenemedi.\n\n" +
+
+                err.message
+
+            );
+
+        });
+
+}
+
+function importReservationExcel(event) {
+
+    var file = event.target.files[0];
+
+    if (!file) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        var data =
+            new Uint8Array(
+                e.target.result
+            );
+
+        var workbook =
+            XLSX.read(data, {
                 type: 'array'
             });
 
-            var sheet =
-                workbook.Sheets[
-                workbook.SheetNames[0]
-                ];
+        var sheet =
+            workbook.Sheets[
+            workbook.SheetNames[0]
+            ];
 
-            var rows =
-                XLSX.utils.sheet_to_json(
-                    sheet,
-                    { header: 1 }
-                );
-
-            var passengers = [];
-
-            for (
-
-                var i =
-                    headerInfo.index + 1;
-
-                i < rows.length;
-
-                i++
-
-            ) {
-
-                if (!rows[i]) continue;
-
-                var row = rows[i];
-
-                passengers.push({
-
-                    booking: row[0] || '',
-                    subBooking: row[1] || '',
-
-                    operator: row[2] || '',
-                    region: row[3] || '',
-                    hotel: row[4] || '',
-                    airport: row[5] || '',
-                    transferType: row[6] || '',
-
-                    arrivalDate: row[7] || '',
-                    departureDate: row[8] || '',
-
-                    adult: Number(row[9] || 0),
-                    child: Number(row[10] || 0),
-                    infant: Number(row[11] || 0),
-
-                    totalPax:
-                        Number(row[9] || 0) +
-                        Number(row[10] || 0) +
-                        Number(row[11] || 0)
-
-                });
-
-            }
-
-            localStorage.setItem(
-                'passengerStats',
-                JSON.stringify(passengers)
+        var rows =
+            XLSX.utils.sheet_to_json(
+                sheet,
+                { header: 1 }
             );
 
-            alert(
-                passengers.length +
-                ' satır yolcu verisi yüklendi.'
-            );
-
-        };
-
-
-        reader.readAsArrayBuffer(file);
-
-    }
-
-    function readExcelFile(file) {
-
-        return new Promise(function (resolve, reject) {
-
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-
-                try {
-
-                    var workbook = XLSX.read(e.target.result, {
-                        type: 'array'
-                    });
-
-                    var sheet =
-                        workbook.Sheets[
-                        workbook.SheetNames[0]
-                        ];
-
-                    var rows =
-                        XLSX.utils.sheet_to_json(
-                            sheet,
-                            {
-                                header: 1,
-                                defval: ''
-                            }
-                        );
-
-                    resolve(rows);
-
-                } catch (err) {
-
-                    reject(err);
-
-                }
-
-            };
-
-            reader.onerror = reject;
-
-            reader.readAsArrayBuffer(file);
-
-        });
-
-    }
-
-    function parseOperationRows(rows) {
-
-        var headerInfo = findHeaderRow(rows);
+        var headerInfo =
+            findHeaderRow(rows);
 
         if (!headerInfo) {
 
-            throw new Error("Excel başlık satırı bulunamadı.");
+            alert(
+                "Excel başlık satırı bulunamadı."
+            );
+
+            return;
 
         }
 
-        var headers = rows[headerInfo.index];
+        var headers =
+            rows[
+            headerInfo.index
+            ];
 
-        var groups = detectDataGroups(headers);
+        console.log(
+            "IMPORT PROFILE =",
+            headerInfo.profile
+        );
 
-        var collections = {
+        var groups =
+            detectDataGroups(headers);
 
-            reservations: [],
-            flights: [],
-            transfers: [],
-            passengers: []
+        console.log(
+            "DATA GROUPS =",
+            groups
+        );
 
-        };
+        var reservations = [];
 
-        for (var i = headerInfo.index + 1; i < rows.length; i++) {
+        for (
+
+            var i =
+                headerInfo.index + 1;
+
+            i < rows.length;
+
+            i++
+
+        ) {
 
             var row = rows[i];
 
-            if (!row || !row.length) continue;
+            if (!row || !row.length)
+                continue;
 
-            var mtr = mapExcelRow(headers, row);
-
-            console.log("MTR =", mtr);
-
-            console.log(
-                "Booking =",
-                mtr.bookingNumber
-            );
+            var mtr =
+                mapExcelRow(
+                    headers,
+                    row
+                );
 
             var booking =
-                String(mtr.bookingNumber || '').trim();
+                String(
+                    mtr.bookingNumber || ''
+                ).trim();
 
-            if (!booking) continue;
+            if (!booking)
+                continue;
 
-            var result =
-                buildCollectionsFromMTR(mtr);
+            reservations.push({
 
-            if (groups.reservation && result.reservation) {
+                booking:
+                    booking,
 
-                collections.reservations.push(
-                    result.reservation
-                );
+                operator:
+                    mtr.operator,
 
-            }
+                hotel:
+                    mtr.hotel,
 
-            if (groups.flight && result.flight) {
+                roomNo:
+                    mtr.roomNo,
 
-                collections.flights.push(
-                    result.flight
-                );
+                roomType:
+                    mtr.roomType,
 
-            }
+                checkIn:
+                    mtr.checkIn,
 
-            if (groups.transfer && result.transfer) {
+                checkOut:
+                    mtr.checkOut,
 
-                collections.transfers.push(
-                    result.transfer
-                );
+                nights:
+                    Number(mtr.nights || 0),
 
-            }
+                board:
+                    mtr.board,
 
-            if (groups.passenger && result.passenger) {
+                adult:
+                    Number(mtr.adult || 0),
 
-                collections.passengers.push(
-                    result.passenger
-                );
+                child:
+                    Number(mtr.child || 0),
 
-            }
+                infant:
+                    Number(mtr.infant || 0),
 
-        }
+                roomCount:
+                    Number(mtr.roomCount || 0),
 
-        return collections;
-
-    }
-
-    function showImportResult(collections) {
-
-        alert(
-
-            'V2 Operasyon Verisi Yüklendi\n\n' +
-
-            'Rezervasyon : ' +
-            collections.reservations.length +
-
-            '\nUçuş : ' +
-            collections.flights.length +
-
-            '\nTransfer : ' +
-            collections.transfers.length +
-
-            '\nYolcu : ' +
-            collections.passengers.length
-
-        );
-
-    }
-
-    function importOperationExcel(event) {
-
-        console.log("=== IMPORT BAŞLADI ===");
-
-        var file = event.target.files[0];
-
-        console.log("Dosya :", file ? file.name : "YOK");
-
-        if (!file) return;
-
-        readExcelFile(file)
-
-            .then(function (rows) {
-
-                var collections =
-                    parseOperationRows(rows);
-
-                console.log("Collections =", collections);
-
-                console.log("Reservations :", collections.reservations.length);
-                console.log("Flights      :", collections.flights.length);
-                console.log("Transfers    :", collections.transfers.length);
-                console.log("Passengers   :", collections.passengers.length);
-
-                console.log("IndexedDB'ye yazılıyor...");
-
-                saveOperationData(
-
-                    collections,
-
-                    function () {
-
-                        showImportResult(
-                            collections
-                        );
-
-                    }
-
-                );
-
-            })
-
-            .catch(function (err) {
-
-                console.error(err);
-
-                alert(
-
-                    "Excel yüklenemedi.\n\n" +
-
-                    err.message
-
-                );
+                serviceScope:
+                    "OA"
 
             });
 
+        }
+
+        localStorage.setItem(
+            'reservations',
+            JSON.stringify(reservations)
+        );
+
+        alert(
+            reservations.length +
+            ' rezervasyon yüklendi.'
+        );
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+}
+
+function deleteHotel(index) {
+
+    let hotels =
+        JSON.parse(
+            localStorage.getItem('hotelPartners')
+        ) || [];
+
+    if (
+        !confirm(
+            hotels[index] +
+            '\n\nSilinsin mi?'
+        )
+    ) {
+        return;
     }
 
-    function importReservationExcel(event) {
+    hotels.splice(index, 1);
 
-        var file = event.target.files[0];
+    localStorage.setItem(
+        'hotelPartners',
+        JSON.stringify(hotels)
+    );
 
-        if (!file) return;
+    openDataManager('hotels');
 
-        var reader = new FileReader();
+    showToast('Kayıt silindi.');
+}
 
-        reader.onload = function (e) {
 
-            var data =
-                new Uint8Array(
-                    e.target.result
-                );
+function editHotel(index) {
 
-            var workbook =
-                XLSX.read(data, {
-                    type: 'array'
-                });
+    let hotels =
+        JSON.parse(
+            localStorage.getItem('hotelPartners')
+        ) || [];
 
-            var sheet =
-                workbook.Sheets[
-                workbook.SheetNames[0]
-                ];
+    let yeniDeger =
+        prompt(
+            'Yeni değer:',
+            hotels[index]
+        );
 
-            var rows =
-                XLSX.utils.sheet_to_json(
-                    sheet,
-                    { header: 1 }
-                );
+    if (!yeniDeger) return;
 
-            var headerInfo =
-                findHeaderRow(rows);
+    hotels[index] = yeniDeger;
 
-            if (!headerInfo) {
+    localStorage.setItem(
+        'hotelPartners',
+        JSON.stringify(hotels)
+    );
 
-                alert(
-                    "Excel başlık satırı bulunamadı."
-                );
+    openDataManager('hotels');
 
-                return;
+    showToast('Kayıt güncellendi.');
+}
 
-            }
 
-            var headers =
-                rows[
-                headerInfo.index
-                ];
+function addDataItem(type) {
 
-            console.log(
-                "IMPORT PROFILE =",
-                headerInfo.profile
-            );
+    var config = {
+        hotels: 'hotelPartners',
+        regions: 'regions',
+        airports: 'airports',
+        services: 'services',
+        reasons: 'reasons',
+        operators: 'operators',
+        transferTypes: 'transferTypes'
+    };
 
-            var groups =
-                detectDataGroups(headers);
+    var input =
+        document.getElementById('new-item');
 
-            console.log(
-                "DATA GROUPS =",
-                groups
-            );
+    if (!input) return;
 
-            var reservations = [];
+    var value = input.value.trim();
 
-            for (
+    if (!value) {
+        alert('Değer giriniz');
+        return;
+    }
 
-                var i =
-                    headerInfo.index + 1;
+    var items =
+        JSON.parse(
+            localStorage.getItem(
+                config[type]
+            )
+        ) || [];
 
-                i < rows.length;
+    items.push(value);
 
-                i++
+    localStorage.setItem(
+        config[type],
+        JSON.stringify(items)
+    );
 
-            ) {
+    openDataManager(type);
 
-                var row = rows[i];
+    showToast('Kayıt eklendi');
+}
 
-                if (!row || !row.length)
-                    continue;
 
-                var mtr =
-                    mapExcelRow(
-                        headers,
-                        row
+
+function editDataItem(type, index) {
+
+    var config = {
+        hotels: 'hotelPartners',
+        regions: 'regions',
+        airports: 'airports',
+        services: 'services',
+        reasons: 'reasons'
+    };
+
+    var items =
+        JSON.parse(
+            localStorage.getItem(
+                config[type]
+            )
+        ) || [];
+
+    var yeniDeger =
+        prompt(
+            'Yeni değer:',
+            items[index]
+        );
+
+    if (!yeniDeger) return;
+
+    items[index] = yeniDeger;
+
+    localStorage.setItem(
+        config[type],
+        JSON.stringify(items)
+    );
+
+    openDataManager(type);
+
+    showToast('Kayıt güncellendi');
+}
+
+
+
+function deleteDataItem(type, index) {
+
+    var config = {
+        hotels: 'hotelPartners',
+        regions: 'regions',
+        airports: 'airports',
+        services: 'services',
+        reasons: 'reasons'
+    };
+
+    var items =
+        JSON.parse(
+            localStorage.getItem(
+                config[type]
+            )
+        ) || [];
+
+    if (
+        !confirm(
+            items[index] +
+            '\n\nSilinsin mi?'
+        )
+    ) {
+        return;
+    }
+
+    items.splice(index, 1);
+
+    localStorage.setItem(
+        config[type],
+        JSON.stringify(items)
+    );
+
+    openDataManager(type);
+
+    showToast('Kayıt silindi');
+}
+
+function openUserModal() {
+    let username = prompt("Kullanıcı adı:");
+    if (!username) return;
+
+    if (USERS[username]) {
+        alert("Bu kullanıcı zaten mevcut.");
+        return;
+    }
+
+    let password = prompt("Şifre:");
+    if (!password) return;
+
+    let role = prompt("Yetki (admin/user):", "user");
+    if (!role) role = "user";
+
+    let language = prompt(
+        "Dil (TR/DE/EN):",
+        "TR"
+    );
+
+    if (!language) language = "TR";
+
+    language =
+        language.toUpperCase();
+
+    USERS[username] = {
+        password: password,
+        role: role,
+        language: language
+    };
+
+    localStorage.setItem(
+        'tralvid_users',
+        JSON.stringify(USERS)
+    );
+
+    renderUsers();
+    showToast("Kullanıcı oluşturuldu.");
+}
+function deleteUser(username) {
+
+    if (username === 'admin') {
+        alert('Admin kullanıcısı silinemez!');
+        return;
+    }
+
+    if (!confirm(username + ' kullanıcısını silmek istiyor musunuz?')) {
+        return;
+    }
+
+    delete USERS[username];
+
+    localStorage.setItem(
+        'tralvid_users',
+        JSON.stringify(USERS)
+    );
+
+    renderUsers();
+
+    showToast('Kullanıcı silindi.');
+
+    if (
+        currentUser &&
+        currentUser.username === username
+    ) {
+        sessionStorage.removeItem('currentUser');
+        location.reload();
+    }
+}
+// ==================== DETAY ANALİZ MODALLARI ====================
+function openComplaintDetail(id) {
+    var r = complaints.find(function (o) { return o.id === id; }); if (!r) return;
+    document.getElementById('detail-modal-title').innerHTML =
+        'Müşteri Kartı : ' + r.booking +
+
+        (
+            currentUser.role === 'admin'
+                ? (
+                    !complaintEditMode
+
+                        ? ' <button class="btn btn-primary" ' +
+                        'style="margin-left:15px;" ' +
+                        'onclick="enableComplaintEdit(' + r.id + ')">' +
+                        '✏ Düzenle</button>'
+
+                        : ' <button class="btn btn-success" ' +
+                        'style="margin-left:15px;" ' +
+                        'onclick="saveComplaintChanges(' + r.id + ')">' +
+                        '💾 Kaydet</button>' +
+
+                        ' <button class="btn" ' +
+                        'style="margin-left:8px;background:#9e9e9e;color:#fff;" ' +
+                        'onclick="cancelComplaintEdit(' + r.id + ')">' +
+                        '❌ Vazgeç</button>'
+                )
+                : ''
+        );
+
+    document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
+        '<div class="detail-item"><span class="detail-lbl">Hafta No (KW) / Quarter (Çeyrek)</span><span class="detail-val">' + r.kw + ' / ' + r.quarter + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Kullanıcı</span><span class="detail-val">' + r.user + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Tarih</span><span class="detail-val">' + r.date + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Cevap Süresi / Savunma Yazısı</span><span class="detail-val">' + r.timeout + ' / ' + r.sn + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Rezervasyon No</span><span class="detail-val">' + r.booking + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Alt Rezervasyon No</span><span class="detail-val">' + (r.subbooking || '—') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Pax (Yetişkin / Çocuk / Bebek)</span><span class="detail-val">' + r.adult + ' Y / ' + r.child + ' Ç / ' + r.infant + ' B</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Şikayet Tarihi</span><span class="detail-val">' + r.bdate + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Geliş Tarihi</span><span class="detail-val">' + r.adate + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Dönüş Tarihi</span><span class="detail-val">' + r.ddate + '</span></div>' +
+
+        '<div class="detail-item">' +
+        '<span class="detail-lbl">Tur Operatörü</span>' +
+
+        (
+            complaintEditMode
+
+                ?
+
+                '<select id="edit-veranstalter" style="width:100%;padding:6px;"></select>'
+
+                :
+
+                '<span class="detail-val">' +
+                r.veranstalter +
+                '</span>'
+        ) +
+
+        '</div>' +
+
+        '<div class="detail-item"><span class="detail-lbl">Sorumlu taraf</span><span class="detail-val">' + r.Verursacher + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Bölge / Havalimanı</span><span class="detail-val">' + r.region + ' / ' + r.airport + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Transfer Türü</span><span class="detail-val">' + (r.transfertype || '-') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">İlgili Otel</span><span class="detail-val">' + (r.hotel || '-') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Şikayet Sonucu / Tazminat</span><span class="detail-val">' + r.result + ' — ' + fmt(r.price) + ' ' + r.currency + '</span></div>' +
+        '<div class="detail-item full">' +
+        '<span class="detail-lbl">Şikayet Konuları</span>' +
+        '<span class="detail-val">' +
+
+        (r.ptr ? '1. ' + r.ptr : '') +
+
+        (r.ptr2 ? '<br>2. ' + r.ptr2 : '') +
+
+        (r.ptr3 ? '<br>3. ' + r.ptr3 : '') +
+
+        '</span>' +
+        '</div>' +
+        '<div class="detail-item full"><span class="detail-lbl">Not</span><div class="note-box">' + (r.notes || 'Açıklama girilmedi.') + '</div></div>' +
+        '<div class="detail-item full">' +
+        '<span class="detail-lbl">Ek Dosyalar</span>' +
+        '<div class="note-box">' +
+        '<div class="detail-item">' +
+        '<span class="detail-lbl">Savunma Gerekli</span>' +
+        '<span class="detail-val">' +
+        (r.defenseRequired || 'Hayır') +
+        '</span></div>' +
+
+        '<div class="detail-item">' +
+        '<span class="detail-lbl">İlgili Birim</span>' +
+        '<span class="detail-val">' +
+        (r.defenseUnit || '-') +
+        '</span></div>' +
+
+        '<div class="detail-item">' +
+        '<span class="detail-lbl">Savunma Durumu</span>' +
+
+        '<span class="detail-val">' +
+
+        '<select id="defense-status-select" ' +
+        'style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;" ' +
+        'onchange="updateDefenseStatus(' + r.id + ', this.value)">' +
+
+        '<option value="Bekleniyor" ' +
+        ((r.defenseStatus === 'Bekleniyor') ? 'selected' : '') +
+        '>🟡 Bekleniyor</option>' +
+
+        '<option value="Savunma Geldi" ' +
+        ((r.defenseStatus === 'Savunma Geldi') ? 'selected' : '') +
+        '>🔵 Savunma Geldi</option>' +
+
+        '<option value="Eksik Dosya" ' +
+        ((r.defenseStatus === 'Eksik Dosya') ? 'selected' : '') +
+        '>🔴 Eksik Dosya</option>' +
+
+        '<option value="Tamamlandı" ' +
+        ((r.defenseStatus === 'Tamamlandı') ? 'selected' : '') +
+        '>🟢 Tamamlandı</option>' +
+
+        '</select>' +
+
+        '</span>' +
+        '</div>' +
+
+        '<div class="detail-item">' +
+        '<span class="detail-lbl">Talep Tarihi</span>' +
+        '<span class="detail-val">' +
+        (r.defenseRequestedAt
+            ? new Date(r.defenseRequestedAt)
+                .toLocaleString("tr-TR")
+            : '-') +
+        '</span></div>' +
+
+        '<div class="detail-item">' +
+        '<span class="detail-lbl">Tamamlanma Tarihi</span>' +
+        '<span class="detail-val">' +
+        (r.defenseCompletedAt
+            ? new Date(r.defenseCompletedAt)
+                .toLocaleString("tr-TR")
+            : '-') +
+        '</span></div>' +
+
+        (
+            r.defenseRequired === 'Evet' &&
+                r.defenseStatus === 'Bekleniyor'
+
+                ?
+
+                '<div class="detail-item full">' +
+                '<button class="btn btn-success" ' +
+                'onclick="completeDefense(' + r.id + ')">' +
+                '✅ Savunma Geldi' +
+                '</button>' +
+                '</div>'
+
+                :
+
+                ''
+        )
+        +
+
+        (
+            r.attachments && r.attachments.length > 0
+
+                ?
+
+                r.attachments.map(function (file, index) {
+
+                    return (
+
+                        (
+                            file.type.indexOf('image/') === 0
+                                ? '🖼️ '
+
+                                : file.type === 'application/pdf'
+                                    ? '📄 '
+
+                                    : file.name.match(/\.(doc|docx)$/i)
+                                        ? '📝 '
+
+                                        : file.name.match(/\.(xls|xlsx)$/i)
+                                            ? '📊 '
+
+                                            : file.name.match(/\.(ppt|pptx)$/i)
+                                                ? '📈 '
+
+                                                : file.name.match(/\.(zip|rar|7z)$/i)
+                                                    ? '📦 '
+
+                                                    : file.name.match(/\.(eml|msg)$/i)
+                                                        ? '📧 '
+
+                                                        : '📎 '
+                        )
+
+                        +
+
+                        (index + 1) + '. ' +
+
+                        file.name +
+
+                        ' (' +
+
+                        Math.round(file.size / 1024) +
+
+                        ' KB)' +
+
+                        ' <button onclick="viewAttachment(\'' +
+
+                        file.id +
+
+                        '\')">👁 Görüntüle</button>' +
+
+                        ' <button onclick="downloadAttachment(\'' +
+
+                        file.id +
+
+                        '\')">⬇ İndir</button>'
+
                     );
 
-                var booking =
-                    String(
-                        mtr.bookingNumber || ''
-                    ).trim();
+                }).join('<br>')
 
-                if (!booking)
-                    continue;
+                :
 
-                reservations.push({
+                'Dosya bulunmuyor'
 
-                    booking:
-                        booking,
+        ) +
 
-                    operator:
-                        mtr.operator,
+        '</div></div>';
 
-                    hotel:
-                        mtr.hotel,
+    document.getElementById('detail-modal-overlay')
+        .classList.add('open');
 
-                    roomNo:
-                        mtr.roomNo,
+    if (complaintEditMode) {
 
-                    roomType:
-                        mtr.roomType,
-
-                    checkIn:
-                        mtr.checkIn,
-
-                    checkOut:
-                        mtr.checkOut,
-
-                    nights:
-                        Number(mtr.nights || 0),
-
-                    board:
-                        mtr.board,
-
-                    adult:
-                        Number(mtr.adult || 0),
-
-                    child:
-                        Number(mtr.child || 0),
-
-                    infant:
-                        Number(mtr.infant || 0),
-
-                    roomCount:
-                        Number(mtr.roomCount || 0),
-
-                    serviceScope:
-                        "OA"
-
-                });
-
-            }
-
-            localStorage.setItem(
-                'reservations',
-                JSON.stringify(reservations)
-            );
-
-            alert(
-                reservations.length +
-                ' rezervasyon yüklendi.'
-            );
-
-        };
-
-        reader.readAsArrayBuffer(file);
-
-    }
-
-    function deleteHotel(index) {
-
-        let hotels =
-            JSON.parse(
-                localStorage.getItem('hotelPartners')
-            ) || [];
-
-        if (
-            !confirm(
-                hotels[index] +
-                '\n\nSilinsin mi?'
-            )
-        ) {
-            return;
-        }
-
-        hotels.splice(index, 1);
-
-        localStorage.setItem(
-            'hotelPartners',
-            JSON.stringify(hotels)
+        console.log(
+            'EDIT MODE AKTİF'
         );
 
-        openDataManager('hotels');
-
-        showToast('Kayıt silindi.');
-    }
-
-
-    function editHotel(index) {
-
-        let hotels =
-            JSON.parse(
-                localStorage.getItem('hotelPartners')
-            ) || [];
-
-        let yeniDeger =
-            prompt(
-                'Yeni değer:',
-                hotels[index]
-            );
-
-        if (!yeniDeger) return;
-
-        hotels[index] = yeniDeger;
-
-        localStorage.setItem(
-            'hotelPartners',
-            JSON.stringify(hotels)
+        loadSimpleDropdown(
+            'edit-veranstalter',
+            'operators',
+            'Operatör seçiniz...'
         );
-
-        openDataManager('hotels');
-
-        showToast('Kayıt güncellendi.');
-    }
-
-
-    function addDataItem(type) {
-
-        var config = {
-            hotels: 'hotelPartners',
-            regions: 'regions',
-            airports: 'airports',
-            services: 'services',
-            reasons: 'reasons',
-            operators: 'operators',
-            transferTypes: 'transferTypes'
-        };
-
-        var input =
-            document.getElementById('new-item');
-
-        if (!input) return;
-
-        var value = input.value.trim();
-
-        if (!value) {
-            alert('Değer giriniz');
-            return;
-        }
-
-        var items =
-            JSON.parse(
-                localStorage.getItem(
-                    config[type]
-                )
-            ) || [];
-
-        items.push(value);
-
-        localStorage.setItem(
-            config[type],
-            JSON.stringify(items)
-        );
-
-        openDataManager(type);
-
-        showToast('Kayıt eklendi');
-    }
-
-
-
-    function editDataItem(type, index) {
-
-        var config = {
-            hotels: 'hotelPartners',
-            regions: 'regions',
-            airports: 'airports',
-            services: 'services',
-            reasons: 'reasons'
-        };
-
-        var items =
-            JSON.parse(
-                localStorage.getItem(
-                    config[type]
-                )
-            ) || [];
-
-        var yeniDeger =
-            prompt(
-                'Yeni değer:',
-                items[index]
-            );
-
-        if (!yeniDeger) return;
-
-        items[index] = yeniDeger;
-
-        localStorage.setItem(
-            config[type],
-            JSON.stringify(items)
-        );
-
-        openDataManager(type);
-
-        showToast('Kayıt güncellendi');
-    }
-
-
-
-    function deleteDataItem(type, index) {
-
-        var config = {
-            hotels: 'hotelPartners',
-            regions: 'regions',
-            airports: 'airports',
-            services: 'services',
-            reasons: 'reasons'
-        };
-
-        var items =
-            JSON.parse(
-                localStorage.getItem(
-                    config[type]
-                )
-            ) || [];
-
-        if (
-            !confirm(
-                items[index] +
-                '\n\nSilinsin mi?'
-            )
-        ) {
-            return;
-        }
-
-        items.splice(index, 1);
-
-        localStorage.setItem(
-            config[type],
-            JSON.stringify(items)
-        );
-
-        openDataManager(type);
-
-        showToast('Kayıt silindi');
-    }
-
-    function openUserModal() {
-        let username = prompt("Kullanıcı adı:");
-        if (!username) return;
-
-        if (USERS[username]) {
-            alert("Bu kullanıcı zaten mevcut.");
-            return;
-        }
-
-        let password = prompt("Şifre:");
-        if (!password) return;
-
-        let role = prompt("Yetki (admin/user):", "user");
-        if (!role) role = "user";
-
-        let language = prompt(
-            "Dil (TR/DE/EN):",
-            "TR"
-        );
-
-        if (!language) language = "TR";
-
-        language =
-            language.toUpperCase();
-
-        USERS[username] = {
-            password: password,
-            role: role,
-            language: language
-        };
-
-        localStorage.setItem(
-            'tralvid_users',
-            JSON.stringify(USERS)
-        );
-
-        renderUsers();
-        showToast("Kullanıcı oluşturuldu.");
-    }
-    function deleteUser(username) {
-
-        if (username === 'admin') {
-            alert('Admin kullanıcısı silinemez!');
-            return;
-        }
-
-        if (!confirm(username + ' kullanıcısını silmek istiyor musunuz?')) {
-            return;
-        }
-
-        delete USERS[username];
-
-        localStorage.setItem(
-            'tralvid_users',
-            JSON.stringify(USERS)
-        );
-
-        renderUsers();
-
-        showToast('Kullanıcı silindi.');
-
-        if (
-            currentUser &&
-            currentUser.username === username
-        ) {
-            sessionStorage.removeItem('currentUser');
-            location.reload();
-        }
-    }
-    // ==================== DETAY ANALİZ MODALLARI ====================
-    function openComplaintDetail(id) {
-        var r = complaints.find(function (o) { return o.id === id; }); if (!r) return;
-        document.getElementById('detail-modal-title').innerHTML =
-            'Müşteri Kartı : ' + r.booking +
-
-            (
-                currentUser.role === 'admin'
-                    ? (
-                        !complaintEditMode
-
-                            ? ' <button class="btn btn-primary" ' +
-                            'style="margin-left:15px;" ' +
-                            'onclick="enableComplaintEdit(' + r.id + ')">' +
-                            '✏ Düzenle</button>'
-
-                            : ' <button class="btn btn-success" ' +
-                            'style="margin-left:15px;" ' +
-                            'onclick="saveComplaintChanges(' + r.id + ')">' +
-                            '💾 Kaydet</button>' +
-
-                            ' <button class="btn" ' +
-                            'style="margin-left:8px;background:#9e9e9e;color:#fff;" ' +
-                            'onclick="cancelComplaintEdit(' + r.id + ')">' +
-                            '❌ Vazgeç</button>'
-                    )
-                    : ''
-            );
-
-        document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
-            '<div class="detail-item"><span class="detail-lbl">Hafta No (KW) / Quarter (Çeyrek)</span><span class="detail-val">' + r.kw + ' / ' + r.quarter + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Kullanıcı</span><span class="detail-val">' + r.user + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Tarih</span><span class="detail-val">' + r.date + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Cevap Süresi / Savunma Yazısı</span><span class="detail-val">' + r.timeout + ' / ' + r.sn + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Rezervasyon No</span><span class="detail-val">' + r.booking + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Alt Rezervasyon No</span><span class="detail-val">' + (r.subbooking || '—') + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Pax (Yetişkin / Çocuk / Bebek)</span><span class="detail-val">' + r.adult + ' Y / ' + r.child + ' Ç / ' + r.infant + ' B</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Şikayet Tarihi</span><span class="detail-val">' + r.bdate + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Geliş Tarihi</span><span class="detail-val">' + r.adate + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Dönüş Tarihi</span><span class="detail-val">' + r.ddate + '</span></div>' +
-
-            '<div class="detail-item">' +
-            '<span class="detail-lbl">Tur Operatörü</span>' +
-
-            (
-                complaintEditMode
-
-                    ?
-
-                    '<select id="edit-veranstalter" style="width:100%;padding:6px;"></select>'
-
-                    :
-
-                    '<span class="detail-val">' +
-                    r.veranstalter +
-                    '</span>'
-            ) +
-
-            '</div>' +
-
-            '<div class="detail-item"><span class="detail-lbl">Sorumlu taraf</span><span class="detail-val">' + r.Verursacher + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Bölge / Havalimanı</span><span class="detail-val">' + r.region + ' / ' + r.airport + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Transfer Türü</span><span class="detail-val">' + (r.transfertype || '-') + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">İlgili Otel</span><span class="detail-val">' + (r.hotel || '-') + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Şikayet Sonucu / Tazminat</span><span class="detail-val">' + r.result + ' — ' + fmt(r.price) + ' ' + r.currency + '</span></div>' +
-            '<div class="detail-item full">' +
-            '<span class="detail-lbl">Şikayet Konuları</span>' +
-            '<span class="detail-val">' +
-
-            (r.ptr ? '1. ' + r.ptr : '') +
-
-            (r.ptr2 ? '<br>2. ' + r.ptr2 : '') +
-
-            (r.ptr3 ? '<br>3. ' + r.ptr3 : '') +
-
-            '</span>' +
-            '</div>' +
-            '<div class="detail-item full"><span class="detail-lbl">Not</span><div class="note-box">' + (r.notes || 'Açıklama girilmedi.') + '</div></div>' +
-            '<div class="detail-item full">' +
-            '<span class="detail-lbl">Ek Dosyalar</span>' +
-            '<div class="note-box">' +
-            '<div class="detail-item">' +
-            '<span class="detail-lbl">Savunma Gerekli</span>' +
-            '<span class="detail-val">' +
-            (r.defenseRequired || 'Hayır') +
-            '</span></div>' +
-
-            '<div class="detail-item">' +
-            '<span class="detail-lbl">İlgili Birim</span>' +
-            '<span class="detail-val">' +
-            (r.defenseUnit || '-') +
-            '</span></div>' +
-
-            '<div class="detail-item">' +
-            '<span class="detail-lbl">Savunma Durumu</span>' +
-
-            '<span class="detail-val">' +
-
-            '<select id="defense-status-select" ' +
-            'style="width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;" ' +
-            'onchange="updateDefenseStatus(' + r.id + ', this.value)">' +
-
-            '<option value="Bekleniyor" ' +
-            ((r.defenseStatus === 'Bekleniyor') ? 'selected' : '') +
-            '>🟡 Bekleniyor</option>' +
-
-            '<option value="Savunma Geldi" ' +
-            ((r.defenseStatus === 'Savunma Geldi') ? 'selected' : '') +
-            '>🔵 Savunma Geldi</option>' +
-
-            '<option value="Eksik Dosya" ' +
-            ((r.defenseStatus === 'Eksik Dosya') ? 'selected' : '') +
-            '>🔴 Eksik Dosya</option>' +
-
-            '<option value="Tamamlandı" ' +
-            ((r.defenseStatus === 'Tamamlandı') ? 'selected' : '') +
-            '>🟢 Tamamlandı</option>' +
-
-            '</select>' +
-
-            '</span>' +
-            '</div>' +
-
-            '<div class="detail-item">' +
-            '<span class="detail-lbl">Talep Tarihi</span>' +
-            '<span class="detail-val">' +
-            (r.defenseRequestedAt
-                ? new Date(r.defenseRequestedAt)
-                    .toLocaleString("tr-TR")
-                : '-') +
-            '</span></div>' +
-
-            '<div class="detail-item">' +
-            '<span class="detail-lbl">Tamamlanma Tarihi</span>' +
-            '<span class="detail-val">' +
-            (r.defenseCompletedAt
-                ? new Date(r.defenseCompletedAt)
-                    .toLocaleString("tr-TR")
-                : '-') +
-            '</span></div>' +
-
-            (
-                r.defenseRequired === 'Evet' &&
-                    r.defenseStatus === 'Bekleniyor'
-
-                    ?
-
-                    '<div class="detail-item full">' +
-                    '<button class="btn btn-success" ' +
-                    'onclick="completeDefense(' + r.id + ')">' +
-                    '✅ Savunma Geldi' +
-                    '</button>' +
-                    '</div>'
-
-                    :
-
-                    ''
-            )
-            +
-
-            (
-                r.attachments && r.attachments.length > 0
-
-                    ?
-
-                    r.attachments.map(function (file, index) {
-
-                        return (
-
-                            (
-                                file.type.indexOf('image/') === 0
-                                    ? '🖼️ '
-
-                                    : file.type === 'application/pdf'
-                                        ? '📄 '
-
-                                        : file.name.match(/\.(doc|docx)$/i)
-                                            ? '📝 '
-
-                                            : file.name.match(/\.(xls|xlsx)$/i)
-                                                ? '📊 '
-
-                                                : file.name.match(/\.(ppt|pptx)$/i)
-                                                    ? '📈 '
-
-                                                    : file.name.match(/\.(zip|rar|7z)$/i)
-                                                        ? '📦 '
-
-                                                        : file.name.match(/\.(eml|msg)$/i)
-                                                            ? '📧 '
-
-                                                            : '📎 '
-                            )
-
-                            +
-
-                            (index + 1) + '. ' +
-
-                            file.name +
-
-                            ' (' +
-
-                            Math.round(file.size / 1024) +
-
-                            ' KB)' +
-
-                            ' <button onclick="viewAttachment(\'' +
-
-                            file.id +
-
-                            '\')">👁 Görüntüle</button>' +
-
-                            ' <button onclick="downloadAttachment(\'' +
-
-                            file.id +
-
-                            '\')">⬇ İndir</button>'
-
-                        );
-
-                    }).join('<br>')
-
-                    :
-
-                    'Dosya bulunmuyor'
-
-            ) +
-
-            '</div></div>';
-
-        document.getElementById('detail-modal-overlay')
-            .classList.add('open');
-
-        if (complaintEditMode) {
-
-            console.log(
-                'EDIT MODE AKTİF'
-            );
-
-            loadSimpleDropdown(
-                'edit-veranstalter',
-                'operators',
-                'Operatör seçiniz...'
-            );
-
-            var operatorSelect =
-                document.getElementById('edit-veranstalter');
-
-            console.log(
-                'SELECT BULUNDU:',
-                operatorSelect
-            );
-
-            console.log(
-                'OPTION SAYISI:',
-                operatorSelect
-                    ? operatorSelect.options.length
-                    : 0
-            );
-
-            if (operatorSelect) {
-
-                operatorSelect.value =
-                    r.veranstalter || '';
-
-            }
-
-        }
-
-
-    }
-
-    function viewAttachment(id) {
-
-        getAttachment(id).then(function (file) {
-
-            if (!file) {
-                alert('Dosya bulunamadı.');
-                return;
-            }
-
-            var type = (file.type || '').toLowerCase();
-
-            // ---------- RESİMLER ----------
-            if (type.indexOf('image/') === 0) {
-
-                if (
-                    type === 'image/heic' ||
-                    type === 'image/heif'
-                ) {
-
-                    if (confirm(
-                        'HEIC dosyaları tarayıcıda görüntülenemiyor.\n\nİndirmek ister misiniz?'
-                    )) {
-
-                        downloadAttachment(id);
-
-                    }
-
-                    return;
-                }
-
-                var win = window.open('', '_blank');
-
-                win.document.write(
-                    '<html><head><title>' + file.name + '</title></head>' +
-                    '<body style="margin:0;background:#111;display:flex;justify-content:center;align-items:center;height:100vh;">' +
-                    '<img src="' + file.content + '" style="max-width:100%;max-height:100%;">' +
-                    '</body></html>'
-                );
-
-                return;
-            }
-
-            // ---------- PDF ----------
-            if (type === 'application/pdf') {
-
-                window.open(file.content, '_blank');
-
-                return;
-            }
-
-            // ---------- Diğer Dosyalar ----------
-            if (confirm(
-                'Bu dosya tarayıcıda görüntülenemiyor.\n\nİndirmek ister misiniz?'
-            )) {
-
-                downloadAttachment(id);
-
-            }
-
-        });
-
-    }
-
-    function downloadAttachment(id) {
-
-        console.log('DOWNLOAD ID=', id);
-
-        getAttachment(id).then(function (file) {
-
-            console.log('DOWNLOAD FILE=', file);
-
-            if (!file) {
-                alert('Dosya bulunamadı');
-                return;
-            }
-
-            var a = document.createElement('a');
-
-            a.href = file.content;
-            a.download = file.name;
-
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-        });
-
-    }
-
-    function enableComplaintEdit(id) {
-
-        complaintEditMode = true;
-        editingComplaintId = id;
-
-        openComplaintDetail(id);
-
-    }
-
-    function cancelComplaintEdit(id) {
-
-        complaintEditMode = false;
-
-        openComplaintDetail(id);
-
-    }
-
-    function saveComplaintChanges(id) {
-
-        var r = complaints.find(function (o) {
-            return o.id === id;
-        });
-
-        if (!r) return;
 
         var operatorSelect =
-            document.getElementById(
-                'edit-veranstalter'
-            );
+            document.getElementById('edit-veranstalter');
+
+        console.log(
+            'SELECT BULUNDU:',
+            operatorSelect
+        );
+
+        console.log(
+            'OPTION SAYISI:',
+            operatorSelect
+                ? operatorSelect.options.length
+                : 0
+        );
 
         if (operatorSelect) {
 
-            r.veranstalter =
-                operatorSelect.value;
+            operatorSelect.value =
+                r.veranstalter || '';
 
         }
 
-        syncStorage();
+    }
 
-        complaintEditMode = false;
 
-        showToast(
-            'Değişiklikler kaydedildi.'
+}
+
+function viewAttachment(id) {
+
+    getAttachment(id).then(function (file) {
+
+        if (!file) {
+            alert('Dosya bulunamadı.');
+            return;
+        }
+
+        var type = (file.type || '').toLowerCase();
+
+        // ---------- RESİMLER ----------
+        if (type.indexOf('image/') === 0) {
+
+            if (
+                type === 'image/heic' ||
+                type === 'image/heif'
+            ) {
+
+                if (confirm(
+                    'HEIC dosyaları tarayıcıda görüntülenemiyor.\n\nİndirmek ister misiniz?'
+                )) {
+
+                    downloadAttachment(id);
+
+                }
+
+                return;
+            }
+
+            var win = window.open('', '_blank');
+
+            win.document.write(
+                '<html><head><title>' + file.name + '</title></head>' +
+                '<body style="margin:0;background:#111;display:flex;justify-content:center;align-items:center;height:100vh;">' +
+                '<img src="' + file.content + '" style="max-width:100%;max-height:100%;">' +
+                '</body></html>'
+            );
+
+            return;
+        }
+
+        // ---------- PDF ----------
+        if (type === 'application/pdf') {
+
+            window.open(file.content, '_blank');
+
+            return;
+        }
+
+        // ---------- Diğer Dosyalar ----------
+        if (confirm(
+            'Bu dosya tarayıcıda görüntülenemiyor.\n\nİndirmek ister misiniz?'
+        )) {
+
+            downloadAttachment(id);
+
+        }
+
+    });
+
+}
+
+function downloadAttachment(id) {
+
+    console.log('DOWNLOAD ID=', id);
+
+    getAttachment(id).then(function (file) {
+
+        console.log('DOWNLOAD FILE=', file);
+
+        if (!file) {
+            alert('Dosya bulunamadı');
+            return;
+        }
+
+        var a = document.createElement('a');
+
+        a.href = file.content;
+        a.download = file.name;
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+    });
+
+}
+
+function enableComplaintEdit(id) {
+
+    complaintEditMode = true;
+    editingComplaintId = id;
+
+    openComplaintDetail(id);
+
+}
+
+function cancelComplaintEdit(id) {
+
+    complaintEditMode = false;
+
+    openComplaintDetail(id);
+
+}
+
+function saveComplaintChanges(id) {
+
+    var r = complaints.find(function (o) {
+        return o.id === id;
+    });
+
+    if (!r) return;
+
+    var operatorSelect =
+        document.getElementById(
+            'edit-veranstalter'
         );
 
-        openComplaintDetail(id);
+    if (operatorSelect) {
+
+        r.veranstalter =
+            operatorSelect.value;
 
     }
 
-    function openInvoiceDetail(id) {
-        var r = invoices.find(function (o) { return o.id === id; }); if (!r) return;
-        document.getElementById('detail-modal-title').textContent = 'Fatura Finans Kart Detayı: ' + r.faturaNo;
+    syncStorage();
 
-        document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
-            '<div class="detail-item"><span class="detail-lbl">Fatura Numarası</span><span class="detail-val">' + r.faturaNo + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Fatura Tarihi</span><span class="detail-val">' + r.tarih + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Partner (Kime Gönderildi)</span><span class="detail-val">' + r.partner + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">İlgili Rezervasyon (Booking)</span><span class="detail-val">' + r.booking + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Gönderilen Tutar</span><span class="detail-val">' + fmt(r.tutar) + ' ' + r.doviz + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Durum</span><span class="detail-val">' + r.durum + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">Kabul Durumu</span><span class="detail-val">' + (r.kabul || 'Beklemede') + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">İade / Tahsil Edilen Tutar</span><span class="detail-val">' + fmt(r.iadeTutar) + ' ' + r.doviz + '</span></div>' +
-            '<div class="detail-item"><span class="detail-lbl">İade / Tahsilat Tarihi</span><span class="detail-val">' + (r.iadeDate || '—') + '</span></div>' +
-            '<div class="detail-item full"><span class="detail-lbl">Kesinti Sebebi Gerekçesi / Finans Notu</span><div class="note-box">' + (r.kesinti || '—') + '</div></div>' +
-            '</div>';
+    complaintEditMode = false;
 
-        document.getElementById('detail-modal-overlay')
-            .classList.add('open');
+    showToast(
+        'Değişiklikler kaydedildi.'
+    );
 
+    openComplaintDetail(id);
+
+}
+
+function openInvoiceDetail(id) {
+    var r = invoices.find(function (o) { return o.id === id; }); if (!r) return;
+    document.getElementById('detail-modal-title').textContent = 'Fatura Finans Kart Detayı: ' + r.faturaNo;
+
+    document.getElementById('detail-modal-body').innerHTML = '<div class="detail-grid">' +
+        '<div class="detail-item"><span class="detail-lbl">Fatura Numarası</span><span class="detail-val">' + r.faturaNo + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Fatura Tarihi</span><span class="detail-val">' + r.tarih + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Partner (Kime Gönderildi)</span><span class="detail-val">' + r.partner + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">İlgili Rezervasyon (Booking)</span><span class="detail-val">' + r.booking + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Gönderilen Tutar</span><span class="detail-val">' + fmt(r.tutar) + ' ' + r.doviz + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Durum</span><span class="detail-val">' + r.durum + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">Kabul Durumu</span><span class="detail-val">' + (r.kabul || 'Beklemede') + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">İade / Tahsil Edilen Tutar</span><span class="detail-val">' + fmt(r.iadeTutar) + ' ' + r.doviz + '</span></div>' +
+        '<div class="detail-item"><span class="detail-lbl">İade / Tahsilat Tarihi</span><span class="detail-val">' + (r.iadeDate || '—') + '</span></div>' +
+        '<div class="detail-item full"><span class="detail-lbl">Kesinti Sebebi Gerekçesi / Finans Notu</span><div class="note-box">' + (r.kesinti || '—') + '</div></div>' +
+        '</div>';
+
+    document.getElementById('detail-modal-overlay')
+        .classList.add('open');
+
+}
+
+// ==================== SİLME MEKANİZMALARI ====================
+function deleteComplaint(id) {
+    if (!confirm('Bu şikayet kaydını kalıcı olarak silmek istiyor musunuz?')) return;
+    complaints = complaints.filter(function (o) { return o.id !== id; }); syncStorage();
+    renderRecordsTable(); renderDashboard(); showToast('Kayıt silindi.');
+}
+function deleteInvoice(id) {
+    if (!confirm('Bu fatura takip kaydını kalıcı olarak silmek istiyor musunuz?')) return;
+    invoices = invoices.filter(function (o) { return o.id !== id; }); syncStorage();
+    renderAccounting(); renderDashboard(); showToast('Fatura silindi.');
+}
+
+// ==================== DASHBOARD VE CSS GRAPHICS ====================
+function getDefenseInfo(record) {
+
+    if (record.defenseStatus === 'Tamamlandı') {
+
+        return {
+            status: 'Tamamlandı',
+            color: '#4caf50',
+            remaining: ''
+        };
     }
 
-    // ==================== SİLME MEKANİZMALARI ====================
-    function deleteComplaint(id) {
-        if (!confirm('Bu şikayet kaydını kalıcı olarak silmek istiyor musunuz?')) return;
-        complaints = complaints.filter(function (o) { return o.id !== id; }); syncStorage();
-        renderRecordsTable(); renderDashboard(); showToast('Kayıt silindi.');
-    }
-    function deleteInvoice(id) {
-        if (!confirm('Bu fatura takip kaydını kalıcı olarak silmek istiyor musunuz?')) return;
-        invoices = invoices.filter(function (o) { return o.id !== id; }); syncStorage();
-        renderAccounting(); renderDashboard(); showToast('Fatura silindi.');
+    if (record.defenseStatus === 'Eksik Dosya') {
+
+        return {
+            status: 'Eksik Dosya',
+            color: '#e74c3c',
+            remaining: ''
+        };
     }
 
-    // ==================== DASHBOARD VE CSS GRAPHICS ====================
-    function getDefenseInfo(record) {
+    if (record.defenseStatus === 'Savunma Geldi') {
 
-        if (record.defenseStatus === 'Tamamlandı') {
+        return {
+            status: 'Savunma Geldi',
+            color: '#2196f3',
+            remaining: ''
+        };
+    }
 
-            return {
-                status: 'Tamamlandı',
-                color: '#4caf50',
-                remaining: ''
-            };
-        }
+    if (record.defenseRequired !== 'Evet') {
 
-        if (record.defenseStatus === 'Eksik Dosya') {
+        return {
+            status: 'Yok',
+            color: '#999',
+            remaining: ''
+        };
+    }
 
-            return {
-                status: 'Eksik Dosya',
-                color: '#e74c3c',
-                remaining: ''
-            };
-        }
-
-        if (record.defenseStatus === 'Savunma Geldi') {
-
-            return {
-                status: 'Savunma Geldi',
-                color: '#2196f3',
-                remaining: ''
-            };
-        }
-
-        if (record.defenseRequired !== 'Evet') {
-
-            return {
-                status: 'Yok',
-                color: '#999',
-                remaining: ''
-            };
-        }
-
-        if (!record.defenseRequestedAt) {
-
-            return {
-                status: 'Bekleniyor',
-                color: '#f39c12',
-                remaining: ''
-            };
-        }
-
-        var requested =
-            new Date(record.defenseRequestedAt);
-
-        var now = new Date();
-
-        var diffHours =
-            (now - requested) / (1000 * 60 * 60);
-
-        var remaining =
-            Math.max(0, 48 - diffHours);
-
-        if (diffHours >= 48) {
-
-            return {
-                status: 'Süre Aşıldı',
-                color: '#e74c3c',
-                remaining: '0 saat'
-            };
-        }
-
-        if (diffHours >= 48) {
-
-            return {
-                status: 'Süre Aşıldı',
-                color: '#e74c3c',
-                remaining: '0 saat'
-            };
-        }
-
-        if (remaining <= 12) {
-
-            return {
-                status: 'Kritik',
-                color: '#c62828',
-                remaining:
-                    Math.floor(remaining) +
-                    ' saat'
-            };
-        }
-
-        if (remaining <= 24) {
-
-            return {
-                status: 'Yaklaşıyor',
-                color: '#ef6c00',
-                remaining:
-                    Math.floor(remaining) +
-                    ' saat'
-            };
-        }
+    if (!record.defenseRequestedAt) {
 
         return {
             status: 'Bekleniyor',
-            color: '#f1c40f',
+            color: '#f39c12',
+            remaining: ''
+        };
+    }
+
+    var requested =
+        new Date(record.defenseRequestedAt);
+
+    var now = new Date();
+
+    var diffHours =
+        (now - requested) / (1000 * 60 * 60);
+
+    var remaining =
+        Math.max(0, 48 - diffHours);
+
+    if (diffHours >= 48) {
+
+        return {
+            status: 'Süre Aşıldı',
+            color: '#e74c3c',
+            remaining: '0 saat'
+        };
+    }
+
+    if (diffHours >= 48) {
+
+        return {
+            status: 'Süre Aşıldı',
+            color: '#e74c3c',
+            remaining: '0 saat'
+        };
+    }
+
+    if (remaining <= 12) {
+
+        return {
+            status: 'Kritik',
+            color: '#c62828',
             remaining:
                 Math.floor(remaining) +
                 ' saat'
         };
     }
 
-    function renderDashboard() {
+    if (remaining <= 24) {
 
-        var activeComplaints = complaints.filter(function (r) {
-            return !r.isDeleted;
-        });
+        return {
+            status: 'Yaklaşıyor',
+            color: '#ef6c00',
+            remaining:
+                Math.floor(remaining) +
+                ' saat'
+        };
+    }
 
-        var total = activeComplaints.length;
+    return {
+        status: 'Bekleniyor',
+        color: '#f1c40f',
+        remaining:
+            Math.floor(remaining) +
+            ' saat'
+    };
+}
 
-        console.log(
-            'Toplam:',
-            complaints.length,
-            'Aktif:',
-            activeComplaints.length,
-            'Silinen:',
-            complaints.filter(x => x.isDeleted).length
-        );
+function renderDashboard() {
 
-        var hakliCount = activeComplaints.filter(function (o) {
-            return o.result === 'Haklı';
-        }).length;
+    var activeComplaints = complaints.filter(function (r) {
+        return !r.isDeleted;
+    });
 
-        var activeInvs = invoices.length;
+    var total = activeComplaints.length;
 
-        var deleteRequests = activeComplaints.filter(function (o) {
-            return o.deleteRequested === true && !o.isDeleted;
-        }).length;
+    console.log(
+        'Toplam:',
+        complaints.length,
+        'Aktif:',
+        activeComplaints.length,
+        'Silinen:',
+        complaints.filter(x => x.isDeleted).length
+    );
 
-        var deletedCount = complaints.filter(function (r) {
-            return r.isDeleted === true;
-        }).length;
+    var hakliCount = activeComplaints.filter(function (o) {
+        return o.result === 'Haklı';
+    }).length;
 
-        var defenseWaiting = activeComplaints.filter(function (r) {
-            return r.defenseStatus === 'Bekleniyor';
-        }).length;
+    var activeInvs = invoices.length;
 
-        var defenseReceived = activeComplaints.filter(function (r) {
-            return r.defenseStatus === 'Savunma Geldi';
-        }).length;
+    var deleteRequests = activeComplaints.filter(function (o) {
+        return o.deleteRequested === true && !o.isDeleted;
+    }).length;
 
-        var defenseMissing = activeComplaints.filter(function (r) {
-            return r.defenseStatus === 'Eksik Dosya';
-        }).length;
+    var deletedCount = complaints.filter(function (r) {
+        return r.isDeleted === true;
+    }).length;
 
-        var defenseCompleted = activeComplaints.filter(function (r) {
-            return r.defenseStatus === 'Tamamlandı';
-        }).length;
+    var defenseWaiting = activeComplaints.filter(function (r) {
+        return r.defenseStatus === 'Bekleniyor';
+    }).length;
 
-        var totalDefenseRequests =
-            defenseWaiting +
-            defenseReceived +
-            defenseMissing +
-            defenseCompleted;
+    var defenseReceived = activeComplaints.filter(function (r) {
+        return r.defenseStatus === 'Savunma Geldi';
+    }).length;
 
-        var completionRate =
-            totalDefenseRequests > 0
-                ? Math.round((defenseCompleted / totalDefenseRequests) * 100)
+    var defenseMissing = activeComplaints.filter(function (r) {
+        return r.defenseStatus === 'Eksik Dosya';
+    }).length;
+
+    var defenseCompleted = activeComplaints.filter(function (r) {
+        return r.defenseStatus === 'Tamamlandı';
+    }).length;
+
+    var totalDefenseRequests =
+        defenseWaiting +
+        defenseReceived +
+        defenseMissing +
+        defenseCompleted;
+
+    var completionRate =
+        totalDefenseRequests > 0
+            ? Math.round((defenseCompleted / totalDefenseRequests) * 100)
+            : 0;
+
+    var criticalDefenseCount = activeComplaints.filter(function (r) {
+
+        var info = getDefenseInfo(r);
+
+        return info.status === 'Kritik'
+            || info.status === 'Süre Aşıldı';
+
+
+
+        var info = getDefenseInfo(c);
+
+        return info.status === 'Süre Aşıldı';
+
+    }).length;
+    var paxData =
+        JSON.parse(
+            localStorage.getItem('reservations')
+        ) || [];
+
+    var totalAdult = 0;
+    var totalChild = 0;
+    var totalInfant = 0;
+
+    paxData.forEach(function (p) {
+
+        totalAdult += parseInt(p.adult || 0);
+
+        totalChild += parseInt(p.child || 0);
+
+        totalInfant += parseInt(p.infant || 0);
+
+    });
+
+    var totalPassengers =
+        totalAdult +
+        totalChild +
+        totalInfant;
+
+    var complaintRatio =
+        totalPassengers > 0
+            ? ((total / totalPassengers) * 100).toFixed(2)
+            : '0.00';
+
+    var operatorCounts = {};
+
+    activeComplaints.forEach(function (c) {
+
+        var op = c.veranstalter || 'Bilinmiyor';
+
+        operatorCounts[op] =
+            (operatorCounts[op] || 0) + 1;
+
+    });
+
+    var topOperator = '-';
+    var topOperatorCount = 0;
+
+    Object.keys(operatorCounts).forEach(function (op) {
+
+        if (operatorCounts[op] > topOperatorCount) {
+
+            topOperator = op;
+            topOperatorCount = operatorCounts[op];
+
+        }
+
+    });
+
+    document.getElementById('dash-stats').innerHTML =
+
+        '<div class="stat-card">' +
+        '<div class="s-lbl">TOPLAM YOLCU</div>' +
+        '<div class="s-val" style="color:#2196F3;font-size:34px;">' +
+        totalPassengers +
+        '</div>' +
+        '</div>' +
+
+        '<div class="stat-card">' +
+        '<div class="s-lbl">TOPLAM ŞİKAYET</div>' +
+        '<div class="s-val" style="color:#e53935;font-size:34px;">' +
+        total +
+        '</div>' +
+        '</div>' +
+
+        '<div class="stat-card">' +
+        '<div class="s-lbl">Şikayet Oranı %</div>' +
+        '<div class="s-val" style="color:#FF9800;">' +
+        complaintRatio +
+        '%</div>' +
+        '</div>' +
+
+        '<div class="stat-card">' +
+        '<div class="s-lbl">EN ÇOK ŞİKAYET ALAN OPERATÖR</div>' +
+        '<div class="s-val" style="color:#d32f2f;font-size:22px;">' +
+        topOperatorCount +
+        '</div>' +
+        '<div style="font-size:11px;color:#666;margin-top:4px;">' +
+        topOperator +
+        '</div>' +
+        '</div>' +
+
+
+        '<div class="stat-card"><div class="s-lbl">Haklı Bulunan Dosyalar</div><div class="s-val" style="color:#3B6D11;">' + hakliCount + '</div><div class="s-sub">%' + (total ? Math.round((hakliCount / total) * 100) : 0) + ' Mutabakat Oranı</div></div>' +
+        '<div class="stat-card">' +
+        '<div class="s-lbl">Yetişkin</div>' +
+        '<div class="s-val" style="color:#4CAF50;">' +
+        totalAdult +
+        '</div>' +
+        '</div>' +
+
+        '<div class="stat-card">' +
+        '<div class="s-lbl">Çocuk</div>' +
+        '<div class="s-val" style="color:#9C27B0;">' +
+        totalChild +
+        '</div>' +
+        '</div>' +
+
+        '<div class="stat-card">' +
+        '<div class="s-lbl">Bebek</div>' +
+        '<div class="s-val" style="color:#03A9F4;">' +
+        totalInfant +
+        '</div>' +
+        '</div>';
+
+
+    document.getElementById('dashboard-defense-panel').innerHTML =
+
+        '<div class="defense-dashboard-card">' +
+
+        '<h3>🛡️ Savunma Takip Merkezi</h3>' +
+
+        '<div class="defense-grid">' +
+
+        '<div class="defense-mini">' +
+        '<div>Bekleyen</div>' +
+        '<div class="val" style="color:#f59e0b;">' +
+        defenseWaiting +
+        '</div></div>' +
+
+        '<div class="defense-mini">' +
+        '<div>Savunma Geldi</div>' +
+        '<div class="val" style="color:#2563eb;">' +
+        defenseReceived +
+        '</div></div>' +
+
+        '<div class="defense-mini">' +
+        '<div>Eksik Dosya</div>' +
+        '<div class="val" style="color:#dc2626;">' +
+        defenseMissing +
+        '</div></div>' +
+
+        '<div class="defense-mini">' +
+        '<div>Tamamlandı</div>' +
+        '<div class="val" style="color:#16a34a;">' +
+        defenseCompleted +
+        '</div></div>' +
+
+        '<div class="defense-mini">' +
+        '<div>Kritik</div>' +
+        '<div class="val" style="color:#b91c1c;">' +
+        criticalDefenseCount +
+        '</div></div>' +
+
+        '</div>' +
+        '</div>';
+
+    var accBox =
+        document.getElementById('accounting-summary');
+
+    if (accBox) {
+
+        accBox.innerHTML =
+            activeInvs;
+
+    }
+
+    renderOperatorRatios();
+
+    renderDonutChart('chart-servis',
+        countBy(activeComplaints, 'servis'),
+        ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
+
+    renderDonutChart('chart-sonuc',
+        countBy(activeComplaints, 'result'),
+        ['#A32D2D', '#3B6D11']);
+
+    renderTrendChart('chart-kw',
+        countBy(activeComplaints, 'kw'));
+
+    renderServiceComplaints();
+
+    renderTopComplaintSubjects();
+}
+
+function renderDonutChart(containerId, data, colors) {
+    var el = document.getElementById(containerId); if (!el) return;
+    var labels = Object.keys(data), values = Object.values(data), total = values.reduce(function (a, b) { return a + b; }, 0);
+    if (!total) { el.innerHTML = '<div>Yeterli metrik yok</div>'; return; }
+
+    var legendHtml = '';
+    for (var i = 0; i < labels.length; i++) {
+        legendHtml += '<div class="donut-leg-item"><div class="donut-leg-dot" style="background:' + colors[i % colors.length] + ';"></div><span>' + labels[i] + ' (' + values[i] + ')</span></div>';
+    }
+    el.innerHTML = '<svg width="80" height="80" viewBox="0 0 120 120"><circle cx="60" cy="60" r="45" fill="none" stroke="#edede9" stroke-width="16"/><circle cx="60" cy="60" r="45" fill="none" stroke="' + colors[0] + '" stroke-width="16" stroke-dasharray="282.7" stroke-dashoffset="80"/><text x="60" y="66" text-anchor="middle" font-size="18" font-weight="bold" fill="currentColor">' + total + '</text></svg><div class="donut-legend">' + legendHtml + '</div>';
+}
+
+function renderTrendChart(containerId, kwData) {
+    var el = document.getElementById(containerId); if (!el) return;
+    var keys = Object.keys(kwData).sort(); var max = 0;
+    if (!keys.length) { el.innerHTML = '<div>Trend verisi yok</div>'; return; }
+
+    for (var i = 0; i < keys.length; i++) {
+        if (kwData[keys[i]] > max) max = kwData[keys[i]];
+    }
+
+    var html = '';
+    for (var j = 0; j < keys.length; j++) {
+        var h = Math.max(6, Math.round((kwData[keys[j]] / max) * 110));
+        html += '<div class="kw-col">' +
+            '<div style="font-size:11px;">' + kwData[keys[j]] + '</div>' +
+            '<div style="height:' + h + 'px; background:var(--blue); width:24px; border-radius:4px 4px 0 0;"></div>' +
+            '<div style="font-size:10px; color:var(--text-secondary);">' + keys[j] + '</div>' +
+            '</div>';
+    }
+    el.innerHTML = html;
+}
+function renderOperatorRatios() {
+
+    var activeComplaints = complaints.filter(function (r) {
+        return !r.isDeleted;
+    });
+
+    var paxData =
+        JSON.parse(
+            localStorage.getItem('passengerStats')
+        ) || [];
+
+    var stats = {};
+
+    paxData.forEach(function (p) {
+
+        var op =
+            p.veranstalter ||
+            p.operator ||
+            'Bilinmiyor';
+
+        if (!stats[op]) {
+            stats[op] = {
+                pax: 0,
+                complaints: 0
+            };
+        }
+
+        stats[op].pax +=
+            Number(p.adult || 0) +
+            Number(p.child || 0) +
+            Number(p.infant || 0);
+
+    });
+
+    activeComplaints.forEach(function (c) {
+
+        var op = c.veranstalter || 'Bilinmiyor';
+
+        if (!stats[op]) {
+            stats[op] = {
+                pax: 0,
+                complaints: 0
+            };
+        }
+
+        stats[op].complaints++;
+
+    });
+
+    var rows = [];
+
+    Object.keys(stats).forEach(function (op) {
+
+        var pax = stats[op].pax;
+
+        var comp = stats[op].complaints;
+
+        var ratio =
+            pax > 0
+                ? ((comp / pax) * 100).toFixed(2)
                 : 0;
 
-        var criticalDefenseCount = activeComplaints.filter(function (r) {
+        var riskLevel = '🟢 Düşük';
 
-            var info = getDefenseInfo(r);
-
-            return info.status === 'Kritik'
-                || info.status === 'Süre Aşıldı';
-
-
-
-            var info = getDefenseInfo(c);
-
-            return info.status === 'Süre Aşıldı';
-
-        }).length;
-        var paxData =
-            JSON.parse(
-                localStorage.getItem('reservations')
-            ) || [];
-
-        var totalAdult = 0;
-        var totalChild = 0;
-        var totalInfant = 0;
-
-        paxData.forEach(function (p) {
-
-            totalAdult += parseInt(p.adult || 0);
-
-            totalChild += parseInt(p.child || 0);
-
-            totalInfant += parseInt(p.infant || 0);
-
-        });
-
-        var totalPassengers =
-            totalAdult +
-            totalChild +
-            totalInfant;
-
-        var complaintRatio =
-            totalPassengers > 0
-                ? ((total / totalPassengers) * 100).toFixed(2)
-                : '0.00';
-
-        var operatorCounts = {};
-
-        activeComplaints.forEach(function (c) {
-
-            var op = c.veranstalter || 'Bilinmiyor';
-
-            operatorCounts[op] =
-                (operatorCounts[op] || 0) + 1;
-
-        });
-
-        var topOperator = '-';
-        var topOperatorCount = 0;
-
-        Object.keys(operatorCounts).forEach(function (op) {
-
-            if (operatorCounts[op] > topOperatorCount) {
-
-                topOperator = op;
-                topOperatorCount = operatorCounts[op];
-
-            }
-
-        });
-
-        document.getElementById('dash-stats').innerHTML =
-
-            '<div class="stat-card">' +
-            '<div class="s-lbl">TOPLAM YOLCU</div>' +
-            '<div class="s-val" style="color:#2196F3;font-size:34px;">' +
-            totalPassengers +
-            '</div>' +
-            '</div>' +
-
-            '<div class="stat-card">' +
-            '<div class="s-lbl">TOPLAM ŞİKAYET</div>' +
-            '<div class="s-val" style="color:#e53935;font-size:34px;">' +
-            total +
-            '</div>' +
-            '</div>' +
-
-            '<div class="stat-card">' +
-            '<div class="s-lbl">Şikayet Oranı %</div>' +
-            '<div class="s-val" style="color:#FF9800;">' +
-            complaintRatio +
-            '%</div>' +
-            '</div>' +
-
-            '<div class="stat-card">' +
-            '<div class="s-lbl">EN ÇOK ŞİKAYET ALAN OPERATÖR</div>' +
-            '<div class="s-val" style="color:#d32f2f;font-size:22px;">' +
-            topOperatorCount +
-            '</div>' +
-            '<div style="font-size:11px;color:#666;margin-top:4px;">' +
-            topOperator +
-            '</div>' +
-            '</div>' +
-
-
-            '<div class="stat-card"><div class="s-lbl">Haklı Bulunan Dosyalar</div><div class="s-val" style="color:#3B6D11;">' + hakliCount + '</div><div class="s-sub">%' + (total ? Math.round((hakliCount / total) * 100) : 0) + ' Mutabakat Oranı</div></div>' +
-            '<div class="stat-card">' +
-            '<div class="s-lbl">Yetişkin</div>' +
-            '<div class="s-val" style="color:#4CAF50;">' +
-            totalAdult +
-            '</div>' +
-            '</div>' +
-
-            '<div class="stat-card">' +
-            '<div class="s-lbl">Çocuk</div>' +
-            '<div class="s-val" style="color:#9C27B0;">' +
-            totalChild +
-            '</div>' +
-            '</div>' +
-
-            '<div class="stat-card">' +
-            '<div class="s-lbl">Bebek</div>' +
-            '<div class="s-val" style="color:#03A9F4;">' +
-            totalInfant +
-            '</div>' +
-            '</div>';
-
-
-        document.getElementById('dashboard-defense-panel').innerHTML =
-
-            '<div class="defense-dashboard-card">' +
-
-            '<h3>🛡️ Savunma Takip Merkezi</h3>' +
-
-            '<div class="defense-grid">' +
-
-            '<div class="defense-mini">' +
-            '<div>Bekleyen</div>' +
-            '<div class="val" style="color:#f59e0b;">' +
-            defenseWaiting +
-            '</div></div>' +
-
-            '<div class="defense-mini">' +
-            '<div>Savunma Geldi</div>' +
-            '<div class="val" style="color:#2563eb;">' +
-            defenseReceived +
-            '</div></div>' +
-
-            '<div class="defense-mini">' +
-            '<div>Eksik Dosya</div>' +
-            '<div class="val" style="color:#dc2626;">' +
-            defenseMissing +
-            '</div></div>' +
-
-            '<div class="defense-mini">' +
-            '<div>Tamamlandı</div>' +
-            '<div class="val" style="color:#16a34a;">' +
-            defenseCompleted +
-            '</div></div>' +
-
-            '<div class="defense-mini">' +
-            '<div>Kritik</div>' +
-            '<div class="val" style="color:#b91c1c;">' +
-            criticalDefenseCount +
-            '</div></div>' +
-
-            '</div>' +
-            '</div>';
-
-        var accBox =
-            document.getElementById('accounting-summary');
-
-        if (accBox) {
-
-            accBox.innerHTML =
-                activeInvs;
-
+        if (ratio >= 7) {
+            riskLevel = '🔴 Yüksek';
+        }
+        else if (ratio >= 3) {
+            riskLevel = '🟡 Orta';
         }
 
-        renderOperatorRatios();
-
-        renderDonutChart('chart-servis',
-            countBy(activeComplaints, 'servis'),
-            ['#185FA5', '#1D9E75', '#D85A30', '#BA7517', '#534AB7']);
-
-        renderDonutChart('chart-sonuc',
-            countBy(activeComplaints, 'result'),
-            ['#A32D2D', '#3B6D11']);
-
-        renderTrendChart('chart-kw',
-            countBy(activeComplaints, 'kw'));
-
-        renderServiceComplaints();
-
-        renderTopComplaintSubjects();
-    }
-
-    function renderDonutChart(containerId, data, colors) {
-        var el = document.getElementById(containerId); if (!el) return;
-        var labels = Object.keys(data), values = Object.values(data), total = values.reduce(function (a, b) { return a + b; }, 0);
-        if (!total) { el.innerHTML = '<div>Yeterli metrik yok</div>'; return; }
-
-        var legendHtml = '';
-        for (var i = 0; i < labels.length; i++) {
-            legendHtml += '<div class="donut-leg-item"><div class="donut-leg-dot" style="background:' + colors[i % colors.length] + ';"></div><span>' + labels[i] + ' (' + values[i] + ')</span></div>';
-        }
-        el.innerHTML = '<svg width="80" height="80" viewBox="0 0 120 120"><circle cx="60" cy="60" r="45" fill="none" stroke="#edede9" stroke-width="16"/><circle cx="60" cy="60" r="45" fill="none" stroke="' + colors[0] + '" stroke-width="16" stroke-dasharray="282.7" stroke-dashoffset="80"/><text x="60" y="66" text-anchor="middle" font-size="18" font-weight="bold" fill="currentColor">' + total + '</text></svg><div class="donut-legend">' + legendHtml + '</div>';
-    }
-
-    function renderTrendChart(containerId, kwData) {
-        var el = document.getElementById(containerId); if (!el) return;
-        var keys = Object.keys(kwData).sort(); var max = 0;
-        if (!keys.length) { el.innerHTML = '<div>Trend verisi yok</div>'; return; }
-
-        for (var i = 0; i < keys.length; i++) {
-            if (kwData[keys[i]] > max) max = kwData[keys[i]];
-        }
-
-        var html = '';
-        for (var j = 0; j < keys.length; j++) {
-            var h = Math.max(6, Math.round((kwData[keys[j]] / max) * 110));
-            html += '<div class="kw-col">' +
-                '<div style="font-size:11px;">' + kwData[keys[j]] + '</div>' +
-                '<div style="height:' + h + 'px; background:var(--blue); width:24px; border-radius:4px 4px 0 0;"></div>' +
-                '<div style="font-size:10px; color:var(--text-secondary);">' + keys[j] + '</div>' +
-                '</div>';
-        }
-        el.innerHTML = html;
-    }
-    function renderOperatorRatios() {
-
-        var activeComplaints = complaints.filter(function (r) {
-            return !r.isDeleted;
+        rows.push({
+            operator: op,
+            pax: pax,
+            complaints: comp,
+            ratio: Number(ratio),
+            risk: riskLevel
         });
 
-        var paxData =
-            JSON.parse(
-                localStorage.getItem('passengerStats')
-            ) || [];
+    });
 
-        var stats = {};
+    rows.sort(function (a, b) {
+        return b.ratio - a.ratio;
+    });
 
-        paxData.forEach(function (p) {
+    console.table(rows);
 
-            var op =
-                p.veranstalter ||
-                p.operator ||
-                'Bilinmiyor';
+    var html =
+        '<table class="table">' +
+        '<thead>' +
+        '<tr>' +
+        '<th>Operatör</th>' +
+        '<th>PAX</th>' +
+        '<th>Şikayet</th>' +
+        '<th>Oran %</th>' +
+        '<th>Risk</th>' +
+        '</tr>' +
+        '</thead><tbody>';
 
-            if (!stats[op]) {
-                stats[op] = {
-                    pax: 0,
-                    complaints: 0
-                };
-            }
+    rows.forEach(function (r) {
 
-            stats[op].pax +=
-                Number(p.adult || 0) +
-                Number(p.child || 0) +
-                Number(p.infant || 0);
-
-        });
-
-        activeComplaints.forEach(function (c) {
-
-            var op = c.veranstalter || 'Bilinmiyor';
-
-            if (!stats[op]) {
-                stats[op] = {
-                    pax: 0,
-                    complaints: 0
-                };
-            }
-
-            stats[op].complaints++;
-
-        });
-
-        var rows = [];
-
-        Object.keys(stats).forEach(function (op) {
-
-            var pax = stats[op].pax;
-
-            var comp = stats[op].complaints;
-
-            var ratio =
-                pax > 0
-                    ? ((comp / pax) * 100).toFixed(2)
-                    : 0;
-
-            var riskLevel = '🟢 Düşük';
-
-            if (ratio >= 7) {
-                riskLevel = '🔴 Yüksek';
-            }
-            else if (ratio >= 3) {
-                riskLevel = '🟡 Orta';
-            }
-
-            rows.push({
-                operator: op,
-                pax: pax,
-                complaints: comp,
-                ratio: Number(ratio),
-                risk: riskLevel
-            });
-
-        });
-
-        rows.sort(function (a, b) {
-            return b.ratio - a.ratio;
-        });
-
-        console.table(rows);
-
-        var html =
-            '<table class="table">' +
-            '<thead>' +
+        html +=
             '<tr>' +
-            '<th>Operatör</th>' +
-            '<th>PAX</th>' +
-            '<th>Şikayet</th>' +
-            '<th>Oran %</th>' +
-            '<th>Risk</th>' +
-            '</tr>' +
-            '</thead><tbody>';
+            '<td>' + r.operator + '</td>' +
+            '<td>' + r.pax + '</td>' +
+            '<td>' + r.complaints + '</td>' +
+            '<td>' + r.ratio + '%</td>' +
+            '<td>' + r.risk + '</td>' +
+            '</tr>';
 
-        rows.forEach(function (r) {
+    });
+
+    html += '</tbody></table>';
+
+    document.getElementById('operator-ratio').innerHTML = html;
+
+    var maxComplaint = 0;
+
+    rows.forEach(function (r) {
+
+        if (r.complaints > maxComplaint) {
+            maxComplaint = r.complaints;
+        }
+
+    });
+
+    var chartHtml = '';
+
+    rows.forEach(function (r) {
+
+        var width =
+            maxComplaint > 0
+                ? (r.complaints / maxComplaint) * 100
+                : 0;
+
+        chartHtml +=
+            '<div class="operator-bar">' +
+            '<div class="operator-name">' +
+            r.operator +
+            '</div>' +
+            '<div class="operator-track">' +
+            '<div class="operator-fill" style="width:' +
+            width +
+            '%;">' +
+            r.complaints +
+            ' şikayet</div>' +
+            '</div>' +
+            '</div>';
+
+    });
+
+    document.getElementById('operator-chart').innerHTML =
+        chartHtml;
+
+    var regionStats = {};
+
+    complaints.forEach(function (c) {
+
+        var region = c.region || 'Bilinmiyor';
+
+        regionStats[region] =
+            (regionStats[region] || 0) + 1;
+
+    });
+
+    var maxRegion = 0;
+
+    Object.keys(regionStats).forEach(function (r) {
+
+        if (regionStats[r] > maxRegion) {
+            maxRegion = regionStats[r];
+        }
+
+    });
+
+    var regionHtml = '';
+
+    Object.keys(regionStats).forEach(function (r) {
+
+        var width =
+            (regionStats[r] / maxRegion) * 100;
+
+        regionHtml +=
+            '<div class="operator-bar">' +
+            '<div class="operator-name">' +
+            r +
+            '</div>' +
+            '<div class="operator-track">' +
+            '<div class="operator-fill" style="width:' +
+            width +
+            '%;">' +
+            regionStats[r] +
+            ' şikayet</div>' +
+            '</div>' +
+            '</div>';
+
+    });
+
+    document.getElementById('region-chart').innerHTML =
+        regionHtml;
+
+}
+
+function renderServiceComplaints() {
+
+    var activeComplaints = complaints.filter(function (r) {
+        return !r.isDeleted;
+    });
+
+    var box = document.getElementById('service-complaint-chart');
+    if (!box) return;
+
+    var services = {};
+
+    activeComplaints.forEach(function (c) {
+
+        var service = c.ptr || 'Diğer';
+
+        services[service] = (services[service] || 0) + 1;
+
+    });
+    var html = '';
+
+    Object.keys(services)
+        .sort(function (a, b) {
+            return services[b] - services[a];
+        })
+        .forEach(function (s) {
 
             html +=
-                '<tr>' +
-                '<td>' + r.operator + '</td>' +
-                '<td>' + r.pax + '</td>' +
-                '<td>' + r.complaints + '</td>' +
-                '<td>' + r.ratio + '%</td>' +
-                '<td>' + r.risk + '</td>' +
-                '</tr>';
-
-        });
-
-        html += '</tbody></table>';
-
-        document.getElementById('operator-ratio').innerHTML = html;
-
-        var maxComplaint = 0;
-
-        rows.forEach(function (r) {
-
-            if (r.complaints > maxComplaint) {
-                maxComplaint = r.complaints;
-            }
-
-        });
-
-        var chartHtml = '';
-
-        rows.forEach(function (r) {
-
-            var width =
-                maxComplaint > 0
-                    ? (r.complaints / maxComplaint) * 100
-                    : 0;
-
-            chartHtml +=
-                '<div class="operator-bar">' +
-                '<div class="operator-name">' +
-                r.operator +
+                '<div style="margin-bottom:12px;">' +
+                '<div style="display:flex;justify-content:space-between;">' +
+                '<span>' + s + '</span>' +
+                '<b>' + services[s] + '</b>' +
                 '</div>' +
-                '<div class="operator-track">' +
-                '<div class="operator-fill" style="width:' +
-                width +
-                '%;">' +
-                r.complaints +
-                ' şikayet</div>' +
+                '<div style="height:8px;background:#eee;border-radius:5px;">' +
+                '<div style="height:8px;background:#2563eb;border-radius:5px;width:' +
+                (services[s] * 20) +
+                '%;"></div>' +
                 '</div>' +
                 '</div>';
 
         });
 
-        document.getElementById('operator-chart').innerHTML =
-            chartHtml;
+    box.innerHTML = html;
+}
 
-        var regionStats = {};
+function renderTopComplaintSubjects() {
 
-        complaints.forEach(function (c) {
+    var activeComplaints = complaints.filter(function (r) {
+        return !r.isDeleted;
+    });
 
-            var region = c.region || 'Bilinmiyor';
+    var box = document.getElementById('top-complaints-chart');
+    if (!box) return;
+    var topics = {};
 
-            regionStats[region] =
-                (regionStats[region] || 0) + 1;
+    activeComplaints.forEach(function (c) {
 
-        });
+        [c.ptr, c.ptr2, c.ptr3].forEach(function (p) {
 
-        var maxRegion = 0;
+            if (!p) return;
 
-        Object.keys(regionStats).forEach(function (r) {
-
-            if (regionStats[r] > maxRegion) {
-                maxRegion = regionStats[r];
-            }
-
-        });
-
-        var regionHtml = '';
-
-        Object.keys(regionStats).forEach(function (r) {
-
-            var width =
-                (regionStats[r] / maxRegion) * 100;
-
-            regionHtml +=
-                '<div class="operator-bar">' +
-                '<div class="operator-name">' +
-                r +
-                '</div>' +
-                '<div class="operator-track">' +
-                '<div class="operator-fill" style="width:' +
-                width +
-                '%;">' +
-                regionStats[r] +
-                ' şikayet</div>' +
-                '</div>' +
-                '</div>';
+            topics[p] = (topics[p] || 0) + 1;
 
         });
 
-        document.getElementById('region-chart').innerHTML =
-            regionHtml;
+    });
 
-    }
-
-    function renderServiceComplaints() {
-
-        var activeComplaints = complaints.filter(function (r) {
-            return !r.isDeleted;
-        });
-
-        var box = document.getElementById('service-complaint-chart');
-        if (!box) return;
-
-        var services = {};
-
-        activeComplaints.forEach(function (c) {
-
-            var service = c.ptr || 'Diğer';
-
-            services[service] = (services[service] || 0) + 1;
-
-        });
-        var html = '';
-
-        Object.keys(services)
+    var top =
+        Object.entries(topics)
             .sort(function (a, b) {
-                return services[b] - services[a];
+                return b[1] - a[1];
             })
-            .forEach(function (s) {
+            .slice(0, 5);
 
-                html +=
-                    '<div style="margin-bottom:12px;">' +
-                    '<div style="display:flex;justify-content:space-between;">' +
-                    '<span>' + s + '</span>' +
-                    '<b>' + services[s] + '</b>' +
-                    '</div>' +
-                    '<div style="height:8px;background:#eee;border-radius:5px;">' +
-                    '<div style="height:8px;background:#2563eb;border-radius:5px;width:' +
-                    (services[s] * 20) +
-                    '%;"></div>' +
-                    '</div>' +
-                    '</div>';
+    var html = '';
 
-            });
+    top.forEach(function (item) {
 
-        box.innerHTML = html;
-    }
+        html +=
+            '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;">' +
+            '<span>' + item[0] + '</span>' +
+            '<b>' + item[1] + '</b>' +
+            '</div>';
 
-    function renderTopComplaintSubjects() {
+    });
 
-        var activeComplaints = complaints.filter(function (r) {
-            return !r.isDeleted;
+    box.innerHTML = html;
+}
+
+function resetDatabase() {
+    if (!confirm('Tüm şikayet ve fatura kayıtları silinsin mi?')) return;
+    localStorage.removeItem('tralvid_pages_complaints');
+    localStorage.removeItem('tralvid_pages_invoices');
+    complaints = []; invoices = [];
+    renderRecordsTable(); renderAccounting(); renderDashboard();
+    showToast('Veritabanı temizlendi.');
+}
+
+function backupDatabase() {
+    var backup = {
+        complaints: complaints,
+        invoices: invoices,
+        backupDate: new Date().toISOString()
+    };
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+    var dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", "CRM_Yedek_" + new Date().toISOString().slice(0, 10) + ".json");
+    dlAnchorElem.click();
+}
+
+function restoreDatabase(event) {
+    var file = event.target.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            var data = JSON.parse(e.target.result);
+            complaints = data.complaints || []; invoices = data.invoices || [];
+            syncStorage(); renderRecordsTable(); renderDashboard(); renderAccounting();
+            showToast('Yedek başarıyla geri yüklendi.');
+        } catch (err) { alert('Geçersiz yedek dosyası.'); }
+    };
+    reader.readAsText(file);
+}
+
+function importMasterData(event) {
+
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        var data = new Uint8Array(e.target.result);
+
+        var workbook = XLSX.read(data, {
+            type: 'array'
         });
 
-        var box = document.getElementById('top-complaints-chart');
-        if (!box) return;
-        var topics = {};
+        function readSheet(sheetName) {
 
-        activeComplaints.forEach(function (c) {
+            if (!workbook.Sheets[sheetName]) {
+                return [];
+            }
 
-            [c.ptr, c.ptr2, c.ptr3].forEach(function (p) {
+            var rows = XLSX.utils.sheet_to_json(
+                workbook.Sheets[sheetName],
+                { header: 1 }
+            );
 
-                if (!p) return;
+            return rows
+                .slice(1)
+                .map(r => r[0])
+                .filter(Boolean);
 
-                topics[p] = (topics[p] || 0) + 1;
+        }
 
-            });
+        localStorage.setItem(
+            'operators',
+            JSON.stringify(readSheet('Operatörler'))
+        );
 
-        });
+        localStorage.setItem(
+            'regions',
+            JSON.stringify(readSheet('Bolgeler'))
+        );
 
-        var top =
-            Object.entries(topics)
-                .sort(function (a, b) {
-                    return b[1] - a[1];
-                })
-                .slice(0, 5);
+        localStorage.setItem(
+            'airports',
+            JSON.stringify(readSheet('Havalimanlari'))
+        );
 
-        var html = '';
+        localStorage.setItem(
+            'services',
+            JSON.stringify(readSheet('Servisler'))
+        );
 
-        top.forEach(function (item) {
+        var complaintSheet =
+            workbook.Sheets['SikayetKonulari'];
 
-            html +=
-                '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;">' +
-                '<span>' + item[0] + '</span>' +
-                '<b>' + item[1] + '</b>' +
-                '</div>';
+        if (complaintSheet) {
 
-        });
-
-        box.innerHTML = html;
-    }
-
-    function resetDatabase() {
-        if (!confirm('Tüm şikayet ve fatura kayıtları silinsin mi?')) return;
-        localStorage.removeItem('tralvid_pages_complaints');
-        localStorage.removeItem('tralvid_pages_invoices');
-        complaints = []; invoices = [];
-        renderRecordsTable(); renderAccounting(); renderDashboard();
-        showToast('Veritabanı temizlendi.');
-    }
-
-    function backupDatabase() {
-        var backup = {
-            complaints: complaints,
-            invoices: invoices,
-            backupDate: new Date().toISOString()
-        };
-        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
-        var dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr);
-        dlAnchorElem.setAttribute("download", "CRM_Yedek_" + new Date().toISOString().slice(0, 10) + ".json");
-        dlAnchorElem.click();
-    }
-
-    function restoreDatabase(event) {
-        var file = event.target.files[0]; if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                var data = JSON.parse(e.target.result);
-                complaints = data.complaints || []; invoices = data.invoices || [];
-                syncStorage(); renderRecordsTable(); renderDashboard(); renderAccounting();
-                showToast('Yedek başarıyla geri yüklendi.');
-            } catch (err) { alert('Geçersiz yedek dosyası.'); }
-        };
-        reader.readAsText(file);
-    }
-
-    function importMasterData(event) {
-
-        var file = event.target.files[0];
-        if (!file) return;
-
-        var reader = new FileReader();
-
-        reader.onload = function (e) {
-
-            var data = new Uint8Array(e.target.result);
-
-            var workbook = XLSX.read(data, {
-                type: 'array'
-            });
-
-            function readSheet(sheetName) {
-
-                if (!workbook.Sheets[sheetName]) {
-                    return [];
-                }
-
-                var rows = XLSX.utils.sheet_to_json(
-                    workbook.Sheets[sheetName],
+            var rows =
+                XLSX.utils.sheet_to_json(
+                    complaintSheet,
                     { header: 1 }
                 );
 
-                return rows
-                    .slice(1)
-                    .map(r => r[0])
-                    .filter(Boolean);
+            var reasonsTR = [];
+            var reasonsDE = [];
+            var reasonsEN = [];
 
-            }
+            for (var i = 1; i < rows.length; i++) {
 
-            localStorage.setItem(
-                'operators',
-                JSON.stringify(readSheet('Operatörler'))
-            );
-
-            localStorage.setItem(
-                'regions',
-                JSON.stringify(readSheet('Bolgeler'))
-            );
-
-            localStorage.setItem(
-                'airports',
-                JSON.stringify(readSheet('Havalimanlari'))
-            );
-
-            localStorage.setItem(
-                'services',
-                JSON.stringify(readSheet('Servisler'))
-            );
-
-            var complaintSheet =
-                workbook.Sheets['SikayetKonulari'];
-
-            if (complaintSheet) {
-
-                var rows =
-                    XLSX.utils.sheet_to_json(
-                        complaintSheet,
-                        { header: 1 }
-                    );
-
-                var reasonsTR = [];
-                var reasonsDE = [];
-                var reasonsEN = [];
-
-                for (var i = 1; i < rows.length; i++) {
-
-                    if (rows[i][0]) {
-                        reasonsTR.push(rows[i][0]);
-                    }
-
-                    if (rows[i][1]) {
-                        reasonsDE.push(rows[i][1]);
-                    }
-
-                    if (rows[i][2]) {
-                        reasonsEN.push(rows[i][2]);
-                    }
+                if (rows[i][0]) {
+                    reasonsTR.push(rows[i][0]);
                 }
 
-                localStorage.setItem(
-                    'reasonsTR',
-                    JSON.stringify(reasonsTR)
-                );
+                if (rows[i][1]) {
+                    reasonsDE.push(rows[i][1]);
+                }
 
-                localStorage.setItem(
-                    'reasonsDE',
-                    JSON.stringify(reasonsDE)
-                );
-
-                localStorage.setItem(
-                    'reasonsEN',
-                    JSON.stringify(reasonsEN)
-                );
+                if (rows[i][2]) {
+                    reasonsEN.push(rows[i][2]);
+                }
             }
 
             localStorage.setItem(
-                'transferTypes',
-                JSON.stringify(readSheet('TransferTurleri'))
+                'reasonsTR',
+                JSON.stringify(reasonsTR)
             );
 
             localStorage.setItem(
-                'hotelPartners',
-                JSON.stringify(readSheet('Oteller'))
+                'reasonsDE',
+                JSON.stringify(reasonsDE)
             );
 
-            showToast('Master veri başarıyla yüklendi.');
-
-            renderDashboard();
-
-        };
-
-        reader.readAsArrayBuffer(file);
-
-    }
-
-    function exportMasterData() {
-
-        var workbook = XLSX.utils.book_new();
-
-        function addSheet(sheetName, storageKey, columnName) {
-
-            var data =
-                JSON.parse(
-                    localStorage.getItem(storageKey)
-                ) || [];
-
-            var rows = [[columnName]];
-
-            data.forEach(function (item) {
-                rows.push([item]);
-            });
-
-            var worksheet =
-                XLSX.utils.aoa_to_sheet(rows);
-
-            XLSX.utils.book_append_sheet(
-                workbook,
-                worksheet,
-                sheetName
+            localStorage.setItem(
+                'reasonsEN',
+                JSON.stringify(reasonsEN)
             );
         }
 
-        addSheet(
-            'Operatörler',
-            'operators',
-            'Operatör'
-        );
-
-        addSheet(
-            'Bolgeler',
-            'regions',
-            'Bölge'
-        );
-
-        addSheet(
-            'Havalimanlari',
-            'airports',
-            'Havalimanı'
-        );
-
-        addSheet(
-            'Servisler',
-            'services',
-            'Servis'
-        );
-
-        addSheet(
-            'SikayetKonulari',
-            'reasons',
-            'Konu'
-        );
-
-        addSheet(
-            'TransferTurleri',
+        localStorage.setItem(
             'transferTypes',
-            'Transfer Türü'
+            JSON.stringify(readSheet('TransferTurleri'))
         );
 
-        addSheet(
-            'Oteller',
+        localStorage.setItem(
             'hotelPartners',
-            'Otel'
+            JSON.stringify(readSheet('Oteller'))
         );
 
-        XLSX.writeFile(
+        showToast('Master veri başarıyla yüklendi.');
+
+        renderDashboard();
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+}
+
+function exportMasterData() {
+
+    var workbook = XLSX.utils.book_new();
+
+    function addSheet(sheetName, storageKey, columnName) {
+
+        var data =
+            JSON.parse(
+                localStorage.getItem(storageKey)
+            ) || [];
+
+        var rows = [[columnName]];
+
+        data.forEach(function (item) {
+            rows.push([item]);
+        });
+
+        var worksheet =
+            XLSX.utils.aoa_to_sheet(rows);
+
+        XLSX.utils.book_append_sheet(
             workbook,
-            'TRALVID_MasterData.xlsx'
-        );
-
-        showToast(
-            'Master veri Excel dosyası oluşturuldu.'
+            worksheet,
+            sheetName
         );
     }
 
-    // Overlay Kapatıcı Kuralı
-    document.addEventListener('click', function (e) {
-        if (e.target.id === 'complaint-modal-overlay') closeComplaintModal();
-        if (e.target.id === 'invoice-modal-overlay') closeInvoiceModal();
-        if (e.target.id === 'detail-modal-overlay') closeDetailModal();
-    });
+    addSheet(
+        'Operatörler',
+        'operators',
+        'Operatör'
+    );
 
-    // INITIALIZER
-    document.addEventListener('DOMContentLoaded', function () {
+    addSheet(
+        'Bolgeler',
+        'regions',
+        'Bölge'
+    );
 
-        if (!localStorage.getItem('transferTypes')) {
+    addSheet(
+        'Havalimanlari',
+        'airports',
+        'Havalimanı'
+    );
 
-            localStorage.setItem(
-                'transferTypes',
-                JSON.stringify([
-                    'Shuttle',
-                    'Private Sedan',
-                    'Private Minivan',
-                    'Private Vito',
-                    'Private Sprinter',
-                    'Private Midibus',
-                    'Private Bus',
-                    'VIP Sedan',
-                    'VIP Vito',
-                    'VIP Minibus',
-                    'VIP Midibus'
-                ])
-            );
+    addSheet(
+        'Servisler',
+        'services',
+        'Servis'
+    );
 
+    addSheet(
+        'SikayetKonulari',
+        'reasons',
+        'Konu'
+    );
+
+    addSheet(
+        'TransferTurleri',
+        'transferTypes',
+        'Transfer Türü'
+    );
+
+    addSheet(
+        'Oteller',
+        'hotelPartners',
+        'Otel'
+    );
+
+    XLSX.writeFile(
+        workbook,
+        'TRALVID_MasterData.xlsx'
+    );
+
+    showToast(
+        'Master veri Excel dosyası oluşturuldu.'
+    );
+}
+
+// Overlay Kapatıcı Kuralı
+document.addEventListener('click', function (e) {
+    if (e.target.id === 'complaint-modal-overlay') closeComplaintModal();
+    if (e.target.id === 'invoice-modal-overlay') closeInvoiceModal();
+    if (e.target.id === 'detail-modal-overlay') closeDetailModal();
+});
+
+// INITIALIZER
+document.addEventListener('DOMContentLoaded', function () {
+
+    if (!localStorage.getItem('transferTypes')) {
+
+        localStorage.setItem(
+            'transferTypes',
+            JSON.stringify([
+                'Shuttle',
+                'Private Sedan',
+                'Private Minivan',
+                'Private Vito',
+                'Private Sprinter',
+                'Private Midibus',
+                'Private Bus',
+                'VIP Sedan',
+                'VIP Vito',
+                'VIP Minibus',
+                'VIP Midibus'
+            ])
+        );
+
+    }
+
+    if (!localStorage.getItem('operators')) {
+
+        localStorage.setItem(
+            'operators',
+            JSON.stringify([
+                'TUI',
+                'JET2',
+                'ANEX',
+                'CORAL',
+                'ODEON',
+                'DERTOUR',
+                'SCHAUINSLAND',
+                'HOLIDAY CHECK',
+                'LOVEHOLIDAYS',
+                'ON THE BEACH',
+                'EASYJET HOLIDAYS',
+                'SUNEXPRESS HOLIDAYS'
+            ])
+        );
+
+    }
+
+    var savedUser = sessionStorage.getItem('currentUser');
+
+    if (savedUser) {
+
+        currentUser = JSON.parse(savedUser);
+
+        if (!currentUser) {
+            sessionStorage.removeItem('currentUser');
+            location.reload();
+            return;
         }
 
-        if (!localStorage.getItem('operators')) {
-
-            localStorage.setItem(
-                'operators',
-                JSON.stringify([
-                    'TUI',
-                    'JET2',
-                    'ANEX',
-                    'CORAL',
-                    'ODEON',
-                    'DERTOUR',
-                    'SCHAUINSLAND',
-                    'HOLIDAY CHECK',
-                    'LOVEHOLIDAYS',
-                    'ON THE BEACH',
-                    'EASYJET HOLIDAYS',
-                    'SUNEXPRESS HOLIDAYS'
-                ])
-            );
-
+        if (!currentUser.username) {
+            sessionStorage.removeItem('currentUser');
+            location.reload();
+            return;
         }
 
-        var savedUser = sessionStorage.getItem('currentUser');
+        if (!USERS[currentUser.username]) {
 
-        if (savedUser) {
-
-            currentUser = JSON.parse(savedUser);
-
-            if (!currentUser) {
-                sessionStorage.removeItem('currentUser');
-                location.reload();
-                return;
-            }
-
-            if (!currentUser.username) {
-                sessionStorage.removeItem('currentUser');
-                location.reload();
-                return;
-            }
-
-            if (!USERS[currentUser.username]) {
-
-                localStorage.removeItem('currentUser');
-
-                document.getElementById('login-modal')
-                    .style.display = 'flex';
-
-                return;
-            }
-
-            document.getElementById('login-modal')
-                .style.display = 'none';
-
-            applyPermissions();
-
-            initSessionTimeout();
-
-            renderDashboard();
-            renderRecordsTable();
-            renderAccounting();
-            renderUsers();
-            renderDeleteRequests();
-
-            showPage(
-                localStorage.getItem('activePage') || 'dashboard'
-            );
-
-            /* SAVUNMA DOSYALARI */
-
-            document
-                .getElementById('c-sn')
-                .addEventListener('change', function () {
-
-                    document
-                        .getElementById('defense-file-area')
-                        .style.display =
-
-                        this.value === 'Evet'
-
-                            ? 'block'
-                            : 'none';
-
-                });
-
-            document
-                .getElementById('c-defense-files')
-                .addEventListener('change', function () {
-
-                    Array
-                        .from(this.files)
-                        .forEach(function (file) {
-
-                            pendingAttachments.push(file);
-
-                        });
-
-                    var html = '';
-
-                    pendingAttachments.forEach(function (file, index) {
-
-                        html +=
-                            (index + 1) +
-                            '. 📎 ' +
-                            file.name +
-                            ' <button type="button" onclick="removePendingFile(' +
-                            index +
-                            ')">❌</button><br>';
-
-                    });
-
-                    document
-                        .getElementById('defense-file-list')
-                        .innerHTML = html;
-
-                    this.value = '';
-
-                });
-
-            window.addEventListener('storage', function () {
-
-                complaints = JSON.parse(
-                    localStorage.getItem('tralvid_pages_complaints')
-                ) || [];
-
-                invoices = JSON.parse(
-                    localStorage.getItem('tralvid_pages_invoices')
-                ) || [];
-
-                renderDashboard();
-                renderRecordsTable();
-                renderAccounting();
-                renderDeleteRequests();
-
-            });
-
-        } else {
+            localStorage.removeItem('currentUser');
 
             document.getElementById('login-modal')
                 .style.display = 'flex';
 
+            return;
         }
 
-    });
+        document.getElementById('login-modal')
+            .style.display = 'none';
+
+        applyPermissions();
+
+        initSessionTimeout();
+
+        renderDashboard();
+        renderRecordsTable();
+        renderAccounting();
+        renderUsers();
+        renderDeleteRequests();
+
+        showPage(
+            localStorage.getItem('activePage') || 'dashboard'
+        );
+
+        /* SAVUNMA DOSYALARI */
+
+        document
+            .getElementById('c-sn')
+            .addEventListener('change', function () {
+
+                document
+                    .getElementById('defense-file-area')
+                    .style.display =
+
+                    this.value === 'Evet'
+
+                        ? 'block'
+                        : 'none';
+
+            });
+
+        document
+            .getElementById('c-defense-files')
+            .addEventListener('change', function () {
+
+                Array
+                    .from(this.files)
+                    .forEach(function (file) {
+
+                        pendingAttachments.push(file);
+
+                    });
+
+                var html = '';
+
+                pendingAttachments.forEach(function (file, index) {
+
+                    html +=
+                        (index + 1) +
+                        '. 📎 ' +
+                        file.name +
+                        ' <button type="button" onclick="removePendingFile(' +
+                        index +
+                        ')">❌</button><br>';
+
+                });
+
+                document
+                    .getElementById('defense-file-list')
+                    .innerHTML = html;
+
+                this.value = '';
+
+            });
+
+        window.addEventListener('storage', function () {
+
+            complaints = JSON.parse(
+                localStorage.getItem('tralvid_pages_complaints')
+            ) || [];
+
+            invoices = JSON.parse(
+                localStorage.getItem('tralvid_pages_invoices')
+            ) || [];
+
+            renderDashboard();
+            renderRecordsTable();
+            renderAccounting();
+            renderDeleteRequests();
+
+        });
+
+    } else {
+
+        document.getElementById('login-modal')
+            .style.display = 'flex';
+
+    }
+
+});
