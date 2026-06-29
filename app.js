@@ -1473,6 +1473,53 @@ function buildCollectionsFromMTR(mtr) {
 
 }
 
+// ======================================================
+// DROPDOWN TEXT MATCH
+// ======================================================
+
+function selectDropdownByText(selectId, text) {
+
+    var select =
+        document.getElementById(selectId);
+
+    if (!select || !text)
+        return;
+
+    text =
+        String(text)
+            .trim()
+            .toUpperCase();
+
+    Array.from(select.options)
+        .forEach(function (opt) {
+
+            var value =
+                String(opt.value)
+                    .trim()
+                    .toUpperCase();
+
+            if (
+
+                value === text ||
+
+                value.startsWith(text) ||
+
+                text.startsWith(value) ||
+
+                value.includes(text) ||
+
+                text.includes(value)
+
+            ) {
+
+                select.value = opt.value;
+
+            }
+
+        });
+
+}
+
 // ================= DATA ACTIONS =================
 
 // ======================================================
@@ -2188,22 +2235,10 @@ async function fillPassengerData() {
         'operators'
     );
 
-    var opSelect =
-        document.getElementById('c-veranstalter');
-
-    Array.from(opSelect.options)
-        .forEach(function (opt) {
-
-            if (
-                opt.value.toUpperCase() ===
-                op.toUpperCase()
-            ) {
-
-                opSelect.value = opt.value;
-
-            }
-
-        });
+    selectDropdownByText(
+        'c-veranstalter',
+        op
+    );
 
     console.log(
         'OPTIONS:',
@@ -2290,24 +2325,12 @@ async function fillPassengerData() {
 
     }
 
-    var transferValue =
-        (pax.transferType || '').trim();
-
-    Array.from(
-        document.getElementById('c-transfertype').options
-    ).forEach(function (opt) {
-
-        if (
-            opt.value.toUpperCase() ===
-            transferValue.toUpperCase()
-        ) {
-            transferValue = opt.value;
-        }
-
-    });
-
-    document.getElementById('c-transfertype').value =
-        transferValue;
+    selectDropdownByText(
+        'c-transfertype',
+        transfer
+            ? transfer.transferType
+            : pax.transferType
+    );
 
     document.getElementById('c-transferprovider').value =
         transfer ? (transfer.supplier || '') : '';
@@ -2330,33 +2353,15 @@ async function fillPassengerData() {
 
     setTimeout(function () {
 
-        var hotelSelect =
-            document.getElementById('c-hotel');
+        selectDropdownByText(
 
-        var hotelName =
-            String(
-                reservation
-                    ? reservation.hotel
-                    : pax.hotel
-            ).trim();
+            'c-hotel',
 
-        Array.from(hotelSelect.options)
-            .forEach(function (opt) {
+            reservation
+                ? reservation.hotel
+                : pax.hotel
 
-                if (
-                    opt.value
-                        .toUpperCase()
-                        .startsWith(
-                            hotelName.toUpperCase()
-                        )
-                ) {
-
-                    hotelSelect.value =
-                        opt.value;
-
-                }
-
-            });
+        );
 
     }, 300);
 
