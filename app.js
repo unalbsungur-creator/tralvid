@@ -1528,6 +1528,13 @@ function selectDropdownByText(selectId, text) {
 
                 select.value = opt.value;
 
+                console.log(
+                    "SEÇİLDİ:",
+                    selectId,
+                    "=>",
+                    opt.value
+                );
+
             }
 
         });
