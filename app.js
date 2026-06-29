@@ -1490,25 +1490,12 @@ function selectDropdownByText(selectId, text) {
     function normalize(str) {
 
         return String(str || "")
-
             .toUpperCase()
-
             .replace(/İ/g, "I")
             .replace(/İ/g, "I")
-            .replace(/Ğ/g, "G")
-            .replace(/Ü/g, "U")
-            .replace(/Ş/g, "S")
-            .replace(/Ö/g, "O")
-            .replace(/Ç/g, "C")
-
             .replace(/ß/g, "SS")
-
-            // İstanbul | IST gibi ayırıcıları kaldır
             .replace(/\|/g, "")
-
-            // TÜM boşlukları kaldır
-            .replace(/\s+/g, "")
-
+            .replace(/[^A-Z0-9]/g, "")
             .trim();
 
     }
@@ -1543,6 +1530,15 @@ function selectDropdownByText(selectId, text) {
             "<=>",
             search
         );
+
+        if (value.indexOf(search) >= 0) {
+
+            console.log(
+                "BULUNDU:",
+                option.value
+            );
+
+        }
 
         if (
 
