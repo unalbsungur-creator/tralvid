@@ -1570,7 +1570,6 @@ console.warn(
     search
 );
 
-}
 
 // ================= DATA ACTIONS =================
 
