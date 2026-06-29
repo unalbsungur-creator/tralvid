@@ -4114,6 +4114,16 @@ function loadHotelDropdown() {
             localStorage.getItem("hotelPartners") || "[]"
         );
 
+    console.log("İLK 10 HOTEL");
+    console.log(hotels.slice(0, 10));
+
+    console.log("YILSAM VAR MI?");
+    console.log(
+        hotels.filter(h =>
+            h.toUpperCase().includes("YILSAM")
+        )
+    );
+
     console.log("Yüklenen hotel sayısı =", hotels.length);
 
     select.innerHTML = "";
@@ -4125,6 +4135,15 @@ function loadHotelDropdown() {
     firstOption.textContent = "Otel seçiniz...";
 
     select.appendChild(firstOption);
+
+    console.log("FOREACH SAYISI =", hotels.length);
+
+    console.log(
+        "YILSAM LİSTESİ =",
+        hotels.filter(h =>
+            h.toUpperCase().includes("YILSAM")
+        )
+    );
 
     hotels.forEach(function (item) {
 
