@@ -2565,6 +2565,8 @@ function fillComplaintForm(formData) {
 
     setTimeout(function () {
 
+        console.log("HOTEL SEÇİMİ BAŞLADI");
+
         selectDropdownByText(
             "c-hotel",
             reservation.hotel
@@ -2575,7 +2577,7 @@ function fillComplaintForm(formData) {
             document.getElementById("c-hotel").value
         );
 
-    }, 300);
+    }, 1000);
 
 }
 
