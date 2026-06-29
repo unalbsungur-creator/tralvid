@@ -1525,6 +1525,18 @@ function selectDropdownByText(selectId, text) {
 
         var value = normalize(option.value);
 
+        if (option.text.includes("YILSAM")) {
+
+            console.log("ORJİNAL =", option.text);
+
+            console.log("NORMAL =", value);
+
+            console.log("SEARCH =", search);
+
+            console.log("İNCLUDES =", value.includes(search));
+
+        }
+
         console.log(
             "TEXT =", option.text,
             "VALUE =", option.value
