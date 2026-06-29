@@ -4055,42 +4055,80 @@ function loadHotelDropdown() {
     );
 
     let select =
-        document.getElementById('c-hotel');
+        document.getElementById("c-hotel");
 
-    if (!select) return;
+    console.log("SELECT =", select);
+
+    if (!select) {
+
+        console.log("c-hotel bulunamadı");
+
+        return;
+
+    }
 
     let hotels =
         JSON.parse(
-            localStorage.getItem("hotelPartners")
-        ) || [];
+            localStorage.getItem("hotelPartners") || "[]"
+        );
 
-    console.log("HOTEL PARTNERS =", hotels);
-    console.log("HOTEL SAYISI =", hotels.length);
+    console.log("Yüklenen hotel sayısı =", hotels.length);
 
-    select.innerHTML = '';
+    select.innerHTML = "";
 
     let firstOption =
-        document.createElement('option');
+        document.createElement("option");
 
-    firstOption.value = '';
-    firstOption.textContent = 'Otel seçiniz...';
+    firstOption.value = "";
+    firstOption.textContent = "Otel seçiniz...";
 
     select.appendChild(firstOption);
 
     hotels.forEach(function (item) {
 
         let option =
-            document.createElement('option');
+            document.createElement("option");
 
-        option.value =
-            String(item).trim();
-
-        option.textContent =
-            String(item).trim();
+        option.value = String(item).trim();
+        option.textContent = String(item).trim();
 
         select.appendChild(option);
 
     });
+
+    console.log(
+        "Dropdown option sayısı =",
+        select.options.length
+    );
+
+}
+console.log("HOTEL PARTNERS =", hotels);
+console.log("HOTEL SAYISI =", hotels.length);
+
+select.innerHTML = '';
+
+let firstOption =
+    document.createElement('option');
+
+firstOption.value = '';
+firstOption.textContent = 'Otel seçiniz...';
+
+select.appendChild(firstOption);
+
+hotels.forEach(function (item) {
+
+    let option =
+        document.createElement('option');
+
+    option.value =
+        String(item).trim();
+
+    option.textContent =
+        String(item).trim();
+
+    select.appendChild(option);
+
+});
 
 }
 function filterHotels() {
