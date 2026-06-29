@@ -2625,6 +2625,30 @@ function fillTransfers(formData) {
 
 function fillDropdowns(formData) {
 
+    var reservation = formData.reservation;
+
+    if (!reservation) return;
+
+    if (reservation.operator)
+        document.getElementById("c-veranstalter").value =
+            reservation.operator;
+
+    if (reservation.region)
+        document.getElementById("c-region").value =
+            reservation.region;
+
+    if (reservation.airport)
+        document.getElementById("c-airport").value =
+            reservation.airport;
+
+    if (reservation.hotel)
+        document.getElementById("c-hotel").value =
+            reservation.hotel;
+
+    if (reservation.transferType)
+        document.getElementById("c-transfertype").value =
+            reservation.transferType;
+
 }
 function handleDefenseFileInputChange(input) {
 
