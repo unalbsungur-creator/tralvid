@@ -1485,59 +1485,62 @@ function selectDropdownByText(selectId, text) {
     if (!select || !text)
         return;
 
-    text =
-        String(text)
-            .trim()
-            .toUpperCase();
+    function normalize(str) {
 
-    Array.from(select.options)
-        .forEach(function (opt) {
+        return String(str || "")
+            .toUpperCase()
+            .replace(/İ/g, "I")
+            .replace(/İ/g, "I")
+            .replace(/ß/g, "SS")
+            .replace(/\|/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
 
-            console.log(
-                "Dropdown:",
-                selectId,
-                "| Option:",
-                opt.value,
-                "| Aranan:",
-                text
-            );
+    }
 
-            var value =
-                String(opt.value)
-                    .trim()
-                    .toUpperCase();
+    var search = normalize(text);
 
-            var value =
-                String(opt.value)
-                    .trim()
-                    .toUpperCase();
+    for (var i = 0; i < select.options.length; i++) {
 
-            if (
+        var option = select.options[i];
 
-                value === text ||
+        var value = normalize(option.value);
 
-                value.startsWith(text) ||
+        console.log(
+            "COMPARE:",
+            value,
+            "<=>",
+            search
+        );
 
-                text.startsWith(value) ||
+        if (
 
-                value.includes(text) ||
+            value === search ||
 
-                text.includes(value)
+            value.startsWith(search) ||
 
-            ) {
+            search.startsWith(value) ||
 
-                select.value = opt.value;
+            value.indexOf(search) >= 0 ||
 
-                console.log(
-                    "SEÇİLDİ:",
-                    selectId,
-                    "=>",
-                    opt.value
-                );
+            search.indexOf(value) >= 0
 
-            }
+        ) {
 
-        });
+            console.log("SEÇİLDİ:", option.value);
+
+            select.selectedIndex = i;
+
+            return;
+
+        }
+
+    }
+
+    console.warn(
+        "Eşleşme bulunamadı:",
+        search
+    );
 
 }
 
