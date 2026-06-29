@@ -4130,7 +4130,6 @@ hotels.forEach(function (item) {
 
 });
 
-}
 function filterHotels() {
 
     let text =
