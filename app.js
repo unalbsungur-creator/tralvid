@@ -1493,6 +1493,20 @@ function selectDropdownByText(selectId, text) {
     Array.from(select.options)
         .forEach(function (opt) {
 
+            console.log(
+                "Dropdown:",
+                selectId,
+                "| Option:",
+                opt.value,
+                "| Aranan:",
+                text
+            );
+
+            var value =
+                String(opt.value)
+                    .trim()
+                    .toUpperCase();
+
             var value =
                 String(opt.value)
                     .trim()
