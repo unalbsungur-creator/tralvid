@@ -1563,12 +1563,12 @@ for (var i = 0; i < select.options.length; i++) {
 
     }
 
-}
+    console.warn(
+        "Eşleşme bulunamadı:",
+        search
+    );
 
-console.warn(
-    "Eşleşme bulunamadı:",
-    search
-);
+}
 
 
 // ================= DATA ACTIONS =================
