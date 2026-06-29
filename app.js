@@ -2585,173 +2585,24 @@ async function fillPassengerData() {
     document.getElementById('c-transferprovider').value =
         transfer ? (transfer.supplier || '') : '';
 
-    document.getElementById('c-subbooking').value =
-        String(pax.subBooking || '').trim();
 
-    document.getElementById('c-adult').value =
-        pax.adult || 0;
+    fillFlights({
+        flight: flight
+    });
 
-    document.getElementById('c-child').value =
-        pax.child || 0;
-
-    document.getElementById('c-infant').value =
-        pax.infant || 0;
-
-    console.log('HOTEL DROPDOWN YÜKLENİYOR');
-
-    loadHotelDropdown();
-
-    console.log(
-        "OTEL SEÇİLECEK =",
-        reservation ? reservation.hotel : pax.hotel
-    );
-
-    var hotelSelect =
-        document.getElementById("c-hotel");
-
-    for (var i = 0; i < hotelSelect.options.length; i++) {
-
-        if (
-            hotelSelect.options[i].text
-                .toUpperCase()
-                .includes("YILSAM")
-        ) {
-
-            console.log(
-                "MANUEL SEÇİLDİ:",
-                hotelSelect.options[i].text
-            );
-
-            hotelSelect.selectedIndex = i;
-
-            break;
-
-        }
-
-    }
-
-    console.log(
-        "SEÇİLEN OTEL =",
-        hotelSelect.value
-    );
+    fillTransfers({
+        transfer: transfer
+    });
 
     console.log('BOOKING=', bookingNo);
     console.log('GUESTS=', guests);
     console.log('FLIGHT=', flight);
     console.log('TRANSFER=', transfer);
 
-    var guestText = '';
-
-    guests.forEach(function (g, index) {
-
-        guestText +=
-            (index + 1) + '. ' +
-            (g.title || '') + ' ' +
-            (g.firstName || '') + ' ' +
-            (g.lastName || '');
-
-        if (g.age) {
-            guestText += ' (' + g.age + ')';
-        }
-
-        guestText += '\n';
-
+    fillGuests({
+        guests: guests
     });
 
-    document.getElementById('c-guests').value =
-        guestText.trim();
-
-    var guestsTbody =
-        document.getElementById('c-guests-tbody');
-
-    if (guestsTbody) {
-
-        if (!guests.length) {
-
-            guestsTbody.innerHTML =
-                '<tr><td colspan="5" class="guest-table-empty">' +
-                'Bu rezervasyon için misafir kaydı bulunamadı.' +
-                '</td></tr>';
-
-        } else {
-
-            var guestsHtml = '';
-
-            guests.forEach(function (g, index) {
-
-                guestsHtml +=
-                    '<tr>' +
-                    '<td>' + (g.title || '') + '</td>' +
-                    '<td>' +
-                    ((g.firstName || '') + ' ' + (g.lastName || '')).trim() +
-                    '</td>' +
-                    '<td>' + (g.age || '') + '</td>' +
-                    '<td>' + (g.birthDate || '') + '</td>' +
-                    '<td>' +
-                    '<input type="radio" name="c-guest-complainant" value="' +
-                    index + '"' +
-                    (index === 0 ? ' checked' : '') +
-                    '>' +
-                    '</td>' +
-                    '</tr>';
-
-            });
-
-            guestsTbody.innerHTML = guestsHtml;
-        }
-    }
-
-    if (flight) {
-
-        document.getElementById('c-arrairline').value =
-            flight.arrivalAirline || '';
-
-        document.getElementById('c-arrflight').value =
-            flight.arrivalFlightNo || '';
-
-        document.getElementById('c-arrtime').value =
-            flight.arrivalDepartureTime || '';
-
-        if (document.getElementById('c-arrarrtime')) {
-            document.getElementById('c-arrarrtime').value =
-                flight.arrivalArrivalTime || '';
-        }
-
-        document.getElementById('c-arrfrom').value =
-            flight.arrivalFrom || '';
-
-        document.getElementById('c-arrto').value =
-            flight.arrivalTo || '';
-
-        document.getElementById('c-depairline').value =
-            flight.departureAirline || '';
-
-        document.getElementById('c-depflight').value =
-            flight.departureFlightNo || '';
-
-        document.getElementById('c-deptime').value =
-            flight.departureDepartureTime || '';
-
-        if (document.getElementById('c-deparrtime')) {
-            document.getElementById('c-deparrtime').value =
-                flight.departureArrivalTime || '';
-        }
-
-        document.getElementById('c-depfrom').value =
-            flight.departureFrom || '';
-
-        document.getElementById('c-depto').value =
-            flight.departureTo || '';
-    }
-
-    if (transfer) {
-
-        document.getElementById('c-transferprovider').value =
-            transfer.supplier || '';
-
-        document.getElementById('c-transferno').value =
-            transfer.transferNo || '';
-    }
 
     console.log(
         'PAX bilgileri yüklendi:',
@@ -2826,13 +2677,115 @@ function fillReservation(formData) {
 
 function fillGuests(formData) {
 
+    var guests =
+        formData.guests || [];
+
+    var guestText = "";
+
+    guests.forEach(function (g, index) {
+
+        guestText +=
+            (index + 1) + ". " +
+            (g.title || "") + " " +
+            (g.firstName || "") + " " +
+            (g.lastName || "");
+
+        if (g.age) {
+            guestText +=
+                " (" + g.age + ")";
+        }
+
+        guestText += "\n";
+
+    });
+
+    document.getElementById("c-guests").value =
+        guestText.trim();
+
+    var tbody =
+        document.getElementById("c-guests-tbody");
+
+    if (!tbody)
+        return;
+
+    if (!guests.length) {
+
+        tbody.innerHTML =
+            '<tr><td colspan="5" class="guest-table-empty">' +
+            'Bu rezervasyon için misafir bulunamadı.' +
+            '</td></tr>';
+
+        return;
+
+    }
+
+    tbody.innerHTML = "";
+
+    guests.forEach(function (g) {
+
+        tbody.innerHTML +=
+            "<tr>" +
+            "<td>" + (g.title || "") + "</td>" +
+            "<td>" + (g.firstName || "") + " " + (g.lastName || "") + "</td>" +
+            "<td>" + (g.age || "") + "</td>" +
+            "<td>" + (g.birthDate || "") + "</td>" +
+            "<td><input type='radio' name='complaintOwner'></td>" +
+            "</tr>";
+
+    });
+
 }
 
 function fillFlights(formData) {
 
+    var flight =
+        formData.flight;
+
+    if (!flight)
+        return;
+
+    // Geliş
+
+    document.getElementById("c-arrtime").value =
+        flight.arrivalTime || "";
+
+    document.getElementById("c-arrfrom").value =
+        flight.arrivalFrom || "";
+
+    document.getElementById("c-arrto").value =
+        flight.arrivalTo || "";
+
+    // Dönüş
+
+    document.getElementById("c-depairline").value =
+        flight.departureAirline || "";
+
+    document.getElementById("c-deptime").value =
+        flight.departureTime || "";
+
+    document.getElementById("c-depfrom").value =
+        flight.departureFrom || "";
+
+    document.getElementById("c-depto").value =
+        flight.departureTo || "";
+
 }
 
 function fillTransfers(formData) {
+
+    var transfer =
+        formData.transfer;
+
+    if (!transfer)
+        return;
+
+    document.getElementById("c-transferprovider").value =
+        transfer.supplier || "";
+
+    selectBestOption(
+        "c-transfertype",
+        transfer.transferType
+    );
 
 }
 
