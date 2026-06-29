@@ -1479,6 +1479,8 @@ function buildCollectionsFromMTR(mtr) {
 
 function selectDropdownByText(selectId, text) {
 
+    console.log("SELECT DROPDOWN V2 ÇALIŞTI");
+
     var select =
         document.getElementById(selectId);
 
