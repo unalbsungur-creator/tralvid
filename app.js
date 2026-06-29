@@ -2138,7 +2138,6 @@ async function developerBookingTest() {
 
 async function fillPassengerData() {
 
-    alert("fillPassengerData çalıştı");
 
     function excelDateToInputDate(excelDate) {
 
