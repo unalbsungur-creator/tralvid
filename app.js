@@ -2280,8 +2280,19 @@ async function fillPassengerData() {
         'operators'
     );
 
+    loadSimpleDropdown(
+        'c-region',
+        'regions'
+    );
+
+    loadSimpleDropdown(
+        'c-airport',
+        'airports'
+    );
 
     loadTransferTypeDropdown();
+
+    loadHotelDropdown();
 
     setTimeout(function () {
 
