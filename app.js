@@ -4102,33 +4102,7 @@ function loadHotelDropdown() {
     );
 
 }
-console.log("HOTEL PARTNERS =", hotels);
-console.log("HOTEL SAYISI =", hotels.length);
 
-select.innerHTML = '';
-
-let firstOption =
-    document.createElement('option');
-
-firstOption.value = '';
-firstOption.textContent = 'Otel seçiniz...';
-
-select.appendChild(firstOption);
-
-hotels.forEach(function (item) {
-
-    let option =
-        document.createElement('option');
-
-    option.value =
-        String(item).trim();
-
-    option.textContent =
-        String(item).trim();
-
-    select.appendChild(option);
-
-});
 
 function filterHotels() {
 
