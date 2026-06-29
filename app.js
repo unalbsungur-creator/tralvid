@@ -2225,8 +2225,35 @@ async function fillPassengerData() {
         console.log('Nights  :', reservation.nights);
         console.log('RoomType:', reservation.roomType);
 
-        document.getElementById('c-region').value =
+        var regionSelect =
+            document.getElementById('c-region');
+
+        var regionName =
             (reservation.region || '').trim();
+
+        Array.from(regionSelect.options)
+            .forEach(function (opt) {
+
+                if (
+                    opt.value
+                        .toUpperCase()
+                        .includes(
+                            regionName.toUpperCase()
+                        ) ||
+
+                    regionName
+                        .toUpperCase()
+                        .includes(
+                            opt.value.toUpperCase()
+                        )
+                ) {
+
+                    regionSelect.value =
+                        opt.value;
+
+                }
+
+            });
 
         document.getElementById('c-adate').value =
             reservation.checkIn || '';
