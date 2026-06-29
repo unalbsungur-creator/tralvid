@@ -1506,6 +1506,9 @@ function selectDropdownByText(selectId, text) {
 
         var value = normalize(option.value);
 
+        if (!value)
+            continue;
+
         console.log(
             "COMPARE:",
             value,
