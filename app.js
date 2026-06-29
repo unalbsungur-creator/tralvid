@@ -2542,8 +2542,17 @@ async function fillPassengerData() {
         pax
     );
 
-    fillComplaintForm(formData);
+    fillComplaintForm({
 
+        reservation: reservation,
+
+        flight: flight,
+
+        transfer: transfer,
+
+        guests: guests
+
+    });
 }
 
 function fillComplaintForm(formData) {
