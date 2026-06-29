@@ -2216,6 +2216,22 @@ async function fillPassengerData() {
 
     loadTransferTypeDropdown();
 
+    setTimeout(function () {
+
+        console.log("Region options:",
+            document.getElementById("c-region").options.length);
+
+        console.log("Operator options:",
+            document.getElementById("c-veranstalter").options.length);
+
+        console.log("Transfer options:",
+            document.getElementById("c-transfertype").options.length);
+
+        console.log("Hotel options:",
+            document.getElementById("c-hotel").options.length);
+
+    }, 1000);
+
     pax = reservation || {};
 
     document.getElementById('c-subbooking').value =
