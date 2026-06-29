@@ -265,6 +265,9 @@ function openComplaintModal() {
 
     document.getElementById('complaint-modal-overlay')
         .classList.add('open');
+    console.log(
+        document.getElementById("c-booking")
+    );
 }
 
 function loadComplaintSubjects() {
