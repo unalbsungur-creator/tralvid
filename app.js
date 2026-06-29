@@ -1488,12 +1488,25 @@ function selectDropdownByText(selectId, text) {
     function normalize(str) {
 
         return String(str || "")
+
             .toUpperCase()
+
             .replace(/İ/g, "I")
             .replace(/İ/g, "I")
+            .replace(/Ğ/g, "G")
+            .replace(/Ü/g, "U")
+            .replace(/Ş/g, "S")
+            .replace(/Ö/g, "O")
+            .replace(/Ç/g, "C")
+
             .replace(/ß/g, "SS")
-            .replace(/\|/g, " ")
-            .replace(/\s+/g, " ")
+
+            // İstanbul | IST gibi ayırıcıları kaldır
+            .replace(/\|/g, "")
+
+            // TÜM boşlukları kaldır
+            .replace(/\s+/g, "")
+
             .trim();
 
     }
@@ -2395,22 +2408,6 @@ async function fillPassengerData() {
 
     console.log('HOTEL DROPDOWN YÜKLENİYOR');
 
-    loadHotelDropdown();
-
-    setTimeout(function () {
-
-        selectDropdownByText(
-
-            'c-hotel',
-
-            reservation
-                ? reservation.hotel
-                : pax.hotel
-
-        );
-
-    }, 300);
-
     console.log('BOOKING=', bookingNo);
     console.log('GUESTS=', guests);
     console.log('FLIGHT=', flight);
@@ -2541,11 +2538,29 @@ async function fillPassengerData() {
 function fillComplaintForm(formData) {
 
     var reservation = formData.reservation;
-    var flight = formData.flight;
-    var transfer = formData.transfer;
-    var guests = formData.guests;
 
     console.log("fillComplaintForm çalıştı");
+
+    if (!reservation)
+        return;
+
+    console.log("HOTEL =", reservation.hotel);
+
+    loadHotelDropdown();
+
+    setTimeout(function () {
+
+        selectDropdownByText(
+            "c-hotel",
+            reservation.hotel
+        );
+
+        console.log(
+            "SEÇİLEN HOTEL =",
+            document.getElementById("c-hotel").value
+        );
+
+    }, 300);
 
 }
 
