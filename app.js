@@ -2433,6 +2433,23 @@ async function fillPassengerData() {
 
     console.log('HOTEL DROPDOWN YÜKLENİYOR');
 
+    loadHotelDropdown();
+
+    console.log(
+        "OTEL SEÇİLECEK =",
+        reservation ? reservation.hotel : pax.hotel
+    );
+
+    selectDropdownByText(
+        "c-hotel",
+        reservation ? reservation.hotel : pax.hotel
+    );
+
+    console.log(
+        "SEÇİLEN OTEL =",
+        document.getElementById("c-hotel").value
+    );
+
     console.log('BOOKING=', bookingNo);
     console.log('GUESTS=', guests);
     console.log('FLIGHT=', flight);
