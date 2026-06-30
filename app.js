@@ -1480,187 +1480,6 @@ function buildCollectionsFromMTR(mtr) {
 // DROPDOWN TEXT MATCH
 // ======================================================
 
-function selectDropdownByText(selectId, text) {
-
-    console.log("SELECT DROPDOWN V2 ÇALIŞTI");
-
-    var select =
-        document.getElementById(selectId);
-
-    if (!select || !text)
-        return;
-
-    function normalize(str) {
-
-        return String(str || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toUpperCase()
-            .replace(/İ/g, "I")
-            .replace(/İ/g, "I")
-            .replace(/ß/g, "SS")
-            .replace(/[^A-Z0-9]/g, "");
-
-    }
-
-    var search = normalize(text);
-
-    console.log(
-        "TOPLAM OPTION =",
-        select.options.length
-    );
-
-    console.log(
-        "SON OPTION =",
-        select.options[
-            select.options.length - 1
-        ].text
-    );
-
-    console.log("SEARCH =", search);
-
-    for (var i = 0; i < select.options.length; i++) {
-
-        var option = select.options[i];
-
-        var value = normalize(option.value);
-
-        if (option.text.includes("YILSAM")) {
-
-            console.log("ORJİNAL =", option.text);
-
-            console.log("NORMAL =", value);
-
-            console.log("SEARCH =", search);
-
-            console.log("İNCLUDES =", value.includes(search));
-
-        }
-
-        console.log(
-            "TEXT =", option.text,
-            "VALUE =", option.value
-        );
-
-        if (option.text.toUpperCase().indexOf("YILSAM") >= 0) {
-
-            console.log("YILSAM OPTION =", option.text);
-            console.log("YILSAM VALUE =", value);
-            console.log("SEARCH =", search);
-
-        }
-
-        if (!value)
-            continue;
-
-        console.log(
-            "COMPARE:",
-            value,
-            "<=>",
-            search
-        );
-
-        if (value.indexOf(search) >= 0) {
-
-            console.log(
-                "BULUNDU:",
-                option.value
-            );
-
-        }
-
-        if (
-            value.includes(search) ||
-            search.includes(value)
-        ) {
-
-            console.log("SEÇİLDİ:", option.value);
-
-            select.selectedIndex = i;
-
-            return;
-
-        }
-
-    }
-
-    console.warn(
-        "Eşleşme bulunamadı:",
-        search
-    );
-
-}
-
-function selectBestOption(selectId, searchText) {
-
-    var select =
-        document.getElementById(selectId);
-
-    if (!select || !searchText)
-        return;
-
-    function normalize(text) {
-
-        return String(text || "")
-            .toUpperCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/[^A-Z0-9]/g, "");
-
-    }
-
-    var search =
-        normalize(searchText);
-
-    var bestIndex = -1;
-    var bestScore = -1;
-
-    for (var i = 0; i < select.options.length; i++) {
-
-        var option =
-            select.options[i];
-
-        var value =
-            normalize(option.text);
-
-        if (!value)
-            continue;
-
-        if (value.indexOf(search) >= 0) {
-
-            select.selectedIndex = i;
-
-            return;
-
-        }
-
-        var score = 0;
-
-        search.split(" ").forEach(function (part) {
-
-            if (!part)
-                return;
-
-            if (value.indexOf(part) >= 0)
-                score++;
-
-        });
-
-        if (score > bestScore) {
-
-            bestScore = score;
-
-            bestIndex = i;
-
-        }
-
-    }
-
-    if (bestIndex >= 0)
-        select.selectedIndex = bestIndex;
-
-}
-
 // ================= DATA ACTIONS =================
 
 // ======================================================
@@ -2349,280 +2168,81 @@ function selectBestOption(selectId, searchText) {
 
 async function fillPassengerData() {
 
-
-    function excelDateToInputDate(excelDate) {
-
-        if (!excelDate) return '';
-
-        var date =
-            new Date(
-                (excelDate - 25569) *
-                86400 * 1000
-            );
-
-        return date
-            .toISOString()
-            .split('T')[0];
-    } var bookingNo =
-        document.getElementById('c-booking')
+    var bookingNo =
+        document.getElementById("c-booking")
             .value
             .trim();
 
-    if (!bookingNo) return;
+    if (!bookingNo)
+        return;
 
-    var search =
-        bookingNo.toUpperCase();
-
-    var bookingData =
+    var formData =
         await getBookingData(bookingNo);
 
-    var reservation =
-        bookingData.reservation;
+    if (
+        !formData.reservation &&
+        !formData.flight &&
+        !formData.transfer &&
+        formData.passengers.length === 0
+    ) {
 
-    var flight =
-        bookingData.flight;
-
-    var transfer =
-        bookingData.transfer;
-
-    var guests =
-        bookingData.passengers;
-
-    var formData = {
-
-        bookingNo: bookingNo,
-
-        reservation: reservation,
-
-        flight: flight,
-
-        transfer: transfer,
-
-        guests: guests
-
-    };
-
-    var pax = reservation || {};
-
-    console.log('GUESTS =', guests);
-    console.log('GUEST=', guests);
-    console.log('FLIGHT=', flight);
-    console.log('TRANSFER=', transfer);
-
-    console.log('BOOKING ARANIYOR:', bookingNo);
-
-    console.log('RESERVATIONS:',
-        JSON.parse(localStorage.getItem('reservations') || '[]').length);
-
-    console.log('FLIGHTS:',
-        JSON.parse(localStorage.getItem('flights') || '[]').length);
-
-    console.log('TRANSFERS:',
-        JSON.parse(localStorage.getItem('transfers') || '[]').length);
-
-    console.log('PASSENGERS:',
-        JSON.parse(localStorage.getItem('passengers') || '[]').length);
-
-    if (!pax && !reservation) {
-
-        console.log(
-            'Rezervasyon bulunamadı:',
+        console.warn(
+            "Rezervasyon bulunamadı:",
             bookingNo
         );
 
         return;
-    }
-    loadSimpleDropdown(
-        'c-veranstalter',
-        'operators'
-    );
-
-    loadSimpleDropdown(
-        'c-region',
-        'regions'
-    );
-
-    loadSimpleDropdown(
-        'c-airport',
-        'airports'
-    );
-
-    loadTransferTypeDropdown();
-
-    loadHotelDropdown();
-
-    setTimeout(function () {
-
-        console.log("Region options:",
-            document.getElementById("c-region").options.length);
-
-        console.log("Operator options:",
-            document.getElementById("c-veranstalter").options.length);
-
-        console.log("Transfer options:",
-            document.getElementById("c-transfertype").options.length);
-
-        console.log("Hotel options:",
-            document.getElementById("c-hotel").options.length);
-
-    }, 1000);
-
-    pax = reservation || {};
-
-    document.getElementById('c-subbooking').value =
-        String(pax.subBooking || '').trim();
-
-    var op =
-        String(pax.operator || '')
-            .trim();
-
-    console.log(
-        'PAX OPERATOR:',
-        JSON.stringify(op)
-    );
-
-    loadSimpleDropdown(
-        'c-veranstalter',
-        'operators'
-    );
-
-    selectDropdownByText(
-        'c-veranstalter',
-        op
-    );
-
-
-    console.log('RESERVATION =', reservation);
-
-    if (reservation) {
-
-        console.log('Voucher :', reservation.voucher);
-        console.log('Board   :', reservation.board);
-        console.log('Nights  :', reservation.nights);
-        console.log('RoomType:', reservation.roomType);
-
-        var regionSelect =
-            document.getElementById('c-region');
-
-        var regionName =
-            (reservation.region || '').trim();
-
-        Array.from(regionSelect.options)
-            .forEach(function (opt) {
-
-                if (
-                    opt.value
-                        .toUpperCase()
-                        .includes(
-                            regionName.toUpperCase()
-                        ) ||
-
-                    regionName
-                        .toUpperCase()
-                        .includes(
-                            opt.value.toUpperCase()
-                        )
-                ) {
-
-                    regionSelect.value =
-                        opt.value;
-
-                }
-
-            });
-
-        document.getElementById('c-adate').value =
-            reservation.checkIn || '';
-
-        document.getElementById('c-ddate').value =
-            reservation.checkOut || '';
-
-        document.getElementById('c-voucher').value =
-            reservation.voucher || '';
-
-        document.getElementById('c-board').value =
-            reservation.board || '';
-
-        document.getElementById('c-nights').value =
-            reservation.nights || '';
-
-        document.getElementById('c-roomtype').value =
-            reservation.roomType || '';
-
-    } else {
-
-        document.getElementById('c-region').value =
-            (pax.region || '').trim();
-
-        document.getElementById('c-adate').value =
-            excelDateToInputDate(
-                pax.arrivalDate
-            );
-
-        document.getElementById('c-ddate').value =
-            excelDateToInputDate(
-                pax.departureDate
-            );
 
     }
 
-    selectDropdownByText(
-        'c-transfertype',
-        transfer
-            ? transfer.transferType
-            : pax.transferType
+    console.log("BOOKING =", bookingNo);
+    console.log("FORM DATA =", formData);
+
+    fillComplaintForm(
+        createFormData(formData)
     );
 
-    fillReservation({
-        reservation: reservation
-    });
+    function clearComplaintAutoFields() {
 
-    fillDropdowns({
-        reservation: reservation,
-        transfer: transfer
-    });
+        [
+            "c-subbooking",
+            "c-adult",
+            "c-child",
+            "c-infant",
+            "c-voucher",
+            "c-board",
+            "c-nights",
+            "c-roomtype",
+            "c-adate",
+            "c-ddate",
+            "c-guests",
+            "c-arrtime",
+            "c-arrfrom",
+            "c-arrto",
+            "c-depairline",
+            "c-deptime",
+            "c-depfrom",
+            "c-depto",
+            "c-transferprovider"
+        ].forEach(function (id) {
 
-    document.getElementById('c-transferprovider').value =
-        transfer ? (transfer.supplier || '') : '';
+            var el =
+                document.getElementById(id);
 
+            if (el)
+                el.value = "";
 
-    fillFlights({
-        flight: flight
-    });
+        });
 
-    fillTransfers({
-        transfer: transfer
-    });
+    }
 
-    console.log('BOOKING=', bookingNo);
-    console.log('GUESTS=', guests);
-    console.log('FLIGHT=', flight);
-    console.log('TRANSFER=', transfer);
-
-    fillGuests({
-        guests: guests
-    });
-
-
-    console.log(
-        'PAX bilgileri yüklendi:',
-        pax
-    );
-
-    fillComplaintForm({
-
-        reservation: reservation,
-
-        flight: flight,
-
-        transfer: transfer,
-
-        guests: guests
-
-    });
 }
 
 function fillComplaintForm(formData) {
+
+    clearComplaintAutoFields();
+
+    fillDropdowns(formData);
 
     fillReservation(formData);
 
@@ -2631,8 +2251,6 @@ function fillComplaintForm(formData) {
     fillFlights(formData);
 
     fillTransfers(formData);
-
-    fillDropdowns(formData);
 
 }
 
@@ -2746,8 +2364,11 @@ function fillFlights(formData) {
 
     // Geliş
 
+    document.getElementById("c-arrairline").value =
+        flight.arrivalAirline || "";
+
     document.getElementById("c-arrtime").value =
-        flight.arrivalTime || "";
+        flight.arrivalArrivalTime || "";
 
     document.getElementById("c-arrfrom").value =
         flight.arrivalFrom || "";
@@ -2761,7 +2382,7 @@ function fillFlights(formData) {
         flight.departureAirline || "";
 
     document.getElementById("c-deptime").value =
-        flight.departureTime || "";
+        flight.departureDepartureTime || "";
 
     document.getElementById("c-depfrom").value =
         flight.departureFrom || "";
@@ -3100,70 +2721,6 @@ function saveComplaint() {
     }
 }
 
-function saveComplaintChanges(id) {
-
-    var r = complaints.find(function (o) {
-        return o.id == id;
-    });
-
-    if (!r) return;
-
-    var oldOperator = r.veranstalter;
-
-    r.veranstalter =
-        document.getElementById(
-            'edit-veranstalter'
-        ).value;
-
-    syncStorage();
-
-    renderRecordsTable();
-    renderDashboard();
-
-    showToast(
-        'Operatör güncellendi'
-    );
-
-    console.log(
-        'LOG:',
-        oldOperator +
-        ' -> ' +
-        r.veranstalter
-    );
-}
-
-function saveComplaintChanges(id) {
-
-    var r = complaints.find(function (o) {
-        return o.id == id;
-    });
-
-    if (!r) return;
-
-    var oldOperator = r.veranstalter;
-
-    r.veranstalter =
-        document.getElementById(
-            'edit-veranstalter'
-        ).value;
-
-    syncStorage();
-
-    renderRecordsTable();
-    renderDashboard();
-
-    showToast(
-        'Operatör güncellendi'
-    );
-
-    console.log(
-        'LOG:',
-        oldOperator +
-        ' -> ' +
-        r.veranstalter
-    );
-
-}
 
 function saveInvoice() {
     var nextId = invoices.length > 0 ? Math.max.apply(Math, invoices.map(function (o) { return o.id; })) + 1 : 1;
