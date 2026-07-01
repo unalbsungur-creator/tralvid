@@ -4526,6 +4526,26 @@ function readExcelFile(file) {
 
 }
 
+function addCollections(collections, groups, result) {
+
+    if (groups.reservation && result.reservation) {
+        collections.reservations.push(result.reservation);
+    }
+
+    if (groups.flight && result.flight) {
+        collections.flights.push(result.flight);
+    }
+
+    if (groups.transfer && result.transfer) {
+        collections.transfers.push(result.transfer);
+    }
+
+    if (groups.passenger && result.passenger) {
+        collections.passengers.push(result.passenger);
+    }
+
+}
+
 function parseOperationRows(rows) {
 
     var headerInfo = findHeaderRow(rows);
@@ -4572,38 +4592,14 @@ function parseOperationRows(rows) {
         var result =
             buildCollectionsFromMTR(mtr);
 
-        if (groups.reservation && result.reservation) {
+        if (!result)
+            continue;
 
-            collections.reservations.push(
-                result.reservation
-            );
-
-        }
-
-        if (groups.flight && result.flight) {
-
-            collections.flights.push(
-                result.flight
-            );
-
-        }
-
-        if (groups.transfer && result.transfer) {
-
-            collections.transfers.push(
-                result.transfer
-            );
-
-        }
-
-        if (groups.passenger && result.passenger) {
-
-            collections.passengers.push(
-                result.passenger
-            );
-
-        }
-
+        addCollections(
+            collections,
+            groups,
+            result
+        );
     }
 
     return collections;
@@ -4649,6 +4645,14 @@ function importOperationExcel(event) {
             var collections =
                 parseOperationRows(rows);
 
+            if (!collections) {
+
+                throw new Error(
+                    "Import sırasında koleksiyon oluşturulamadı."
+                );
+
+            }
+
             console.log("Collections =", collections);
 
             console.log("Reservations :", collections.reservations.length);
@@ -4667,6 +4671,7 @@ function importOperationExcel(event) {
                     showImportResult(
                         collections
                     );
+                    event.target.value = "";
 
                 }
 
