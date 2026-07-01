@@ -1903,6 +1903,11 @@ async function saveOperationData(data, callback) {
         passengerStore.put(item);
     });
 
+    console.log("Reservations :", data.reservations.length);
+    console.log("Flights      :", data.flights.length);
+    console.log("Transfers    :", data.transfers.length);
+    console.log("Passengers   :", data.passengers.length);
+
     tx.oncomplete = function () {
 
         console.log("Operation Import Tamamlandı");
