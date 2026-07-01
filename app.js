@@ -1204,9 +1204,30 @@ function normalizeHeader(text) {
 
     return String(text)
         .toUpperCase()
+
+        // Türkçe karakterler
+        .replace(/İ/g, "I")
+        .replace(/İ/g, "I")
+        .replace(/Ş/g, "S")
+        .replace(/Ğ/g, "G")
+        .replace(/Ü/g, "U")
+        .replace(/Ö/g, "O")
+        .replace(/Ç/g, "C")
+
+        // Almanca karakterler
+        .replace(/Ä/g, "A")
+        .replace(/Ö/g, "O")
+        .replace(/Ü/g, "U")
+        .replace(/ß/g, "SS")
+
+        // Noktalama
         .replace(/\./g, "")
         .replace(/-/g, "")
+        .replace(/\(/g, "")
+        .replace(/\)/g, "")
+        .replace(/\//g, "")
         .replace(/\s+/g, "")
+
         .trim();
 
 }
@@ -1326,6 +1347,21 @@ function mapExcelRow(headers, row) {
         if (field) {
 
             mtr[field] = row[index];
+
+            if (
+                field === "operator" ||
+                field === "board" ||
+                field === "roomType" ||
+                field === "nights"
+            ) {
+
+                console.log(
+                    field,
+                    "=",
+                    row[index]
+                );
+
+            }
 
         } else {
 
