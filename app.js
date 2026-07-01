@@ -4607,6 +4607,18 @@ function parseOperationRows(rows) {
         var result =
             buildCollectionsFromMTR(mtr);
 
+        console.log("MTR =", mtr);
+        console.log("RESERVATION =", result.reservation);
+
+        if (!result)
+            continue;
+
+        addCollections(
+            collections,
+            groups,
+            result
+        );
+
         if (!result)
             continue;
 
