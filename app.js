@@ -2244,7 +2244,6 @@ function clearComplaintAutoFields() {
 
 }
 
-}
 
 function fillComplaintForm(formData) {
 
