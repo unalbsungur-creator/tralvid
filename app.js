@@ -1327,6 +1327,13 @@ function mapExcelRow(headers, row) {
 
             mtr[field] = row[index];
 
+        } else {
+
+            console.log(
+                "Eşleşmeyen Header:",
+                header
+            );
+
         }
 
     });
