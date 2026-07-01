@@ -3519,21 +3519,11 @@ function convertPaxExcel() {
 
     }
 
-    localStorage.setItem(
-        'passengerStats',
-        JSON.stringify(converted)
-    );
-
     alert(
-        converted.length +
-        ' kayıt PAX verilerine aktarıldı.'
+        "Bu özellik V3 mimarisinde kullanılmıyor."
     );
 
-    renderDashboard();
-
-    if (typeof renderPassengerStats === 'function') {
-        renderPassengerStats();
-    }
+    return;
 
 }
 
