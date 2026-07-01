@@ -2203,9 +2203,17 @@ async function fillPassengerData() {
 
     console.log("fillComplaintForm çağrılıyor...");
 
-    fillComplaintForm(
-        createFormData(formData)
-    );
+    fillComplaintForm({
+
+        reservation: formData.reservation,
+
+        flight: formData.flight,
+
+        transfer: formData.transfer,
+
+        guests: formData.passengers
+
+    });
 
     console.log("fillComplaintForm tamamlandı.");
 
