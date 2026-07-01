@@ -1606,6 +1606,19 @@ async function getBookingData(bookingNo) {
     var passengers =
         data.passengers;
 
+    console.log("===== BOOKING DEBUG =====");
+    console.log("Aranan Booking :", search);
+
+    console.log("Reservations :", reservations.length);
+    console.log("Flights      :", flights.length);
+    console.log("Transfers    :", transfers.length);
+    console.log("Passengers   :", passengers.length);
+
+    console.log("Reservation Örnek :", reservations[0]);
+    console.log("Flight Örnek      :", flights[0]);
+    console.log("Transfer Örnek    :", transfers[0]);
+    console.log("Passenger Örnek   :", passengers[0]);
+
     var reservation =
         reservations.find(function (r) {
 
@@ -1793,9 +1806,7 @@ async function saveReservation(item) {
             );
 
         var store =
-            tx.objectStore(
-                "reservations"
-            );
+            tx.objectStore("reservations");
 
         var req =
             store.get(item.booking);
@@ -1805,27 +1816,38 @@ async function saveReservation(item) {
             var current =
                 req.result || {};
 
-            Object.keys(item).forEach(function (key) {
+            var merged = {};
 
-                var value = item[key];
+            var keys = new Set(
+                Object.keys(current)
+                    .concat(Object.keys(item))
+            );
+
+            keys.forEach(function (key) {
+
+                var oldValue =
+                    current[key];
+
+                var newValue =
+                    item[key];
 
                 if (
-
-                    value !== "" &&
-
-                    value !== null &&
-
-                    value !== undefined
-
+                    newValue !== "" &&
+                    newValue !== null &&
+                    newValue !== undefined
                 ) {
 
-                    current[key] = value;
+                    merged[key] = newValue;
+
+                } else {
+
+                    merged[key] = oldValue;
 
                 }
 
             });
 
-            store.put(current);
+            store.put(merged);
 
         };
 
@@ -1844,66 +1866,46 @@ async function saveReservation(item) {
     });
 
 }
+async function saveOperationData(data, callback) {
 
-function saveOperationData(data, callback) {
+    for (const item of data.reservations) {
+        await saveReservation(item);
+    }
 
     var tx =
         fileDB.transaction(
-
             [
-                'reservations',
-                'flights',
-                'transfers',
-                'passengers'
+                "flights",
+                "transfers",
+                "passengers"
             ],
-
-            'readwrite'
-
+            "readwrite"
         );
 
-    var reservationStore =
-        tx.objectStore('reservations');
-
     var flightStore =
-        tx.objectStore('flights');
+        tx.objectStore("flights");
 
     var transferStore =
-        tx.objectStore('transfers');
+        tx.objectStore("transfers");
 
     var passengerStore =
-        tx.objectStore('passengers');
-
-    data.reservations.forEach(function (item) {
-
-        reservationStore.put(item);
-
-    });
+        tx.objectStore("passengers");
 
     data.flights.forEach(function (item) {
-
         flightStore.put(item);
-
     });
 
     data.transfers.forEach(function (item) {
-
         transferStore.put(item);
-
     });
 
     data.passengers.forEach(function (item) {
-
         passengerStore.put(item);
-
     });
 
     tx.oncomplete = function () {
 
-        console.log(
-            "Operation data IndexedDB'ye kaydedildi."
-        );
-
-        console.log("IndexedDB yazımı tamamlandı.");
+        console.log("Operation Import Tamamlandı");
 
         if (callback)
             callback();
@@ -1912,10 +1914,7 @@ function saveOperationData(data, callback) {
 
     tx.onerror = function (e) {
 
-        console.error(
-            "IndexedDB kayıt hatası",
-            e
-        );
+        console.error(e);
 
     };
 
@@ -4652,15 +4651,6 @@ function parseOperationRows(rows) {
 
         console.log("MTR =", mtr);
         console.log("RESERVATION =", result.reservation);
-
-        if (!result)
-            continue;
-
-        addCollections(
-            collections,
-            groups,
-            result
-        );
 
         if (!result)
             continue;
