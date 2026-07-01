@@ -2168,16 +2168,22 @@ function selectBestOption(selectId, searchText) {
 
 async function fillPassengerData() {
 
+    console.log("=== fillPassengerData BAŞLADI ===");
+
     var bookingNo =
         document.getElementById("c-booking")
             .value
             .trim();
+
+    console.log("Booking =", bookingNo);
 
     if (!bookingNo)
         return;
 
     var formData =
         await getBookingData(bookingNo);
+
+    console.log("BookingData =", formData);
 
     if (
         !formData.reservation &&
@@ -2195,46 +2201,48 @@ async function fillPassengerData() {
 
     }
 
-    console.log("BOOKING =", bookingNo);
-    console.log("FORM DATA =", formData);
+    console.log("fillComplaintForm çağrılıyor...");
 
     fillComplaintForm(
         createFormData(formData)
     );
 
-    function clearComplaintAutoFields() {
+    console.log("fillComplaintForm tamamlandı.");
 
-        [
-            "c-subbooking",
-            "c-adult",
-            "c-child",
-            "c-infant",
-            "c-voucher",
-            "c-board",
-            "c-nights",
-            "c-roomtype",
-            "c-adate",
-            "c-ddate",
-            "c-guests",
-            "c-arrtime",
-            "c-arrfrom",
-            "c-arrto",
-            "c-depairline",
-            "c-deptime",
-            "c-depfrom",
-            "c-depto",
-            "c-transferprovider"
-        ].forEach(function (id) {
+}
+function clearComplaintAutoFields() {
 
-            var el =
-                document.getElementById(id);
+    [
+        "c-subbooking",
+        "c-adult",
+        "c-child",
+        "c-infant",
+        "c-voucher",
+        "c-board",
+        "c-nights",
+        "c-roomtype",
+        "c-adate",
+        "c-ddate",
+        "c-guests",
+        "c-arrtime",
+        "c-arrfrom",
+        "c-arrto",
+        "c-depairline",
+        "c-deptime",
+        "c-depfrom",
+        "c-depto",
+        "c-transferprovider"
+    ].forEach(function (id) {
 
-            if (el)
-                el.value = "";
+        var el =
+            document.getElementById(id);
 
-        });
+        if (el)
+            el.value = "";
 
-    }
+    });
+
+}
 
 }
 
